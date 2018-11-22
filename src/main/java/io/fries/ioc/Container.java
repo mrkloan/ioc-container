@@ -35,4 +35,11 @@ class Container {
     public int hashCode() {
         return Objects.hash(dependencies);
     }
+
+    @Override
+    public String toString() {
+        return "Container{" +
+                "dependencies=" + dependencies +
+                '}';
+    }
 }

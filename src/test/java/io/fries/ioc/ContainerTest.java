@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 @DisplayName("Container should")
 class ContainerTest {
@@ -28,5 +29,17 @@ class ContainerTest {
 
         assertThat(firstContainer).isNotEqualTo(secondContainer);
         assertThat(firstContainer.hashCode()).isNotEqualTo(secondContainer.hashCode());
+    }
+
+    @Test
+    @DisplayName("be formatted as a string")
+    void should_be_formatted_as_a_string() {
+        final Dependencies dependencies = mock(Dependencies.class);
+        final Container container = Container.of(dependencies);
+
+        when(dependencies.toString()).thenReturn("Dependencies");
+        final String result = container.toString();
+
+        assertThat(result).isEqualTo("Container{dependencies=Dependencies}");
     }
 }
