@@ -1,7 +1,6 @@
 package io.fries.ioc;
 
 import java.util.Objects;
-import java.util.Optional;
 
 class Container {
 
@@ -19,7 +18,7 @@ class Container {
         return RegistrationContainer.of(instantiator, Tokens.empty());
     }
 
-    <T> Optional<T> provide(final Id id) {
+    <T> T provide(final Id id) {
         throw new UnsupportedOperationException();
     }
 

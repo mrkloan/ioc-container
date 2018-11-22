@@ -3,8 +3,6 @@ package io.fries.ioc;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.util.Optional;
-
 import static io.fries.ioc.Tests.*;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
@@ -27,8 +25,8 @@ class ContainerAcceptanceTest {
                 .register(Id.of(E.class), E.class, emptyList())
                 .instantiate();
 
-        final Optional<B> providedInstance = container.provide(Id.of(B.class));
+        final B providedInstance = container.provide(Id.of(B.class));
 
-        assertThat(providedInstance.get().toString()).isEqualTo("B(A(C,D(E))");
+        assertThat(providedInstance.toString()).isEqualTo("B(A(C,D(E))");
     }
 }
