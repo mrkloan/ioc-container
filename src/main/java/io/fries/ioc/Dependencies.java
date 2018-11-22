@@ -3,6 +3,8 @@ package io.fries.ioc;
 import java.util.List;
 import java.util.Objects;
 
+import static java.util.Collections.emptyList;
+
 class Dependencies {
 
     private final List<Dependency> dependencies;
@@ -13,6 +15,10 @@ class Dependencies {
 
     static Dependencies of(final List<Dependency> dependencies) {
         return new Dependencies(dependencies);
+    }
+
+    static Dependencies empty() {
+        return of(emptyList());
     }
 
     @Override
@@ -26,5 +32,12 @@ class Dependencies {
     @Override
     public int hashCode() {
         return Objects.hash(dependencies);
+    }
+
+    @Override
+    public String toString() {
+        return "Dependencies{" +
+                "dependencies=" + dependencies +
+                '}';
     }
 }

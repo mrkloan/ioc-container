@@ -30,4 +30,14 @@ class DependenciesTest {
         assertThat(firstDependencies).isNotEqualTo(secondDependencies);
         assertThat(firstDependencies.hashCode()).isNotEqualTo(secondDependencies.hashCode());
     }
+
+    @Test
+    @DisplayName("be formatted as a string")
+    void should_be_formatted_as_a_string() {
+        final Dependencies dependencies = Dependencies.empty();
+
+        final String result = dependencies.toString();
+
+        assertThat(result).isEqualTo("Dependencies{dependencies=[]}");
+    }
 }
