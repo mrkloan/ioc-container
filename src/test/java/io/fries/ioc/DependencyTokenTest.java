@@ -13,8 +13,8 @@ import static org.mockito.Mockito.when;
 class DependencyTokenTest {
 
     @Test
-    @DisplayName("count its number of deep dependencies")
-    void should_count_its_number_of_deep_dependencies() {
+    @DisplayName("count its number of dependencies")
+    void should_count_its_number_of_dependencies() {
         final Id firstId = mock(Id.class);
         final DependencyToken firstDependency = mock(DependencyToken.class);
         final Id secondId = mock(Id.class);
@@ -25,9 +25,9 @@ class DependencyTokenTest {
 
         when(tokens.get(firstId)).thenReturn(firstDependency);
         when(tokens.get(secondId)).thenReturn(secondDependency);
-        when(firstDependency.countDeepDependencies(tokens)).thenReturn(1);
-        when(secondDependency.countDeepDependencies(tokens)).thenReturn(0);
-        final int deepDependenciesCount = token.countDeepDependencies(tokens);
+        when(firstDependency.countDependencies(tokens)).thenReturn(1);
+        when(secondDependency.countDependencies(tokens)).thenReturn(0);
+        final int deepDependenciesCount = token.countDependencies(tokens);
 
         assertThat(deepDependenciesCount).isEqualTo(3);
     }

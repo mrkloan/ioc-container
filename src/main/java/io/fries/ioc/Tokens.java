@@ -58,7 +58,7 @@ class Tokens {
     }
 
     private int compareTokens(final DependencyToken firstToken, final DependencyToken secondToken) {
-        return firstToken.countDeepDependencies(this) - secondToken.countDeepDependencies(this);
+        return firstToken.countDependencies(this) - secondToken.countDependencies(this);
     }
 
     @Override

@@ -71,8 +71,8 @@ class TokensTest {
         final Dependency secondDependency = mock(Dependency.class);
         final Dependencies dependencies = Dependencies.of(asList(secondDependency, firstDependency));
 
-        when(firstToken.countDeepDependencies(tokens)).thenReturn(1);
-        when(secondToken.countDeepDependencies(tokens)).thenReturn(0);
+        when(firstToken.countDependencies(tokens)).thenReturn(1);
+        when(secondToken.countDependencies(tokens)).thenReturn(0);
         when(firstToken.instantiate(instantiator)).thenReturn(firstDependency);
         when(secondToken.instantiate(instantiator)).thenReturn(secondDependency);
         final Dependencies result = tokens.instantiate(instantiator);

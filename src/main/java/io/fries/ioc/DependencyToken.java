@@ -19,15 +19,19 @@ class DependencyToken {
         return new DependencyToken(id, type, dependencies);
     }
 
-    int countDeepDependencies(final Tokens tokens) {
+    int countDependencies(final Tokens tokens) {
         final int firstLevelDependencies = dependencies.size();
-        final int deepDependencies = dependencies
-                .stream()
-                .map(tokens::get)
-                .mapToInt(token -> token.countDeepDependencies(tokens))
-                .sum();
+        final int deepDependencies = countDeepDependencies(tokens);
 
         return firstLevelDependencies + deepDependencies;
+    }
+
+    private int countDeepDependencies(final Tokens tokens) {
+        return dependencies
+                .stream()
+                .map(tokens::get)
+                .mapToInt(token -> token.countDependencies(tokens))
+                .sum();
     }
 
     Dependency instantiate(final Instantiator instantiator) {
