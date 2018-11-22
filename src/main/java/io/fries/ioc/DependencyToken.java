@@ -35,7 +35,7 @@ class DependencyToken {
     }
 
     boolean isIdentifiedBy(final Id id) {
-        return true;
+        return this.id.equals(id);
     }
 
     @Override
