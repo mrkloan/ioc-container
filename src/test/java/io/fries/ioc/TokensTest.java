@@ -11,6 +11,18 @@ import static org.mockito.Mockito.mock;
 class TokensTest {
 
     @Test
+    @DisplayName("add a new dependency token")
+    void should_create_a_new_tokens_instance_containing_the_added_token() {
+        final DependencyToken token = mock(DependencyToken.class);
+        final Tokens tokens = Tokens.empty();
+
+        final Tokens result = tokens.add(token);
+
+        assertThat(tokens).isEqualTo(Tokens.empty());
+        assertThat(result).isEqualTo(Tokens.of(singletonList(token)));
+    }
+
+    @Test
     @DisplayName("be equal")
     void should_be_equal() {
         final DependencyToken token = mock(DependencyToken.class);
