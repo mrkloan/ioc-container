@@ -3,8 +3,11 @@ package io.fries.ioc;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.util.NoSuchElementException;
+
 import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -34,6 +37,19 @@ class DependenciesTest {
         final Dependency result = dependencies.get(id);
 
         assertThat(result).isEqualTo(firstDependency);
+    }
+
+    @Test
+    @DisplayName("throw when the required dependency is not present")
+    void should_throw_when_the_required_dependency_is_not_present() {
+        final Id id = mock(Id.class);
+        final Dependency firstDependency = mock(Dependency.class);
+        final Dependencies dependencies = Dependencies.of(singletonList(firstDependency));
+
+        when(firstDependency.isIdentifiedBy(id)).thenReturn(false);
+        assertThatExceptionOfType(NoSuchElementException.class)
+                .isThrownBy(() -> dependencies.get(id))
+                .withMessage("The specified dependency is not registered in the container");
     }
 
     @Test

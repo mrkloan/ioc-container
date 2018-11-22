@@ -2,6 +2,7 @@ package io.fries.ioc;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.function.BinaryOperator;
 
@@ -40,7 +41,7 @@ class Dependencies {
                 .stream()
                 .filter(dependency -> dependency.isIdentifiedBy(id))
                 .findFirst()
-                .get();
+                .orElseThrow(() -> new NoSuchElementException("The specified dependency is not registered in the container"));
     }
 
     @Override
