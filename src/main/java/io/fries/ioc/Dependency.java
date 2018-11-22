@@ -29,4 +29,12 @@ class Dependency {
     public int hashCode() {
         return Objects.hash(id, instance);
     }
+
+    @Override
+    public String toString() {
+        return "Dependency{" +
+                "id=" + id +
+                ", instance=" + instance +
+                '}';
+    }
 }
