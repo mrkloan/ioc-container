@@ -36,13 +36,20 @@ class Tokens {
     }
 
     Dependencies instantiate(final Instantiator instantiator) {
-        final List<Dependency> dependencies = tokens
+        final List<DependencyToken> sortedTokens = topologicalSort(tokens);
+        final List<Dependency> dependencies = sortedTokens
                 .stream()
-                .sorted(this::compareTokens)
                 .map(token -> token.instantiate(instantiator))
                 .collect(toList());
 
         return Dependencies.of(dependencies);
+    }
+
+    private List<DependencyToken> topologicalSort(final List<DependencyToken> tokens) {
+        return tokens
+                .stream()
+                .sorted(this::compareTokens)
+                .collect(toList());
     }
 
     private int compareTokens(final DependencyToken firstToken, final DependencyToken secondToken) {
