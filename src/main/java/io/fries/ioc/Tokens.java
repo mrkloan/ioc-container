@@ -36,13 +36,17 @@ class Tokens {
     }
 
     Dependencies instantiate(final Instantiator instantiator) {
-        // TODO: sort the tokens by their number of deep dependencies
         final List<Dependency> dependencies = tokens
                 .stream()
+                .sorted(this::compareTokens)
                 .map(token -> token.instantiate(instantiator))
                 .collect(toList());
 
         return Dependencies.of(dependencies);
+    }
+
+    private int compareTokens(final DependencyToken firstToken, final DependencyToken secondToken) {
+        return firstToken.countDeepDependencies(this) - secondToken.countDeepDependencies(this);
     }
 
     @Override

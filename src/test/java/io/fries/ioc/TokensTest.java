@@ -2,6 +2,7 @@ package io.fries.ioc;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.InOrder;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
@@ -34,14 +35,17 @@ class TokensTest {
 
         final Dependency firstDependency = mock(Dependency.class);
         final Dependency secondDependency = mock(Dependency.class);
-        final Dependencies dependencies = Dependencies.of(asList(firstDependency, secondDependency));
+        final Dependencies dependencies = Dependencies.of(asList(secondDependency, firstDependency));
 
+        when(firstToken.countDeepDependencies(tokens)).thenReturn(1);
+        when(secondToken.countDeepDependencies(tokens)).thenReturn(0);
         when(firstToken.instantiate(instantiator)).thenReturn(firstDependency);
         when(secondToken.instantiate(instantiator)).thenReturn(secondDependency);
         final Dependencies result = tokens.instantiate(instantiator);
 
-        verify(firstToken).instantiate(instantiator);
-        verify(secondToken).instantiate(instantiator);
+        final InOrder inOrder = inOrder(firstToken, secondToken);
+        inOrder.verify(secondToken).instantiate(instantiator);
+        inOrder.verify(firstToken).instantiate(instantiator);
         assertThat(result).isEqualTo(dependencies);
     }
 
