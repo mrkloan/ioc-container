@@ -31,11 +31,9 @@ class TokensTest {
     void should_get_a_token_by_its_id() {
         final Id id = mock(Id.class);
         final DependencyToken firstToken = mock(DependencyToken.class);
-        final DependencyToken secondToken = mock(DependencyToken.class);
-        final Tokens tokens = Tokens.of(asList(firstToken, secondToken));
+        final Tokens tokens = Tokens.of(singletonList(firstToken));
 
         when(firstToken.isIdentifiedBy(id)).thenReturn(true);
-        when(secondToken.isIdentifiedBy(id)).thenReturn(false);
         final DependencyToken result = tokens.get(id);
 
         assertThat(result).isEqualTo(firstToken);
@@ -46,11 +44,9 @@ class TokensTest {
     void should_throw_when_the_required_token_is_not_present() {
         final Id id = mock(Id.class);
         final DependencyToken firstToken = mock(DependencyToken.class);
-        final DependencyToken secondToken = mock(DependencyToken.class);
-        final Tokens tokens = Tokens.of(asList(firstToken, secondToken));
+        final Tokens tokens = Tokens.of(singletonList(firstToken));
 
         when(firstToken.isIdentifiedBy(id)).thenReturn(false);
-        when(secondToken.isIdentifiedBy(id)).thenReturn(false);
 
         assertThatExceptionOfType(NoSuchElementException.class)
                 .isThrownBy(() -> tokens.get(id))
