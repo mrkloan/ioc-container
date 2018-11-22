@@ -33,4 +33,13 @@ class DependencyToken {
     public int hashCode() {
         return Objects.hash(id, type, dependencies);
     }
+
+    @Override
+    public String toString() {
+        return "DependencyToken{" +
+                "id=" + id +
+                ", type=" + type +
+                ", dependencies=" + dependencies +
+                '}';
+    }
 }

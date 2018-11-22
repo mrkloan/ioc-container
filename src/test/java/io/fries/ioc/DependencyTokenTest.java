@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import static java.util.Collections.emptyList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 @DisplayName("Dependency token should")
 class DependencyTokenTest {
@@ -29,5 +30,17 @@ class DependencyTokenTest {
 
         assertThat(firstToken).isNotEqualTo(secondToken);
         assertThat(firstToken.hashCode()).isNotEqualTo(secondToken.hashCode());
+    }
+
+    @Test
+    @DisplayName("be formatted as a string")
+    void should_be_formatted_as_a_string() {
+        final Id id = mock(Id.class);
+        final DependencyToken token = DependencyToken.of(id, Object.class, emptyList());
+
+        when(id.toString()).thenReturn("Id");
+        final String result = token.toString();
+
+        assertThat(result).isEqualTo("DependencyToken{id=Id, type=class java.lang.Object, dependencies=[]}");
     }
 }
