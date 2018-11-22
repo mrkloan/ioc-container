@@ -7,9 +7,13 @@ class RegistrationContainer {
     private final Instantiator instantiator;
     private Tokens tokens;
 
-    RegistrationContainer(final Instantiator instantiator, final Tokens tokens) {
+    private RegistrationContainer(final Instantiator instantiator, final Tokens tokens) {
         this.instantiator = instantiator;
         this.tokens = tokens;
+    }
+
+    static RegistrationContainer of(final Instantiator instantiator, final Tokens tokens) {
+        return new RegistrationContainer(instantiator, tokens);
     }
 
     RegistrationContainer register(final Id id, final Class<?> type, final List<Id> dependencies) {

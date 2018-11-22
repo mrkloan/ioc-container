@@ -30,7 +30,7 @@ class RegistrationContainerTest {
         final List<Id> dependencies = emptyList();
 
         final DependencyToken token = DependencyToken.of(id, type, dependencies);
-        final RegistrationContainer registrationContainer = new RegistrationContainer(instantiator, tokens);
+        final RegistrationContainer registrationContainer = RegistrationContainer.of(instantiator, tokens);
 
         registrationContainer.register(id, type, dependencies);
 
