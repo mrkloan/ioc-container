@@ -17,7 +17,7 @@ class Dependency {
     }
 
     boolean isIdentifiedBy(final Id id) {
-        throw new UnsupportedOperationException();
+        return true;
     }
 
     @SuppressWarnings("unchecked")
