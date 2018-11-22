@@ -30,6 +30,10 @@ class Tokens {
         return of(tokens);
     }
 
+    Dependencies instantiate() {
+        throw new UnsupportedOperationException();
+    }
+
     @Override
     public boolean equals(final Object o) {
         if (this == o) return true;

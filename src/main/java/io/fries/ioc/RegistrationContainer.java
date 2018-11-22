@@ -23,7 +23,8 @@ class RegistrationContainer {
         return this;
     }
 
-    Container createInstances() {
-        throw new UnsupportedOperationException();
+    Container instantiate() {
+        final Dependencies dependencies = tokens.instantiate();
+        return Container.of(dependencies);
     }
 }

@@ -25,7 +25,7 @@ class ContainerAcceptanceTest {
                 .register(Id.of(C.class), C.class, emptyList())
                 .register(Id.of(D.class), D.class, singletonList(Id.of(E.class)))
                 .register(Id.of(E.class), E.class, emptyList())
-                .createInstances();
+                .instantiate();
 
         final Optional<B> providedInstance = container.provide(Id.of(B.class));
 
