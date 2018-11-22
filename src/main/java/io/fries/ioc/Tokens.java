@@ -6,6 +6,7 @@ import java.util.Objects;
 
 import static java.util.Collections.emptyList;
 import static java.util.Collections.unmodifiableList;
+import static java.util.stream.Collectors.toList;
 
 class Tokens {
 
@@ -30,8 +31,13 @@ class Tokens {
         return of(tokens);
     }
 
-    Dependencies instantiate() {
-        throw new UnsupportedOperationException();
+    Dependencies instantiate(final Instantiator instantiator) {
+        final List<Dependency> dependencies = tokens
+                .stream()
+                .map(token -> token.instantiate(instantiator))
+                .collect(toList());
+
+        return Dependencies.of(dependencies);
     }
 
     @Override

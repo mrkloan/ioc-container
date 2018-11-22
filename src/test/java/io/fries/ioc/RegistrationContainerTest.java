@@ -48,10 +48,10 @@ class RegistrationContainerTest {
     void should_create_a_container_containing_the_instances_of_the_registered_tokens() {
         final Dependencies dependencies = mock(Dependencies.class);
 
-        when(tokens.instantiate()).thenReturn(dependencies);
+        when(tokens.instantiate(instantiator)).thenReturn(dependencies);
         final Container container = registrationContainer.instantiate();
 
-        verify(tokens).instantiate();
+        verify(tokens).instantiate(instantiator);
         assertThat(container).isEqualTo(Container.of(dependencies));
     }
 }

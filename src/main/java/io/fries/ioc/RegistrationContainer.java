@@ -24,7 +24,7 @@ class RegistrationContainer {
     }
 
     Container instantiate() {
-        final Dependencies dependencies = tokens.instantiate();
+        final Dependencies dependencies = tokens.instantiate(instantiator);
         return Container.of(dependencies);
     }
 }

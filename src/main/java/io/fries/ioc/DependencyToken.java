@@ -19,6 +19,10 @@ class DependencyToken {
         return new DependencyToken(id, type, dependencies);
     }
 
+    Dependency instantiate(final Instantiator instantiator) {
+        throw new UnsupportedOperationException();
+    }
+
     @Override
     public boolean equals(final Object o) {
         if (this == o) return true;
