@@ -25,6 +25,21 @@ class TokensTest {
     }
 
     @Test
+    @DisplayName("get a token using its identifier")
+    void should_get_a_token_by_its_id() {
+        final Id id = mock(Id.class);
+        final DependencyToken firstToken = mock(DependencyToken.class);
+        final DependencyToken secondToken = mock(DependencyToken.class);
+        final Tokens tokens = Tokens.of(asList(firstToken, secondToken));
+
+        when(firstToken.identifiedBy(id)).thenReturn(true);
+        when(secondToken.identifiedBy(id)).thenReturn(false);
+        final DependencyToken result = tokens.get(id);
+
+        assertThat(result).isEqualTo(firstToken);
+    }
+
+    @Test
     @DisplayName("instantiate a dependency from its token")
     void should_instantiate_a_dependency_from_its_token() {
         final Instantiator instantiator = mock(Instantiator.class);

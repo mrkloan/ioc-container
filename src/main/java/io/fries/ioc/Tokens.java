@@ -32,7 +32,11 @@ class Tokens {
     }
 
     DependencyToken get(final Id id) {
-        throw new UnsupportedOperationException();
+        return tokens
+                .stream()
+                .filter(token -> token.identifiedBy(id))
+                .findFirst()
+                .get();
     }
 
     Dependencies instantiate(final Instantiator instantiator) {

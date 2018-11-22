@@ -34,6 +34,10 @@ class DependencyToken {
         throw new UnsupportedOperationException();
     }
 
+    boolean identifiedBy(final Id id) {
+        throw new UnsupportedOperationException();
+    }
+
     @Override
     public boolean equals(final Object o) {
         if (this == o) return true;
