@@ -31,6 +31,10 @@ class Tests {
     }
 
     static class C {
+
+        C() {
+        }
+
         @Override
         public String toString() {
             return "C";
