@@ -16,6 +16,11 @@ class Dependency {
         return new Dependency(id, instance);
     }
 
+    @SuppressWarnings("unchecked")
+    <T> T getInstance() {
+        return (T) instance;
+    }
+
     @Override
     public boolean equals(final Object o) {
         if (this == o) return true;
