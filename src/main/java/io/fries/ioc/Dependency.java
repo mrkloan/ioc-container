@@ -16,6 +16,10 @@ class Dependency {
         return new Dependency(id, instance);
     }
 
+    boolean isIdentifiedBy(final Id id) {
+        throw new UnsupportedOperationException();
+    }
+
     @SuppressWarnings("unchecked")
     <T> T getInstance() {
         return (T) instance;

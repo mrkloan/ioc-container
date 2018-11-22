@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 @DisplayName("Dependencies should")
 class DependenciesTest {
@@ -20,6 +21,19 @@ class DependenciesTest {
 
         assertThat(dependencies).isEqualTo(Dependencies.empty());
         assertThat(result).isEqualTo(Dependencies.of(singletonList(dependency)));
+    }
+
+    @Test
+    @DisplayName("get a dependency using its identifier")
+    void should_get_a_dependency_by_its_id() {
+        final Id id = mock(Id.class);
+        final Dependency firstDependency = mock(Dependency.class);
+        final Dependencies dependencies = Dependencies.of(singletonList(firstDependency));
+
+        when(firstDependency.isIdentifiedBy(id)).thenReturn(true);
+        final Dependency result = dependencies.get(id);
+
+        assertThat(result).isEqualTo(firstDependency);
     }
 
     @Test

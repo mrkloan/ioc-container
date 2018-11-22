@@ -36,7 +36,11 @@ class Dependencies {
     }
 
     Dependency get(final Id id) {
-        throw new UnsupportedOperationException();
+        return dependencies
+                .stream()
+                .filter(dependency -> dependency.isIdentifiedBy(id))
+                .findFirst()
+                .get();
     }
 
     @Override
