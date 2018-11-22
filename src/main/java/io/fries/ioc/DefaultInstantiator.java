@@ -12,18 +12,8 @@ class DefaultInstantiator implements Instantiator {
     @SuppressWarnings("unchecked")
     public <T> T createInstance(final Class<T> type, final List<Dependency> dependencies) {
         try {
-            if (dependencies.isEmpty())
-                return type.newInstance();
-
-            final List<Object> parameterInstances = dependencies
-                    .stream()
-                    .map(Dependency::getInstance)
-                    .collect(toList());
-
-            final Class<?>[] parameterTypes = parameterInstances
-                    .stream()
-                    .map(Object::getClass)
-                    .toArray(Class[]::new);
+            final List<Object> parameterInstances = mapParameterInstances(dependencies);
+            final Class<?>[] parameterTypes = mapParameterTypes(parameterInstances);
 
             final Constructor<T> constructor = type.getDeclaredConstructor(parameterTypes);
             constructor.setAccessible(true);
@@ -32,6 +22,20 @@ class DefaultInstantiator implements Instantiator {
         } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
             throw new DependencyInstantiationException(e);
         }
+    }
+
+    private List<Object> mapParameterInstances(final List<Dependency> dependencies) {
+        return dependencies
+                .stream()
+                .map(Dependency::getInstance)
+                .collect(toList());
+    }
+
+    private Class[] mapParameterTypes(final List<Object> parameterInstances) {
+        return parameterInstances
+                .stream()
+                .map(Object::getClass)
+                .toArray(Class[]::new);
     }
 
     private static class DependencyInstantiationException extends RuntimeException {
