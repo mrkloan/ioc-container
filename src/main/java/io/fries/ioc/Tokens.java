@@ -2,6 +2,7 @@ package io.fries.ioc;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Objects;
 
 import static java.util.Collections.emptyList;
@@ -36,7 +37,7 @@ class Tokens {
                 .stream()
                 .filter(token -> token.identifiedBy(id))
                 .findFirst()
-                .get();
+                .orElseThrow(() -> new NoSuchElementException("The specified dependency token is not registered in the registration container"));
     }
 
     Dependencies instantiate(final Instantiator instantiator) {

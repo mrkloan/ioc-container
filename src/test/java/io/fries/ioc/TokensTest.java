@@ -4,9 +4,12 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InOrder;
 
+import java.util.NoSuchElementException;
+
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.Mockito.*;
 
 @DisplayName("Tokens should")
@@ -37,6 +40,22 @@ class TokensTest {
         final DependencyToken result = tokens.get(id);
 
         assertThat(result).isEqualTo(firstToken);
+    }
+
+    @Test
+    @DisplayName("throw an exception when the required token is not present")
+    void should_throw_when_the_required_token_is_not_present() {
+        final Id id = mock(Id.class);
+        final DependencyToken firstToken = mock(DependencyToken.class);
+        final DependencyToken secondToken = mock(DependencyToken.class);
+        final Tokens tokens = Tokens.of(asList(firstToken, secondToken));
+
+        when(firstToken.identifiedBy(id)).thenReturn(false);
+        when(secondToken.identifiedBy(id)).thenReturn(false);
+
+        assertThatExceptionOfType(NoSuchElementException.class)
+                .isThrownBy(() -> tokens.get(id))
+                .withMessage("The specified dependency token is not registered in the registration container");
     }
 
     @Test
