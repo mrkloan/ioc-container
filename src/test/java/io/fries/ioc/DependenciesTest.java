@@ -11,6 +11,18 @@ import static org.mockito.Mockito.mock;
 class DependenciesTest {
 
     @Test
+    @DisplayName("add a new dependency")
+    void should_create_a_new_dependencies_instance_containing_the_added_dependency() {
+        final Dependency dependency = mock(Dependency.class);
+        final Dependencies dependencies = Dependencies.empty();
+
+        final Dependencies result = dependencies.add(dependency);
+
+        assertThat(dependencies).isEqualTo(Dependencies.empty());
+        assertThat(result).isEqualTo(Dependencies.of(singletonList(dependency)));
+    }
+
+    @Test
     @DisplayName("be equal")
     void should_be_equal() {
         final Dependency dependency = mock(Dependency.class);

@@ -1,16 +1,18 @@
 package io.fries.ioc;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 import static java.util.Collections.emptyList;
+import static java.util.Collections.unmodifiableList;
 
 class Dependencies {
 
     private final List<Dependency> dependencies;
 
     private Dependencies(final List<Dependency> dependencies) {
-        this.dependencies = dependencies;
+        this.dependencies = unmodifiableList(dependencies);
     }
 
     static Dependencies of(final List<Dependency> dependencies) {
@@ -19,6 +21,13 @@ class Dependencies {
 
     static Dependencies empty() {
         return of(emptyList());
+    }
+
+    Dependencies add(final Dependency dependency) {
+        final List<Dependency> dependencies = new ArrayList<>(this.dependencies);
+        dependencies.add(dependency);
+
+        return of(dependencies);
     }
 
     @Override

@@ -34,7 +34,7 @@ class DependencyToken {
                 .sum();
     }
 
-    Dependency instantiate(final Instantiator instantiator) {
+    Dependency instantiate(final Instantiator instantiator, final Dependencies dependencies) {
         throw new UnsupportedOperationException();
     }
 

@@ -2,7 +2,6 @@ package io.fries.ioc;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.InOrder;
 
 import java.util.NoSuchElementException;
 
@@ -66,20 +65,17 @@ class TokensTest {
         final DependencyToken firstToken = mock(DependencyToken.class);
         final DependencyToken secondToken = mock(DependencyToken.class);
         final Tokens tokens = Tokens.of(asList(firstToken, secondToken));
+        when(firstToken.countDependencies(tokens)).thenReturn(1);
+        when(secondToken.countDependencies(tokens)).thenReturn(0);
 
         final Dependency firstDependency = mock(Dependency.class);
         final Dependency secondDependency = mock(Dependency.class);
         final Dependencies dependencies = Dependencies.of(asList(secondDependency, firstDependency));
+        when(firstToken.instantiate(any(), any())).thenReturn(firstDependency);
+        when(secondToken.instantiate(any(), any())).thenReturn(secondDependency);
 
-        when(firstToken.countDependencies(tokens)).thenReturn(1);
-        when(secondToken.countDependencies(tokens)).thenReturn(0);
-        when(firstToken.instantiate(instantiator)).thenReturn(firstDependency);
-        when(secondToken.instantiate(instantiator)).thenReturn(secondDependency);
         final Dependencies result = tokens.instantiate(instantiator);
 
-        final InOrder inOrder = inOrder(firstToken, secondToken);
-        inOrder.verify(secondToken).instantiate(instantiator);
-        inOrder.verify(firstToken).instantiate(instantiator);
         assertThat(result).isEqualTo(dependencies);
     }
 

@@ -42,12 +42,15 @@ class Tokens {
 
     Dependencies instantiate(final Instantiator instantiator) {
         final List<DependencyToken> sortedTokens = topologicalSort(tokens);
-        final List<Dependency> dependencies = sortedTokens
-                .stream()
-                .map(token -> token.instantiate(instantiator))
-                .collect(toList());
 
-        return Dependencies.of(dependencies);
+        Dependencies dependencies = Dependencies.empty();
+
+        for (final DependencyToken token : sortedTokens) {
+            final Dependency dependency = token.instantiate(instantiator, dependencies);
+            dependencies = dependencies.add(dependency);
+        }
+
+        return dependencies;
     }
 
     private List<DependencyToken> topologicalSort(final List<DependencyToken> tokens) {
