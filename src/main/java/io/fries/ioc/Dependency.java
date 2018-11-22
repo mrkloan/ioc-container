@@ -17,7 +17,7 @@ class Dependency {
     }
 
     boolean isIdentifiedBy(final Id id) {
-        return true;
+        return this.id.equals(id);
     }
 
     @SuppressWarnings("unchecked")
