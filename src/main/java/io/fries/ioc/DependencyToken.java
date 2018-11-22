@@ -35,7 +35,7 @@ class DependencyToken {
     }
 
     boolean isIdentifiedBy(final Id id) {
-        throw new UnsupportedOperationException();
+        return true;
     }
 
     @Override

@@ -33,6 +33,17 @@ class DependencyTokenTest {
     }
 
     @Test
+    @DisplayName("be identified")
+    void should_be_identified_by_the_provided_identifier() {
+        final Id id = mock(Id.class);
+        final DependencyToken token = DependencyToken.of(id, Object.class, emptyList());
+
+        final boolean identified = token.isIdentifiedBy(id);
+
+        assertThat(identified).isTrue();
+    }
+
+    @Test
     @DisplayName("be equal")
     void should_be_equal() {
         final Id id = mock(Id.class);
