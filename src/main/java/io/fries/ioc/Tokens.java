@@ -31,7 +31,12 @@ class Tokens {
         return of(tokens);
     }
 
+    DependencyToken get(final Id id) {
+        throw new UnsupportedOperationException();
+    }
+
     Dependencies instantiate(final Instantiator instantiator) {
+        // TODO: sort the tokens by their number of deep dependencies
         final List<Dependency> dependencies = tokens
                 .stream()
                 .map(token -> token.instantiate(instantiator))

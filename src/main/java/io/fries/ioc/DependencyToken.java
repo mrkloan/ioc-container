@@ -19,6 +19,17 @@ class DependencyToken {
         return new DependencyToken(id, type, dependencies);
     }
 
+    int countDeepDependencies(final Tokens tokens) {
+        final int firstLevelDependencies = dependencies.size();
+        final int deepDependencies = dependencies
+                .stream()
+                .map(tokens::get)
+                .mapToInt(token -> token.countDeepDependencies(tokens))
+                .sum();
+
+        return firstLevelDependencies + deepDependencies;
+    }
+
     Dependency instantiate(final Instantiator instantiator) {
         throw new UnsupportedOperationException();
     }
