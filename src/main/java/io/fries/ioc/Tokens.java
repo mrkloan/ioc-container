@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Objects;
+import java.util.function.BiFunction;
 
 import static java.util.Collections.emptyList;
 import static java.util.Collections.unmodifiableList;
@@ -43,14 +44,21 @@ class Tokens {
     Dependencies instantiate(final Instantiator instantiator) {
         final List<DependencyToken> sortedTokens = topologicalSort(tokens);
 
-        Dependencies dependencies = Dependencies.empty();
+        return sortedTokens
+                .stream()
+                .reduce(
+                        Dependencies.empty(),
+                        reduceDependencies(instantiator),
+                        Dependencies.combiner()
+                );
 
-        for (final DependencyToken token : sortedTokens) {
+    }
+
+    private BiFunction<Dependencies, DependencyToken, Dependencies> reduceDependencies(final Instantiator instantiator) {
+        return (dependencies, token) -> {
             final Dependency dependency = token.instantiate(instantiator, dependencies);
-            dependencies = dependencies.add(dependency);
-        }
-
-        return dependencies;
+            return dependencies.add(dependency);
+        };
     }
 
     private List<DependencyToken> topologicalSort(final List<DependencyToken> tokens) {

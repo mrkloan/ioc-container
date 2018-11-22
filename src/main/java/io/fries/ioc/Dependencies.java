@@ -3,6 +3,7 @@ package io.fries.ioc;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.BinaryOperator;
 
 import static java.util.Collections.emptyList;
 import static java.util.Collections.unmodifiableList;
@@ -21,6 +22,10 @@ class Dependencies {
 
     static Dependencies empty() {
         return of(emptyList());
+    }
+
+    static BinaryOperator<Dependencies> combiner() {
+        return (first, second) -> first;
     }
 
     Dependencies add(final Dependency dependency) {
