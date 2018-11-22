@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
+import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -30,6 +31,29 @@ class DependencyTokenTest {
         final int deepDependenciesCount = token.countDependencies(tokens);
 
         assertThat(deepDependenciesCount).isEqualTo(3);
+    }
+
+    @Test
+    @DisplayName("create a dependency instance")
+    void should_create_a_dependency_instance() {
+        final Instantiator instantiator = mock(Instantiator.class);
+        final Dependencies dependencies = mock(Dependencies.class);
+
+        final Id dependencyId = mock(Id.class);
+        final Dependency tokenDependency = mock(Dependency.class);
+
+        final Id id = mock(Id.class);
+        final Class<Object> type = Object.class;
+        final DependencyToken token = DependencyToken.of(id, type, singletonList(dependencyId));
+
+        final Object instance = mock(type);
+        final Dependency expectedDependency = Dependency.of(id, instance);
+
+        when(dependencies.get(dependencyId)).thenReturn(tokenDependency);
+        when(instantiator.createInstance(type, singletonList(tokenDependency))).thenReturn(instance);
+        final Dependency dependency = token.instantiate(instantiator, dependencies);
+
+        assertThat(dependency).isEqualTo(expectedDependency);
     }
 
     @Test

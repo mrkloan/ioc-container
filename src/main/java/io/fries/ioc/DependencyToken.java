@@ -3,6 +3,8 @@ package io.fries.ioc;
 import java.util.List;
 import java.util.Objects;
 
+import static java.util.stream.Collectors.toList;
+
 class DependencyToken {
 
     private final Id id;
@@ -35,7 +37,13 @@ class DependencyToken {
     }
 
     Dependency instantiate(final Instantiator instantiator, final Dependencies dependencies) {
-        throw new UnsupportedOperationException();
+        final List<Dependency> requiredDependencies = this.dependencies
+                .stream()
+                .map(dependencies::get)
+                .collect(toList());
+
+        final Object instance = instantiator.createInstance(type, requiredDependencies);
+        return Dependency.of(id, instance);
     }
 
     boolean isIdentifiedBy(final Id id) {
