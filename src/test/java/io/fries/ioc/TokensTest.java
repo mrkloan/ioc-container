@@ -35,8 +35,8 @@ class TokensTest {
         final DependencyToken secondToken = mock(DependencyToken.class);
         final Tokens tokens = Tokens.of(asList(firstToken, secondToken));
 
-        when(firstToken.identifiedBy(id)).thenReturn(true);
-        when(secondToken.identifiedBy(id)).thenReturn(false);
+        when(firstToken.isIdentifiedBy(id)).thenReturn(true);
+        when(secondToken.isIdentifiedBy(id)).thenReturn(false);
         final DependencyToken result = tokens.get(id);
 
         assertThat(result).isEqualTo(firstToken);
@@ -50,8 +50,8 @@ class TokensTest {
         final DependencyToken secondToken = mock(DependencyToken.class);
         final Tokens tokens = Tokens.of(asList(firstToken, secondToken));
 
-        when(firstToken.identifiedBy(id)).thenReturn(false);
-        when(secondToken.identifiedBy(id)).thenReturn(false);
+        when(firstToken.isIdentifiedBy(id)).thenReturn(false);
+        when(secondToken.isIdentifiedBy(id)).thenReturn(false);
 
         assertThatExceptionOfType(NoSuchElementException.class)
                 .isThrownBy(() -> tokens.get(id))

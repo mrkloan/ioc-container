@@ -34,7 +34,7 @@ class DependencyToken {
         throw new UnsupportedOperationException();
     }
 
-    boolean identifiedBy(final Id id) {
+    boolean isIdentifiedBy(final Id id) {
         throw new UnsupportedOperationException();
     }
 

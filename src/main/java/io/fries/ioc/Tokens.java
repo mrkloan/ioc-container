@@ -35,7 +35,7 @@ class Tokens {
     DependencyToken get(final Id id) {
         return tokens
                 .stream()
-                .filter(token -> token.identifiedBy(id))
+                .filter(token -> token.isIdentifiedBy(id))
                 .findFirst()
                 .orElseThrow(() -> new NoSuchElementException("The specified dependency token is not registered in the registration container"));
     }
