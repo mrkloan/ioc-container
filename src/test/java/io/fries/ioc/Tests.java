@@ -60,4 +60,12 @@ class Tests {
             return "E";
         }
     }
+
+    static class F {
+        private final E e;
+
+        private F(final E e) {
+            this.e = e;
+        }
+    }
 }

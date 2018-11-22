@@ -26,6 +26,7 @@ class DefaultInstantiator implements Instantiator {
                     .toArray(Class[]::new);
 
             final Constructor<T> constructor = type.getDeclaredConstructor(parameterTypes);
+            constructor.setAccessible(true);
 
             return constructor.newInstance(parameterInstances.toArray());
         } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {

@@ -42,4 +42,15 @@ class DefaultInstantiatorTest {
 
         Assertions.assertThat(instance).isNotNull();
     }
+
+    @Test
+    void should_create_an_object_instance_using_a_private_constructor_with_a_parameter() {
+        final Instantiator instantiator = new DefaultInstantiator();
+        final Dependency dependency = mock(Dependency.class);
+
+        when(dependency.getInstance()).thenReturn(new E());
+        final F instance = assertDoesNotThrow(() -> instantiator.createInstance(F.class, singletonList(dependency)));
+
+        Assertions.assertThat(instance).isNotNull();
+    }
 }
