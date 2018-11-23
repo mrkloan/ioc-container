@@ -1,12 +1,12 @@
 package io.fries.ioc;
 
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static io.fries.ioc.Tests.*;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
+import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -20,7 +20,7 @@ class DefaultInstantiatorTest {
 
         final E instance = assertDoesNotThrow(() -> instantiator.createInstance(E.class, emptyList()));
 
-        Assertions.assertThat(instance).isNotNull();
+        assertThat(instance).isNotNull();
     }
 
     @Test
@@ -29,7 +29,7 @@ class DefaultInstantiatorTest {
 
         final C instance = assertDoesNotThrow(() -> instantiator.createInstance(C.class, emptyList()));
 
-        Assertions.assertThat(instance).isNotNull();
+        assertThat(instance).isNotNull();
     }
 
     @Test
@@ -40,7 +40,7 @@ class DefaultInstantiatorTest {
         when(dependency.getInstance()).thenReturn(new E());
         final D instance = assertDoesNotThrow(() -> instantiator.createInstance(D.class, singletonList(dependency)));
 
-        Assertions.assertThat(instance).isNotNull();
+        assertThat(instance).isNotNull();
     }
 
     @Test
@@ -51,6 +51,29 @@ class DefaultInstantiatorTest {
         when(dependency.getInstance()).thenReturn(new E());
         final F instance = assertDoesNotThrow(() -> instantiator.createInstance(F.class, singletonList(dependency)));
 
-        Assertions.assertThat(instance).isNotNull();
+        assertThat(instance).isNotNull();
+    }
+
+    @Test
+    @DisplayName("throw when trying to create an object instance without the required dependencies")
+    void should_throw_when_trying_to_instantiate_an_object_without_the_required_dependencies() {
+        final Instantiator instantiator = new DefaultInstantiator();
+
+        assertThatExceptionOfType(DependencyInstantiationException.class)
+                .isThrownBy(() -> instantiator.createInstance(F.class, emptyList()))
+                .withCauseInstanceOf(NoSuchMethodException.class);
+    }
+
+    @Test
+    @DisplayName("throw when trying to create an object instance without the required dependencies")
+    void should_throw_when_trying_to_instantiate_an_object_with_too_many_dependencies() {
+        final Instantiator instantiator = new DefaultInstantiator();
+        final Dependency dependency = mock(Dependency.class);
+
+        when(dependency.getInstance()).thenReturn(new E());
+
+        assertThatExceptionOfType(DependencyInstantiationException.class)
+                .isThrownBy(() -> instantiator.createInstance(E.class, singletonList(dependency)))
+                .withCauseInstanceOf(NoSuchMethodException.class);
     }
 }

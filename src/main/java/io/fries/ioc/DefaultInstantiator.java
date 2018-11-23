@@ -9,7 +9,6 @@ import static java.util.stream.Collectors.toList;
 class DefaultInstantiator implements Instantiator {
 
     @Override
-    @SuppressWarnings("unchecked")
     public <T> T createInstance(final Class<T> type, final List<Dependency> dependencies) {
         try {
             final List<Object> parameterInstances = mapParameterInstances(dependencies);
@@ -38,9 +37,4 @@ class DefaultInstantiator implements Instantiator {
                 .toArray(Class[]::new);
     }
 
-    private static class DependencyInstantiationException extends RuntimeException {
-        private DependencyInstantiationException(final Exception cause) {
-            super(cause);
-        }
-    }
 }
