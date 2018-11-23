@@ -27,6 +27,6 @@ class ContainerAcceptanceTest {
 
         final B providedInstance = container.provide(Id.of(B.class));
 
-        assertThat(providedInstance.toString()).isEqualTo("B(A(C,D(E))");
+        assertThat(providedInstance.toString()).isEqualTo("B(A(C,D(E)))");
     }
 }

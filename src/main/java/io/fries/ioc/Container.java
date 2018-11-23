@@ -19,7 +19,7 @@ class Container {
     }
 
     <T> T provide(final Id id) {
-        throw new UnsupportedOperationException();
+        return dependencies.get(id).getInstance();
     }
 
     @Override

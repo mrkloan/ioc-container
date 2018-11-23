@@ -4,11 +4,28 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @DisplayName("Container should")
 class ContainerTest {
+
+    @Test
+    @DisplayName("provide a dependency instance using its identifier")
+    void should_provide_a_dependency_instance_by_its_id() {
+        final Id id = mock(Id.class);
+        final Object instance = mock(Object.class);
+        final Dependency dependency = mock(Dependency.class);
+        final Dependencies dependencies = mock(Dependencies.class);
+
+        final Container container = Container.of(dependencies);
+
+        when(dependency.getInstance()).thenReturn(instance);
+        when(dependencies.get(id)).thenReturn(dependency);
+        final Object providedInstance = container.provide(id);
+
+        verify(dependencies).get(id);
+        assertThat(providedInstance).isEqualTo(instance);
+    }
 
     @Test
     @DisplayName("be equal")
