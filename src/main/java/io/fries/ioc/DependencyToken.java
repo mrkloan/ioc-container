@@ -37,13 +37,17 @@ class DependencyToken {
     }
 
     Dependency instantiate(final Instantiator instantiator, final Dependencies dependencies) {
-        final List<Dependency> requiredDependencies = this.dependencies
+        final List<Dependency> requiredDependencies = mapRequiredDependencies(dependencies);
+        final Object instance = instantiator.createInstance(type, requiredDependencies);
+
+        return Dependency.of(id, instance);
+    }
+
+    private List<Dependency> mapRequiredDependencies(final Dependencies dependencies) {
+        return this.dependencies
                 .stream()
                 .map(dependencies::get)
                 .collect(toList());
-
-        final Object instance = instantiator.createInstance(type, requiredDependencies);
-        return Dependency.of(id, instance);
     }
 
     boolean isIdentifiedBy(final Id id) {
