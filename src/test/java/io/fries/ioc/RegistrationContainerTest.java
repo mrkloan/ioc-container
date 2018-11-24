@@ -70,6 +70,12 @@ class RegistrationContainerTest {
     }
 
     @Test
+    void should_throw_when_registering_a_null_supplier_instance() {
+        assertThatExceptionOfType(NullPointerException.class)
+                .isThrownBy(() -> registrationContainer.register(mock(Id.class), null));
+    }
+
+    @Test
     @DisplayName("register a dependency supplier")
     void should_register_a_dependency_supplier() {
         final Id id = mock(Id.class);

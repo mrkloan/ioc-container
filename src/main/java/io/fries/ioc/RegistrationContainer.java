@@ -33,6 +33,7 @@ class RegistrationContainer {
     @SuppressWarnings("WeakerAccess")
     public RegistrationContainer register(final Id id, final Supplier<Object> instanceSupplier) {
         Objects.requireNonNull(id);
+        Objects.requireNonNull(instanceSupplier);
 
         final DependencySupplier supplier = DependencySupplier.of(id, instanceSupplier);
         registry = registry.add(id, supplier);
