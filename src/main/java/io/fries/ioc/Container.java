@@ -19,7 +19,7 @@ class Container {
     }
 
     <T> T provide(final Id id) {
-        return dependencies.get(id).getInstance();
+        return dependencies.getInstance(id);
     }
 
     @Override

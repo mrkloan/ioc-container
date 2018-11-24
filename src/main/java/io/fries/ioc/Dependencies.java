@@ -42,6 +42,10 @@ class Dependencies {
         return dependency;
     }
 
+    <T> T getInstance(final Id id) {
+        return get(id).getInstance();
+    }
+
     @Override
     public boolean equals(final Object o) {
         if (this == o) return true;

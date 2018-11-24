@@ -14,16 +14,14 @@ class ContainerTest {
     void should_provide_a_dependency_instance_by_its_id() {
         final Id id = mock(Id.class);
         final Object instance = mock(Object.class);
-        final Dependency dependency = mock(Dependency.class);
         final Dependencies dependencies = mock(Dependencies.class);
 
         final Container container = Container.of(dependencies);
 
-        when(dependency.getInstance()).thenReturn(instance);
-        when(dependencies.get(id)).thenReturn(dependency);
+        when(dependencies.getInstance(id)).thenReturn(instance);
         final Object providedInstance = container.provide(id);
 
-        verify(dependencies).get(id);
+        verify(dependencies).getInstance(id);
         assertThat(providedInstance).isEqualTo(instance);
     }
 
