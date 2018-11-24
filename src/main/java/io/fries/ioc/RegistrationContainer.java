@@ -21,6 +21,7 @@ class RegistrationContainer {
     @SuppressWarnings("WeakerAccess")
     public RegistrationContainer register(final Id id, final Class<?> type, final List<Id> dependencies) {
         Objects.requireNonNull(id);
+        Objects.requireNonNull(type);
 
         final DependencyToken token = DependencyToken.of(id, type, dependencies);
         registry = registry.add(id, token);
