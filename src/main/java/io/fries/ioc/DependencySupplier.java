@@ -5,6 +5,8 @@ import java.util.function.Supplier;
 
 class DependencySupplier implements RegisteredDependency {
 
+    static final int NO_DEPENDENCIES = 0;
+
     private final Id id;
     private final Supplier<Object> instanceSupplier;
 
@@ -19,7 +21,7 @@ class DependencySupplier implements RegisteredDependency {
 
     @Override
     public int countDependencies(final Registry registry) {
-        throw new UnsupportedOperationException();
+        return NO_DEPENDENCIES;
     }
 
     @Override
