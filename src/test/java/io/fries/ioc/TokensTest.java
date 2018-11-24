@@ -30,6 +30,17 @@ class TokensTest {
     }
 
     @Test
+    @DisplayName("throw when adding a new token with an identifier that already exists")
+    void should_throw_when_a_token_with_the_same_id_already_exists() {
+        final Id id = mock(Id.class);
+        final Tokens tokens = Tokens.of(singletonMap(id, mock(DependencyToken.class)));
+
+        assertThatExceptionOfType(IllegalStateException.class)
+                .isThrownBy(() -> tokens.add(id, mock(DependencyToken.class)))
+                .withMessage("Another dependency token was already registered with the id: " + id);
+    }
+
+    @Test
     @DisplayName("get a token using its identifier")
     void should_get_a_token_by_its_id() {
         final Id id = mock(Id.class);

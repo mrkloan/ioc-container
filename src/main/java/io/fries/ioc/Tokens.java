@@ -25,7 +25,9 @@ class Tokens {
     }
 
     Tokens add(final Id id, final DependencyToken token) {
-        // TODO: throw if id already exists
+        if(tokens.containsKey(id))
+            throw new IllegalStateException("Another dependency token was already registered with the id: " + id);
+
         final Map<Id, DependencyToken> tokens = new HashMap<>(this.tokens);
         tokens.put(id, token);
 
