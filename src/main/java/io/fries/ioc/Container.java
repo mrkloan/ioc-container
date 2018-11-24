@@ -14,7 +14,9 @@ class Container {
         return new Container(dependencies);
     }
 
-    static RegistrationContainer using(final Instantiator instantiator) {
+    @SuppressWarnings("WeakerAccess")
+    public static RegistrationContainer using(final Instantiator instantiator) {
+        Objects.requireNonNull(instantiator);
         return RegistrationContainer.of(instantiator, Registry.empty());
     }
 

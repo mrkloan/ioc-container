@@ -4,10 +4,17 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.Mockito.*;
 
 @DisplayName("Container should")
 class ContainerTest {
+
+    @Test
+    void should_throw_when_using_a_null_instantiator() {
+        assertThatExceptionOfType(NullPointerException.class)
+                .isThrownBy(() -> Container.using(null));
+    }
 
     @Test
     @DisplayName("provide a dependency instance using its identifier")
