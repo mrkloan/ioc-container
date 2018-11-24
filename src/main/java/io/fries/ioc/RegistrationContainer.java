@@ -1,6 +1,7 @@
 package io.fries.ioc;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Supplier;
 
 class RegistrationContainer {
@@ -17,7 +18,10 @@ class RegistrationContainer {
         return new RegistrationContainer(instantiator, registry);
     }
 
-    RegistrationContainer register(final Id id, final Class<?> type, final List<Id> dependencies) {
+    @SuppressWarnings("WeakerAccess")
+    public RegistrationContainer register(final Id id, final Class<?> type, final List<Id> dependencies) {
+        Objects.requireNonNull(id);
+
         final DependencyToken token = DependencyToken.of(id, type, dependencies);
         registry = registry.add(id, token);
 
@@ -31,7 +35,7 @@ class RegistrationContainer {
         return this;
     }
 
-    Container instantiate() {
+    public Container instantiate() {
         final Dependencies dependencies = registry.instantiate(instantiator);
         return Container.of(dependencies);
     }

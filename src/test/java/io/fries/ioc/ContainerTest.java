@@ -11,12 +11,14 @@ import static org.mockito.Mockito.*;
 class ContainerTest {
 
     @Test
+    @DisplayName("throw when using a null Instantiator")
     void should_throw_when_using_a_null_instantiator() {
         assertThatExceptionOfType(NullPointerException.class)
                 .isThrownBy(() -> Container.using(null));
     }
 
     @Test
+    @DisplayName("throw when trying to provide with a null identifier")
     void should_throw_when_trying_to_provide_with_a_null_id() {
         final Container container = Container.of(mock(Dependencies.class));
 

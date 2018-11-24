@@ -12,6 +12,7 @@ import java.util.function.Supplier;
 
 import static java.util.Collections.emptyList;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -32,6 +33,12 @@ class RegistrationContainerTest {
     }
 
     @Test
+    void should_throw_when_registering_a_null_token_id() {
+        assertThatExceptionOfType(NullPointerException.class)
+                .isThrownBy(() -> registrationContainer.register(null, Object.class, emptyList()));
+    }
+
+    @Test
     @DisplayName("register a dependency token")
     void should_register_a_dependency_token() {
         final Id id = mock(Id.class);
@@ -45,6 +52,7 @@ class RegistrationContainerTest {
     }
 
     @Test
+    @DisplayName("register a dependency supplier")
     void should_register_a_dependency_supplier() {
         final Id id = mock(Id.class);
         final Supplier<Object> instanceSupplier = () -> mock(Object.class);
