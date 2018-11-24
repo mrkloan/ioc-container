@@ -8,8 +8,7 @@ import java.util.function.Supplier;
 
 import static io.fries.ioc.DependencySupplier.NO_DEPENDENCIES;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @DisplayName("Dependency supplier should")
 class DependencySupplierTest {
@@ -32,6 +31,20 @@ class DependencySupplierTest {
         final int dependenciesCount = supplier.countDependencies(mock(Registry.class));
 
         assertThat(dependenciesCount).isEqualTo(NO_DEPENDENCIES);
+    }
+
+    @Test
+    @DisplayName("create a dependency contained the supplied instance")
+    void should_inject_the_supplied_instance_into_a_dependency() {
+        final Object instance = mock(Object.class);
+        final Dependency dependency = Dependency.of(id, instance);
+        final DependencySupplier supplier = DependencySupplier.of(id, instanceSupplier);
+
+        when(instanceSupplier.get()).thenReturn(instance);
+        final Dependency instancedDependency = supplier.instantiate(mock(Instantiator.class), mock(Dependencies.class));
+
+        verify(instanceSupplier).get();
+        assertThat(instancedDependency).isEqualTo(dependency);
     }
 
     @Test

@@ -26,7 +26,7 @@ class DependencySupplier implements RegisteredDependency {
 
     @Override
     public Dependency instantiate(final Instantiator instantiator, final Dependencies dependencies) {
-        throw new UnsupportedOperationException();
+        return Dependency.of(id, instanceSupplier.get());
     }
 
     @Override
