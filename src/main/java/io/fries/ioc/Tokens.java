@@ -53,7 +53,6 @@ class Tokens {
                         reduceDependencies(instantiator),
                         Dependencies.combiner()
                 );
-
     }
 
     private BiFunction<Dependencies, DependencyToken, Dependencies> reduceDependencies(final Instantiator instantiator) {

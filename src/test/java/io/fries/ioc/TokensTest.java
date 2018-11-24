@@ -78,9 +78,19 @@ class TokensTest {
         when(firstToken.countDependencies(tokens)).thenReturn(1);
         when(secondToken.countDependencies(tokens)).thenReturn(0);
 
+        final Id firstDependencyId = mock(Id.class);
         final Dependency firstDependency = mock(Dependency.class);
+        when(firstDependency.getId()).thenReturn(firstDependencyId);
+
+        final Id secondDependencyId = mock(Id.class);
         final Dependency secondDependency = mock(Dependency.class);
-        final Dependencies dependencies = Dependencies.of(asList(secondDependency, firstDependency));
+        when(secondDependency.getId()).thenReturn(secondDependencyId);
+
+        final Map<Id, Dependency> dependencyMap = new HashMap<>();
+        dependencyMap.put(firstDependencyId, firstDependency);
+        dependencyMap.put(secondDependencyId, secondDependency);
+
+        final Dependencies dependencies = Dependencies.of(dependencyMap);
         when(firstToken.instantiate(any(), any())).thenReturn(firstDependency);
         when(secondToken.instantiate(any(), any())).thenReturn(secondDependency);
 

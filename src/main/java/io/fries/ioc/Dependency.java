@@ -16,8 +16,8 @@ class Dependency {
         return new Dependency(id, instance);
     }
 
-    boolean isIdentifiedBy(final Id id) {
-        return this.id.equals(id);
+    public Id getId() {
+        return id;
     }
 
     @SuppressWarnings("unchecked")

@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import java.util.NoSuchElementException;
 
 import static java.util.Collections.singletonList;
+import static java.util.Collections.singletonMap;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.Mockito.mock;
@@ -17,13 +18,15 @@ class DependenciesTest {
     @Test
     @DisplayName("add a new dependency")
     void should_create_a_new_dependencies_instance_containing_the_added_dependency() {
+        final Id id = mock(Id.class);
         final Dependency dependency = mock(Dependency.class);
         final Dependencies dependencies = Dependencies.empty();
 
+        when(dependency.getId()).thenReturn(id);
         final Dependencies result = dependencies.add(dependency);
 
         assertThat(dependencies).isEqualTo(Dependencies.empty());
-        assertThat(result).isEqualTo(Dependencies.of(singletonList(dependency)));
+        assertThat(result).isEqualTo(Dependencies.of(singletonMap(id, dependency)));
     }
 
     @Test
@@ -31,9 +34,8 @@ class DependenciesTest {
     void should_get_a_dependency_by_its_id() {
         final Id id = mock(Id.class);
         final Dependency firstDependency = mock(Dependency.class);
-        final Dependencies dependencies = Dependencies.of(singletonList(firstDependency));
+        final Dependencies dependencies = Dependencies.of(singletonMap(id, firstDependency));
 
-        when(firstDependency.isIdentifiedBy(id)).thenReturn(true);
         final Dependency result = dependencies.get(id);
 
         assertThat(result).isEqualTo(firstDependency);
@@ -42,22 +44,21 @@ class DependenciesTest {
     @Test
     @DisplayName("throw when the required dependency is not present")
     void should_throw_when_the_required_dependency_is_not_present() {
-        final Id id = mock(Id.class);
         final Dependency firstDependency = mock(Dependency.class);
-        final Dependencies dependencies = Dependencies.of(singletonList(firstDependency));
+        final Dependencies dependencies = Dependencies.of(singletonMap(mock(Id.class), firstDependency));
 
-        when(firstDependency.isIdentifiedBy(id)).thenReturn(false);
         assertThatExceptionOfType(NoSuchElementException.class)
-                .isThrownBy(() -> dependencies.get(id))
+                .isThrownBy(() -> dependencies.get(mock(Id.class)))
                 .withMessage("The specified dependency is not registered in the container");
     }
 
     @Test
     @DisplayName("be equal")
     void should_be_equal() {
+        final Id id = mock(Id.class);
         final Dependency dependency = mock(Dependency.class);
-        final Dependencies firstDependencies = Dependencies.of(singletonList(dependency));
-        final Dependencies secondDependencies = Dependencies.of(singletonList(dependency));
+        final Dependencies firstDependencies = Dependencies.of(singletonMap(id, dependency));
+        final Dependencies secondDependencies = Dependencies.of(singletonMap(id, dependency));
 
         assertThat(firstDependencies).isEqualTo(secondDependencies);
         assertThat(firstDependencies.hashCode()).isEqualTo(secondDependencies.hashCode());
@@ -66,8 +67,8 @@ class DependenciesTest {
     @Test
     @DisplayName("not be equal")
     void should_not_be_equal() {
-        final Dependencies firstDependencies = Dependencies.of(singletonList(mock(Dependency.class)));
-        final Dependencies secondDependencies = Dependencies.of(singletonList(mock(Dependency.class)));
+        final Dependencies firstDependencies = Dependencies.of(singletonMap(mock(Id.class), mock(Dependency.class)));
+        final Dependencies secondDependencies = Dependencies.of(singletonMap(mock(Id.class), mock(Dependency.class)));
 
         assertThat(firstDependencies).isNotEqualTo(secondDependencies);
         assertThat(firstDependencies.hashCode()).isNotEqualTo(secondDependencies.hashCode());
@@ -80,6 +81,6 @@ class DependenciesTest {
 
         final String result = dependencies.toString();
 
-        assertThat(result).isEqualTo("Dependencies{dependencies=[]}");
+        assertThat(result).isEqualTo("Dependencies{dependencies={}}");
     }
 }

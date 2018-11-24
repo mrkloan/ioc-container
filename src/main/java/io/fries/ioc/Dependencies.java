@@ -1,28 +1,25 @@
 package io.fries.ioc;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Objects;
+import java.util.*;
 import java.util.function.BinaryOperator;
 
-import static java.util.Collections.emptyList;
-import static java.util.Collections.unmodifiableList;
+import static java.util.Collections.*;
+import static java.util.Objects.isNull;
 
 class Dependencies {
 
-    private final List<Dependency> dependencies;
+    private final Map<Id, Dependency> dependencies;
 
-    private Dependencies(final List<Dependency> dependencies) {
-        this.dependencies = unmodifiableList(dependencies);
+    private Dependencies(final Map<Id, Dependency> dependencies) {
+        this.dependencies = unmodifiableMap(dependencies);
     }
 
-    static Dependencies of(final List<Dependency> dependencies) {
+    static Dependencies of(final Map<Id, Dependency> dependencies) {
         return new Dependencies(dependencies);
     }
 
     static Dependencies empty() {
-        return of(emptyList());
+        return of(emptyMap());
     }
 
     static BinaryOperator<Dependencies> combiner() {
@@ -30,18 +27,19 @@ class Dependencies {
     }
 
     Dependencies add(final Dependency dependency) {
-        final List<Dependency> dependencies = new ArrayList<>(this.dependencies);
-        dependencies.add(dependency);
+        final Map<Id, Dependency> dependencies = new HashMap<>(this.dependencies);
+        dependencies.put(dependency.getId(), dependency);
 
         return of(dependencies);
     }
 
     Dependency get(final Id id) {
-        return dependencies
-                .stream()
-                .filter(dependency -> dependency.isIdentifiedBy(id))
-                .findFirst()
-                .orElseThrow(() -> new NoSuchElementException("The specified dependency is not registered in the container"));
+        final Dependency dependency = dependencies.get(id);
+
+        if (isNull(dependency))
+            throw new NoSuchElementException("The specified dependency is not registered in the container");
+
+        return dependency;
     }
 
     @Override
