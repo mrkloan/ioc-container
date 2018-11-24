@@ -17,6 +17,14 @@ class ContainerTest {
     }
 
     @Test
+    void should_throw_when_trying_to_provide_with_a_null_id() {
+        final Container container = Container.of(mock(Dependencies.class));
+
+        assertThatExceptionOfType(NullPointerException.class)
+                .isThrownBy(() -> container.provide(null));
+    }
+
+    @Test
     @DisplayName("provide a dependency instance using its identifier")
     void should_provide_a_dependency_instance_by_its_id() {
         final Id id = mock(Id.class);

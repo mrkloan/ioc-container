@@ -20,11 +20,14 @@ class Container {
         return RegistrationContainer.of(instantiator, Registry.empty());
     }
 
-    static RegistrationContainer empty() {
+    @SuppressWarnings("WeakerAccess")
+    public static RegistrationContainer empty() {
         return RegistrationContainer.of(new DefaultInstantiator(), Registry.empty());
     }
 
-    <T> T provide(final Id id) {
+    @SuppressWarnings("WeakerAccess")
+    public <T> T provide(final Id id) {
+        Objects.requireNonNull(id);
         return dependencies.getInstance(id);
     }
 
