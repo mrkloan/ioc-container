@@ -40,7 +40,7 @@ class RegistrationContainerTest {
 
         registrationContainer.register(id, type, dependencies);
 
-        verify(tokens).add(token);
+        verify(tokens).add(id, token);
     }
 
     @Test

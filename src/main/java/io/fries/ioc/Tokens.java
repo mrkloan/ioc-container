@@ -1,48 +1,48 @@
 package io.fries.ioc;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Objects;
+import java.util.*;
 import java.util.function.BiFunction;
 
-import static java.util.Collections.emptyList;
-import static java.util.Collections.unmodifiableList;
+import static java.util.Collections.emptyMap;
+import static java.util.Collections.unmodifiableMap;
+import static java.util.Objects.isNull;
 import static java.util.stream.Collectors.toList;
 
 class Tokens {
 
-    private final List<DependencyToken> tokens;
+    private final Map<Id, DependencyToken> tokens;
 
-    private Tokens(final List<DependencyToken> tokens) {
-        this.tokens = unmodifiableList(tokens);
+    private Tokens(final Map<Id, DependencyToken> tokens) {
+        this.tokens = unmodifiableMap(tokens);
     }
 
-    static Tokens of(final List<DependencyToken> tokens) {
+    static Tokens of(final Map<Id, DependencyToken> tokens) {
         return new Tokens(tokens);
     }
 
     static Tokens empty() {
-        return of(emptyList());
+        return of(emptyMap());
     }
 
-    Tokens add(final DependencyToken token) {
-        final List<DependencyToken> tokens = new ArrayList<>(this.tokens);
-        tokens.add(token);
+    Tokens add(final Id id, final DependencyToken token) {
+        // TODO: throw if id already exists
+        final Map<Id, DependencyToken> tokens = new HashMap<>(this.tokens);
+        tokens.put(id, token);
 
         return of(tokens);
     }
 
     DependencyToken get(final Id id) {
-        return tokens
-                .stream()
-                .filter(token -> token.isIdentifiedBy(id))
-                .findFirst()
-                .orElseThrow(() -> new NoSuchElementException("The specified dependency token is not registered in the registration container"));
+        final DependencyToken token = tokens.get(id);
+
+        if (isNull(token))
+            throw new NoSuchElementException("The specified dependency token is not registered in the registration container");
+
+        return token;
     }
 
     Dependencies instantiate(final Instantiator instantiator) {
-        final List<DependencyToken> sortedTokens = topologicalSort(tokens);
+        final List<DependencyToken> sortedTokens = topologicalSort(tokens.values());
 
         return sortedTokens
                 .stream()
@@ -61,7 +61,7 @@ class Tokens {
         };
     }
 
-    private List<DependencyToken> topologicalSort(final List<DependencyToken> tokens) {
+    private List<DependencyToken> topologicalSort(final Collection<DependencyToken> tokens) {
         return tokens
                 .stream()
                 .sorted(this::compareTokens)

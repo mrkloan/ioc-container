@@ -18,7 +18,7 @@ class RegistrationContainer {
 
     RegistrationContainer register(final Id id, final Class<?> type, final List<Id> dependencies) {
         final DependencyToken token = DependencyToken.of(id, type, dependencies);
-        tokens = tokens.add(token);
+        tokens = tokens.add(id, token);
 
         return this;
     }
