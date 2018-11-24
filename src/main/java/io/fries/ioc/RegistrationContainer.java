@@ -24,6 +24,13 @@ class RegistrationContainer {
         return this;
     }
 
+    RegistrationContainer register(final Id id, final Supplier<Object> instanceSupplier) {
+        final DependencySupplier supplier = DependencySupplier.of(id, instanceSupplier);
+        registry = registry.add(id, supplier);
+
+        return this;
+    }
+
     Container instantiate() {
         final Dependencies dependencies = registry.instantiate(instantiator);
         return Container.of(dependencies);

@@ -8,6 +8,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
+import java.util.function.Supplier;
 
 import static java.util.Collections.emptyList;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -41,6 +42,17 @@ class RegistrationContainerTest {
         registrationContainer.register(id, type, dependencies);
 
         verify(registry).add(id, token);
+    }
+
+    @Test
+    void should_register_a_dependency_supplier() {
+        final Id id = mock(Id.class);
+        final Supplier<Object> instanceSupplier = () -> mock(Object.class);
+        final DependencySupplier supplier = DependencySupplier.of(id, instanceSupplier);
+
+        registrationContainer.register(id, instanceSupplier);
+
+        verify(registry).add(id, supplier);
     }
 
     @Test

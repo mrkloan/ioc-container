@@ -29,4 +29,17 @@ class ContainerAcceptanceTest {
 
         assertThat(providedInstance.toString()).isEqualTo("B(A(C,D(E)))");
     }
+
+    @Test
+    @DisplayName("provide pre-instanced dependencies")
+    void should_provide_pre_instanced_dependencies() {
+        final Container container = Container.empty()
+                .register(Id.of(D.class), D.class, singletonList(Id.of(E.class)))
+                .register(Id.of(E.class), E::new)
+                .instantiate();
+
+        final D providedInstance = container.provide(Id.of(D.class));
+
+        assertThat(providedInstance.toString()).isEqualTo("D(E)");
+    }
 }
