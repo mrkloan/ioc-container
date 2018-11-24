@@ -40,4 +40,12 @@ class DependencySupplier implements RegisteredDependency {
     public int hashCode() {
         return Objects.hash(id, instanceSupplier);
     }
+
+    @Override
+    public String toString() {
+        return "DependencySupplier{" +
+                "id=" + id +
+                ", instanceSupplier=" + instanceSupplier +
+                '}';
+    }
 }
