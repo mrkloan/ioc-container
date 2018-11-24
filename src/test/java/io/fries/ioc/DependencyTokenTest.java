@@ -20,15 +20,15 @@ class DependencyTokenTest {
         final DependencyToken firstDependency = mock(DependencyToken.class);
         final Id secondId = mock(Id.class);
         final DependencyToken secondDependency = mock(DependencyToken.class);
-        final Tokens tokens = mock(Tokens.class);
+        final Registry registry = mock(Registry.class);
 
         final DependencyToken token = DependencyToken.of(mock(Id.class), Object.class, asList(firstId, secondId));
 
-        when(tokens.get(firstId)).thenReturn(firstDependency);
-        when(tokens.get(secondId)).thenReturn(secondDependency);
-        when(firstDependency.countDependencies(tokens)).thenReturn(1);
-        when(secondDependency.countDependencies(tokens)).thenReturn(0);
-        final int deepDependenciesCount = token.countDependencies(tokens);
+        when(registry.get(firstId)).thenReturn(firstDependency);
+        when(registry.get(secondId)).thenReturn(secondDependency);
+        when(firstDependency.countDependencies(registry)).thenReturn(1);
+        when(secondDependency.countDependencies(registry)).thenReturn(0);
+        final int deepDependenciesCount = token.countDependencies(registry);
 
         assertThat(deepDependenciesCount).isEqualTo(3);
     }

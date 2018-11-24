@@ -1,30 +1,31 @@
 package io.fries.ioc;
 
 import java.util.List;
+import java.util.function.Supplier;
 
 class RegistrationContainer {
 
     private final Instantiator instantiator;
-    private Tokens tokens;
+    private Registry registry;
 
-    private RegistrationContainer(final Instantiator instantiator, final Tokens tokens) {
+    private RegistrationContainer(final Instantiator instantiator, final Registry registry) {
         this.instantiator = instantiator;
-        this.tokens = tokens;
+        this.registry = registry;
     }
 
-    static RegistrationContainer of(final Instantiator instantiator, final Tokens tokens) {
-        return new RegistrationContainer(instantiator, tokens);
+    static RegistrationContainer of(final Instantiator instantiator, final Registry registry) {
+        return new RegistrationContainer(instantiator, registry);
     }
 
     RegistrationContainer register(final Id id, final Class<?> type, final List<Id> dependencies) {
         final DependencyToken token = DependencyToken.of(id, type, dependencies);
-        tokens = tokens.add(id, token);
+        registry = registry.add(id, token);
 
         return this;
     }
 
     Container instantiate() {
-        final Dependencies dependencies = tokens.instantiate(instantiator);
+        final Dependencies dependencies = registry.instantiate(instantiator);
         return Container.of(dependencies);
     }
 }

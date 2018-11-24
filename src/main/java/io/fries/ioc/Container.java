@@ -15,7 +15,11 @@ class Container {
     }
 
     static RegistrationContainer using(final Instantiator instantiator) {
-        return RegistrationContainer.of(instantiator, Tokens.empty());
+        return RegistrationContainer.of(instantiator, Registry.empty());
+    }
+
+    static RegistrationContainer empty() {
+        return RegistrationContainer.of(new DefaultInstantiator(), Registry.empty());
     }
 
     <T> T provide(final Id id) {

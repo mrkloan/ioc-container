@@ -21,18 +21,18 @@ class RegistrationContainerTest {
     private Instantiator instantiator;
 
     @Mock
-    private Tokens tokens;
+    private Registry registry;
 
     private RegistrationContainer registrationContainer;
 
     @BeforeEach
     void setUp() {
-        this.registrationContainer = RegistrationContainer.of(instantiator, tokens);
+        this.registrationContainer = RegistrationContainer.of(instantiator, registry);
     }
 
     @Test
-    @DisplayName("register a dependency token without dependencies")
-    void should_register_a_dependency_token_without_dependencies() {
+    @DisplayName("register a dependency token")
+    void should_register_a_dependency_token() {
         final Id id = mock(Id.class);
         final Class<?> type = Object.class;
         final List<Id> dependencies = emptyList();
@@ -40,7 +40,7 @@ class RegistrationContainerTest {
 
         registrationContainer.register(id, type, dependencies);
 
-        verify(tokens).add(id, token);
+        verify(registry).add(id, token);
     }
 
     @Test
@@ -48,10 +48,10 @@ class RegistrationContainerTest {
     void should_create_a_container_containing_the_instances_of_the_registered_tokens() {
         final Dependencies dependencies = mock(Dependencies.class);
 
-        when(tokens.instantiate(instantiator)).thenReturn(dependencies);
+        when(registry.instantiate(instantiator)).thenReturn(dependencies);
         final Container container = registrationContainer.instantiate();
 
-        verify(tokens).instantiate(instantiator);
+        verify(registry).instantiate(instantiator);
         assertThat(container).isEqualTo(Container.of(dependencies));
     }
 }

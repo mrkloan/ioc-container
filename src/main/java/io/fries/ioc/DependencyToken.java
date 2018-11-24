@@ -5,7 +5,7 @@ import java.util.Objects;
 
 import static java.util.stream.Collectors.toList;
 
-class DependencyToken {
+class DependencyToken implements RegisteredDependency {
 
     private final Id id;
     private final Class<?> type;
@@ -21,22 +21,24 @@ class DependencyToken {
         return new DependencyToken(id, type, dependencies);
     }
 
-    int countDependencies(final Tokens tokens) {
+    @Override
+    public int countDependencies(final Registry registry) {
         final int firstLevelDependencies = dependencies.size();
-        final int deepDependencies = countDeepDependencies(tokens);
+        final int deepDependencies = countDeepDependencies(registry);
 
         return firstLevelDependencies + deepDependencies;
     }
 
-    private int countDeepDependencies(final Tokens tokens) {
+    private int countDeepDependencies(final Registry registry) {
         return dependencies
                 .stream()
-                .map(tokens::get)
-                .mapToInt(token -> token.countDependencies(tokens))
+                .map(registry::get)
+                .mapToInt(token -> token.countDependencies(registry))
                 .sum();
     }
 
-    Dependency instantiate(final Instantiator instantiator, final Dependencies dependencies) {
+    @Override
+    public Dependency instantiate(final Instantiator instantiator, final Dependencies dependencies) {
         final List<Dependency> requiredDependencies = mapRequiredDependencies(dependencies);
         final Object instance = instantiator.createInstance(type, requiredDependencies);
 

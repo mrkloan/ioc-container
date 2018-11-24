@@ -8,34 +8,34 @@ import static java.util.Collections.unmodifiableMap;
 import static java.util.Objects.isNull;
 import static java.util.stream.Collectors.toList;
 
-class Tokens {
+class Registry {
 
-    private final Map<Id, DependencyToken> tokens;
+    private final Map<Id, RegisteredDependency> registeredDependency;
 
-    private Tokens(final Map<Id, DependencyToken> tokens) {
-        this.tokens = unmodifiableMap(tokens);
+    private Registry(final Map<Id, RegisteredDependency> registeredDependency) {
+        this.registeredDependency = unmodifiableMap(registeredDependency);
     }
 
-    static Tokens of(final Map<Id, DependencyToken> tokens) {
-        return new Tokens(tokens);
+    static Registry of(final Map<Id, RegisteredDependency> tokens) {
+        return new Registry(tokens);
     }
 
-    static Tokens empty() {
+    static Registry empty() {
         return of(emptyMap());
     }
 
-    Tokens add(final Id id, final DependencyToken token) {
-        if(tokens.containsKey(id))
+    Registry add(final Id id, final RegisteredDependency token) {
+        if(registeredDependency.containsKey(id))
             throw new IllegalStateException("Another dependency token was already registered with the id: " + id);
 
-        final Map<Id, DependencyToken> tokens = new HashMap<>(this.tokens);
+        final Map<Id, RegisteredDependency> tokens = new HashMap<>(this.registeredDependency);
         tokens.put(id, token);
 
         return of(tokens);
     }
 
-    DependencyToken get(final Id id) {
-        final DependencyToken token = tokens.get(id);
+    RegisteredDependency get(final Id id) {
+        final RegisteredDependency token = registeredDependency.get(id);
 
         if (isNull(token))
             throw new NoSuchElementException("The specified dependency token is not registered in the registration container");
@@ -44,7 +44,7 @@ class Tokens {
     }
 
     Dependencies instantiate(final Instantiator instantiator) {
-        final List<DependencyToken> sortedTokens = topologicalSort(tokens.values());
+        final List<RegisteredDependency> sortedTokens = topologicalSort(registeredDependency.values());
 
         return sortedTokens
                 .stream()
@@ -55,21 +55,21 @@ class Tokens {
                 );
     }
 
-    private BiFunction<Dependencies, DependencyToken, Dependencies> reduceDependencies(final Instantiator instantiator) {
+    private BiFunction<Dependencies, RegisteredDependency, Dependencies> reduceDependencies(final Instantiator instantiator) {
         return (dependencies, token) -> {
             final Dependency dependency = token.instantiate(instantiator, dependencies);
             return dependencies.add(dependency);
         };
     }
 
-    private List<DependencyToken> topologicalSort(final Collection<DependencyToken> tokens) {
+    private List<RegisteredDependency> topologicalSort(final Collection<RegisteredDependency> tokens) {
         return tokens
                 .stream()
                 .sorted(this::compareTokens)
                 .collect(toList());
     }
 
-    private int compareTokens(final DependencyToken firstToken, final DependencyToken secondToken) {
+    private int compareTokens(final RegisteredDependency firstToken, final RegisteredDependency secondToken) {
         return firstToken.countDependencies(this) - secondToken.countDependencies(this);
     }
 
@@ -77,19 +77,19 @@ class Tokens {
     public boolean equals(final Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        final Tokens tokens1 = (Tokens) o;
-        return Objects.equals(tokens, tokens1.tokens);
+        final Registry registry1 = (Registry) o;
+        return Objects.equals(registeredDependency, registry1.registeredDependency);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(tokens);
+        return Objects.hash(registeredDependency);
     }
 
     @Override
     public String toString() {
-        return "Tokens{" +
-                "tokens=" + tokens +
+        return "Registry{" +
+                "registeredDependencies=" + registeredDependency +
                 '}';
     }
 }
