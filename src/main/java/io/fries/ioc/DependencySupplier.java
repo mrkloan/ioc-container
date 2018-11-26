@@ -8,15 +8,17 @@ class DependencySupplier implements RegisteredDependency {
     static final int NO_DEPENDENCIES = 0;
 
     private final Id id;
+    private final Class<?> type;
     private final Supplier<Object> instanceSupplier;
 
-    private DependencySupplier(final Id id, final Supplier<Object> instanceSupplier) {
+    private DependencySupplier(final Id id, final Class<?> type, final Supplier<Object> instanceSupplier) {
         this.id = id;
+        this.type = type;
         this.instanceSupplier = instanceSupplier;
     }
 
-    static DependencySupplier of(final Id id, final Supplier<Object> instanceSupplier) {
-        return new DependencySupplier(id, instanceSupplier);
+    static DependencySupplier of(final Id id, final Class<?> type, final Supplier<Object> instanceSupplier) {
+        return new DependencySupplier(id, type, instanceSupplier);
     }
 
     @Override
@@ -26,7 +28,7 @@ class DependencySupplier implements RegisteredDependency {
 
     @Override
     public Dependency instantiate(final Instantiator instantiator, final Dependencies dependencies) {
-        return Dependency.of(id, instanceSupplier.get());
+        return Dependency.of(id, type, instanceSupplier.get());
     }
 
     @Override

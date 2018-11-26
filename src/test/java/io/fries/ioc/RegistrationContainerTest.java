@@ -47,13 +47,6 @@ class RegistrationContainerTest {
     }
 
     @Test
-    @DisplayName("throw when registering a null token dependencies list")
-    void should_throw_when_registering_a_null_token_dependencies() {
-        assertThatExceptionOfType(NullPointerException.class)
-                .isThrownBy(() -> registrationContainer.register(mock(Id.class), Object.class, null));
-    }
-
-    @Test
     @DisplayName("register a dependency token")
     void should_register_a_dependency_token() {
         final Id id = mock(Id.class);
@@ -70,14 +63,14 @@ class RegistrationContainerTest {
     @DisplayName("throw when registering a null supplier identifier")
     void should_throw_when_registering_a_null_supplier_id() {
         assertThatExceptionOfType(NullPointerException.class)
-                .isThrownBy(() -> registrationContainer.register(null, () -> mock(Object.class)));
+                .isThrownBy(() -> registrationContainer.register(null, Object.class, () -> mock(Object.class)));
     }
 
     @Test
-    @DisplayName("throw when registering a null supplier instance")
-    void should_throw_when_registering_a_null_supplier_instance() {
+    @DisplayName("throw when registering a null supplier type")
+    void should_throw_when_registering_a_null_supplier_type() {
         assertThatExceptionOfType(NullPointerException.class)
-                .isThrownBy(() -> registrationContainer.register(mock(Id.class), null));
+                .isThrownBy(() -> registrationContainer.register(mock(Id.class), null, () -> mock(Object.class)));
     }
 
     @Test
@@ -85,9 +78,9 @@ class RegistrationContainerTest {
     void should_register_a_dependency_supplier() {
         final Id id = mock(Id.class);
         final Supplier<Object> instanceSupplier = () -> mock(Object.class);
-        final DependencySupplier supplier = DependencySupplier.of(id, instanceSupplier);
+        final DependencySupplier supplier = DependencySupplier.of(id, Object.class, instanceSupplier);
 
-        registrationContainer.register(id, instanceSupplier);
+        registrationContainer.register(id, Object.class, instanceSupplier);
 
         verify(registry).add(id, supplier);
     }

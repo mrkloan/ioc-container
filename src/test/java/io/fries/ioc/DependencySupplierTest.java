@@ -26,7 +26,7 @@ class DependencySupplierTest {
     @Test
     @DisplayName("have 0 dependencies as it is already instanced")
     void should_have_zero_dependencies() {
-        final DependencySupplier supplier = DependencySupplier.of(id, instanceSupplier);
+        final DependencySupplier supplier = DependencySupplier.of(id, Object.class, instanceSupplier);
 
         final int dependenciesCount = supplier.countDependencies(mock(Registry.class));
 
@@ -37,8 +37,8 @@ class DependencySupplierTest {
     @DisplayName("create a dependency contained the supplied instance")
     void should_inject_the_supplied_instance_into_a_dependency() {
         final Object instance = mock(Object.class);
-        final Dependency dependency = Dependency.of(id, instance);
-        final DependencySupplier supplier = DependencySupplier.of(id, instanceSupplier);
+        final Dependency dependency = Dependency.of(id, Object.class, instance);
+        final DependencySupplier supplier = DependencySupplier.of(id, Object.class, instanceSupplier);
 
         when(instanceSupplier.get()).thenReturn(instance);
         final Dependency instancedDependency = supplier.instantiate(mock(Instantiator.class), mock(Dependencies.class));
@@ -50,8 +50,8 @@ class DependencySupplierTest {
     @Test
     @DisplayName("be equal")
     void should_be_equal() {
-        final DependencySupplier firstSupplier = DependencySupplier.of(id, instanceSupplier);
-        final DependencySupplier secondSupplier = DependencySupplier.of(id, instanceSupplier);
+        final DependencySupplier firstSupplier = DependencySupplier.of(id, Object.class, instanceSupplier);
+        final DependencySupplier secondSupplier = DependencySupplier.of(id, Object.class, instanceSupplier);
 
         assertThat(firstSupplier).isEqualTo(secondSupplier);
         assertThat(firstSupplier.hashCode()).isEqualTo(secondSupplier.hashCode());
@@ -60,8 +60,8 @@ class DependencySupplierTest {
     @Test
     @DisplayName("not be equal")
     void should_not_be_equal() {
-        final DependencySupplier firstSupplier = DependencySupplier.of(mock(Id.class), () -> mock(Object.class));
-        final DependencySupplier secondSupplier = DependencySupplier.of(mock(Id.class), () -> mock(Object.class));
+        final DependencySupplier firstSupplier = DependencySupplier.of(mock(Id.class), Object.class, () -> mock(Object.class));
+        final DependencySupplier secondSupplier = DependencySupplier.of(mock(Id.class), Object.class, () -> mock(Object.class));
 
         assertThat(firstSupplier).isNotEqualTo(secondSupplier);
         assertThat(firstSupplier.hashCode()).isNotEqualTo(secondSupplier.hashCode());
@@ -70,7 +70,7 @@ class DependencySupplierTest {
     @Test
     @DisplayName("be formatted as a string")
     void should_be_formatted_as_a_string() {
-        final DependencySupplier supplier = DependencySupplier.of(id, instanceSupplier);
+        final DependencySupplier supplier = DependencySupplier.of(id, Object.class, instanceSupplier);
 
         when(id.toString()).thenReturn("Id");
         when(instanceSupplier.toString()).thenReturn("Instance");

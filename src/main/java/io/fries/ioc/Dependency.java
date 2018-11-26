@@ -5,19 +5,26 @@ import java.util.Objects;
 public class Dependency {
 
     private final Id id;
+    private final Class<?> type;
     private final Object instance;
 
-    private Dependency(final Id id, final Object instance) {
+    private Dependency(final Id id, final Class<?> type, final Object instance) {
         this.id = id;
+        this.type = type;
         this.instance = instance;
     }
 
-    static Dependency of(final Id id, final Object instance) {
-        return new Dependency(id, instance);
+    static Dependency of(final Id id, final Class<?> type, final Object instance) {
+        return new Dependency(id, type, instance);
     }
 
     public Id getId() {
         return id;
+    }
+
+    @SuppressWarnings("WeakerAccess")
+    public Class<?> getType() {
+        return type;
     }
 
     @SuppressWarnings({"unchecked", "WeakerAccess"})

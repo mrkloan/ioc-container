@@ -12,7 +12,7 @@ class DefaultInstantiator implements Instantiator {
     public <T> T createInstance(final Class<T> type, final List<Dependency> dependencies) {
         try {
             final List<Object> parameterInstances = mapParameterInstances(dependencies);
-            final Class<?>[] parameterTypes = mapParameterTypes(parameterInstances);
+            final Class<?>[] parameterTypes = mapParameterTypes(dependencies);
 
             final Constructor<T> constructor = type.getDeclaredConstructor(parameterTypes);
             constructor.setAccessible(true);
@@ -30,10 +30,10 @@ class DefaultInstantiator implements Instantiator {
                 .collect(toList());
     }
 
-    private Class[] mapParameterTypes(final List<Object> parameterInstances) {
-        return parameterInstances
+    private Class[] mapParameterTypes(final List<Dependency> dependencies) {
+        return dependencies
                 .stream()
-                .map(Object::getClass)
+                .map(Dependency::getType)
                 .toArray(Class[]::new);
     }
 }

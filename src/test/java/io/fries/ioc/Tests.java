@@ -95,16 +95,14 @@ class Tests {
     static class CircularB implements Circular {
 
         private final Circular circular;
-        private final String value;
 
-        CircularB(final Circular circular, final String value) {
+        CircularB(final Circular circular) {
             this.circular = circular;
-            this.value = value;
         }
 
         @Override
         public String value() {
-            return "Depends on: " + circular + ", " + value;
+            return "Depends on: " + circular;
         }
 
         @Override

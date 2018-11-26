@@ -42,7 +42,7 @@ class DependencyToken implements RegisteredDependency {
         final List<Dependency> requiredDependencies = mapRequiredDependencies(dependencies);
         final Object instance = instantiator.createInstance(type, requiredDependencies);
 
-        return Dependency.of(id, instance);
+        return Dependency.of(id, type, instance);
     }
 
     private List<Dependency> mapRequiredDependencies(final Dependencies dependencies) {

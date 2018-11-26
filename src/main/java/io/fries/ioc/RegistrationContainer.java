@@ -31,11 +31,12 @@ public class RegistrationContainer {
     }
 
     @SuppressWarnings("WeakerAccess")
-    public RegistrationContainer register(final Id id, final Supplier<Object> instanceSupplier) {
+    public RegistrationContainer register(final Id id, final Class<?> type, final Supplier<Object> instanceSupplier) {
         Objects.requireNonNull(id);
+        Objects.requireNonNull(type);
         Objects.requireNonNull(instanceSupplier);
 
-        final DependencySupplier supplier = DependencySupplier.of(id, instanceSupplier);
+        final DependencySupplier supplier = DependencySupplier.of(id, type, instanceSupplier);
         registry = registry.add(id, supplier);
 
         return this;
@@ -47,6 +48,9 @@ public class RegistrationContainer {
         Objects.requireNonNull(interfaceType);
         Objects.requireNonNull(type);
         Objects.requireNonNull(dependencies);
+
+        if (!interfaceType.isInterface())
+            throw new IllegalArgumentException("Proxied type must be an interface");
 
         final DependencyProxy proxy = DependencyProxy.of(id, interfaceType, type, dependencies);
         registry = registry.add(id, proxy);

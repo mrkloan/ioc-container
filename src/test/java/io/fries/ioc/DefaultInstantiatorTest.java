@@ -6,7 +6,8 @@ import org.junit.jupiter.api.Test;
 import static io.fries.ioc.Tests.*;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -37,6 +38,7 @@ class DefaultInstantiatorTest {
         final Instantiator instantiator = new DefaultInstantiator();
         final Dependency dependency = mock(Dependency.class);
 
+        when(dependency.getType()).then(invocation -> E.class);
         when(dependency.getInstance()).thenReturn(new E());
         final D instance = assertDoesNotThrow(() -> instantiator.createInstance(D.class, singletonList(dependency)));
 
@@ -48,6 +50,7 @@ class DefaultInstantiatorTest {
         final Instantiator instantiator = new DefaultInstantiator();
         final Dependency dependency = mock(Dependency.class);
 
+        when(dependency.getType()).then(invocation -> E.class);
         when(dependency.getInstance()).thenReturn(new E());
         final F instance = assertDoesNotThrow(() -> instantiator.createInstance(F.class, singletonList(dependency)));
 

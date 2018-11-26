@@ -35,7 +35,7 @@ class ContainerAcceptanceTest {
     void should_provide_pre_instanced_dependencies() {
         final Container container = Container.empty()
                 .register(Id.of(D.class), D.class, singletonList(Id.of(E.class)))
-                .register(Id.of(E.class), E::new)
+                .register(Id.of(E.class), E.class, E::new)
                 .instantiate();
 
         final D providedInstance = container.provide(Id.of(D.class));
@@ -48,14 +48,13 @@ class ContainerAcceptanceTest {
     void should_provide_circular_dependencies() {
         final Container container = Container.empty()
                 .register(Id.of(CircularA.class), Circular.class, CircularA.class, singletonList(Id.of(CircularB.class)))
-                .register(Id.of(CircularB.class), Circular.class, CircularB.class, asList(Id.of(CircularA.class), Id.of("value")))
-                .register(Id.of("value"), () -> "Raw value")
+                .register(Id.of(CircularB.class), Circular.class, CircularB.class, singletonList(Id.of(CircularA.class)))
                 .instantiate();
 
         final Circular a = container.provide(Id.of(CircularA.class));
         final Circular b = container.provide(Id.of(CircularB.class));
 
         assertThat(a.value()).isEqualTo("Depends on: B");
-        assertThat(b.value()).isEqualTo("Depends on: A, Raw value");
+        assertThat(b.value()).isEqualTo("Depends on: A");
     }
 }
