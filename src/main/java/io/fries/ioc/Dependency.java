@@ -2,7 +2,7 @@ package io.fries.ioc;
 
 import java.util.Objects;
 
-class Dependency {
+public class Dependency {
 
     private final Id id;
     private final Object instance;
@@ -20,8 +20,8 @@ class Dependency {
         return id;
     }
 
-    @SuppressWarnings("unchecked")
-    <T> T getInstance() {
+    @SuppressWarnings({"unchecked", "WeakerAccess"})
+    public <T> T getInstance() {
         return (T) instance;
     }
 

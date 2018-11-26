@@ -51,7 +51,7 @@ class Registry {
                 .reduce(
                         Dependencies.empty(),
                         reduceDependencies(instantiator),
-                        Dependencies.combiner()
+                        Dependencies::merge
                 );
     }
 

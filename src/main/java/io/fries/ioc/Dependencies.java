@@ -1,10 +1,15 @@
 package io.fries.ioc;
 
-import java.util.*;
-import java.util.function.BinaryOperator;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.Objects;
+import java.util.stream.Stream;
 
-import static java.util.Collections.*;
+import static java.util.Collections.emptyMap;
+import static java.util.Collections.unmodifiableMap;
 import static java.util.Objects.isNull;
+import static java.util.stream.Collectors.toMap;
 
 class Dependencies {
 
@@ -20,10 +25,6 @@ class Dependencies {
 
     static Dependencies empty() {
         return of(emptyMap());
-    }
-
-    static BinaryOperator<Dependencies> combiner() {
-        return (first, second) -> first;
     }
 
     Dependencies add(final Dependency dependency) {
@@ -44,6 +45,14 @@ class Dependencies {
 
     <T> T getInstance(final Id id) {
         return get(id).getInstance();
+    }
+
+    Dependencies merge(final Dependencies dependencies) {
+        final Map<Id, Dependency> merged = Stream.of(this.dependencies, dependencies.dependencies)
+                .flatMap(map -> map.entrySet().stream())
+                .collect(toMap(Map.Entry::getKey, Map.Entry::getValue));
+
+        return Dependencies.of(merged);
     }
 
     @Override
