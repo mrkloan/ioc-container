@@ -2,7 +2,7 @@ package io.fries.ioc;
 
 import java.util.Objects;
 
-class Container {
+public class Container {
 
     private final Dependencies dependencies;
 

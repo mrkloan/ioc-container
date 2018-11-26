@@ -36,5 +36,4 @@ class DefaultInstantiator implements Instantiator {
                 .map(Object::getClass)
                 .toArray(Class[]::new);
     }
-
 }

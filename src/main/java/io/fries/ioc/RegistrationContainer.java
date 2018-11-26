@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.Supplier;
 
-class RegistrationContainer {
+public class RegistrationContainer {
 
     private final Instantiator instantiator;
     private Registry registry;
