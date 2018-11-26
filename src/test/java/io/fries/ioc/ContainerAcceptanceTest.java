@@ -42,4 +42,20 @@ class ContainerAcceptanceTest {
 
         assertThat(providedInstance.toString()).isEqualTo("D(E)");
     }
+
+    @Test
+    @DisplayName("provide circular dependencies")
+    void should_provide_circular_dependencies() {
+        final Container container = Container.empty()
+                .register(Id.of(CircularA.class), Circular.class, CircularA.class, singletonList(Id.of(CircularB.class)))
+                .register(Id.of(CircularB.class), Circular.class, CircularB.class, asList(Id.of(CircularA.class), Id.of("value")))
+                .register(Id.of("value"), () -> "Raw value")
+                .instantiate();
+
+        final Circular a = container.provide(Id.of(CircularA.class));
+        final Circular b = container.provide(Id.of(CircularB.class));
+
+        assertThat(a.value()).isEqualTo("Depends on: B");
+        assertThat(b.value()).isEqualTo("Depends on: A, Raw value");
+    }
 }

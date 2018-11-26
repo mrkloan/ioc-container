@@ -68,4 +68,48 @@ class Tests {
             this.e = e;
         }
     }
+
+    interface Circular {
+        String value();
+    }
+
+    static class CircularA implements Circular {
+
+        private final Circular circular;
+
+        CircularA(final Circular circular) {
+            this.circular = circular;
+        }
+
+        @Override
+        public String value() {
+            return "Depends on: " + circular;
+        }
+
+        @Override
+        public String toString() {
+            return "A";
+        }
+    }
+
+    static class CircularB implements Circular {
+
+        private final Circular circular;
+        private final String value;
+
+        CircularB(final Circular circular, final String value) {
+            this.circular = circular;
+            this.value = value;
+        }
+
+        @Override
+        public String value() {
+            return "Depends on: " + circular + ", " + value;
+        }
+
+        @Override
+        public String toString() {
+            return "B";
+        }
+    }
 }

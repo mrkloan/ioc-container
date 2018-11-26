@@ -6,8 +6,6 @@ import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.stream.Stream;
 
-import static java.util.Collections.emptyMap;
-import static java.util.Collections.unmodifiableMap;
 import static java.util.Objects.isNull;
 import static java.util.stream.Collectors.toMap;
 
@@ -16,7 +14,7 @@ class Dependencies {
     private final Map<Id, Dependency> dependencies;
 
     private Dependencies(final Map<Id, Dependency> dependencies) {
-        this.dependencies = unmodifiableMap(dependencies);
+        this.dependencies = dependencies;
     }
 
     static Dependencies of(final Map<Id, Dependency> dependencies) {
@@ -24,14 +22,13 @@ class Dependencies {
     }
 
     static Dependencies empty() {
-        return of(emptyMap());
+        return of(new HashMap<>());
     }
 
     Dependencies add(final Dependency dependency) {
-        final Map<Id, Dependency> dependencies = new HashMap<>(this.dependencies);
         dependencies.put(dependency.getId(), dependency);
 
-        return of(dependencies);
+        return this;
     }
 
     Dependency get(final Id id) {

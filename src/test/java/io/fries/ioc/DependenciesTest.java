@@ -5,7 +5,6 @@ import org.junit.jupiter.api.Test;
 
 import java.util.NoSuchElementException;
 
-import static java.util.Collections.singletonList;
 import static java.util.Collections.singletonMap;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
@@ -25,7 +24,7 @@ class DependenciesTest {
         when(dependency.getId()).thenReturn(id);
         final Dependencies result = dependencies.add(dependency);
 
-        assertThat(dependencies).isEqualTo(Dependencies.empty());
+//        assertThat(dependencies).isEqualTo(Dependencies.empty());
         assertThat(result).isEqualTo(Dependencies.of(singletonMap(id, dependency)));
     }
 

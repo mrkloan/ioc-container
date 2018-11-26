@@ -41,6 +41,19 @@ public class RegistrationContainer {
         return this;
     }
 
+    @SuppressWarnings("WeakerAccess")
+    public RegistrationContainer register(final Id id, final Class<?> interfaceType, final Class<?> type, final List<Id> dependencies) {
+        Objects.requireNonNull(id);
+        Objects.requireNonNull(interfaceType);
+        Objects.requireNonNull(type);
+        Objects.requireNonNull(dependencies);
+
+        final DependencyProxy proxy = DependencyProxy.of(id, interfaceType, type, dependencies);
+        registry = registry.add(id, proxy);
+
+        return this;
+    }
+
     public Container instantiate() {
         final Dependencies dependencies = registry.instantiate(instantiator);
         return Container.of(dependencies);
