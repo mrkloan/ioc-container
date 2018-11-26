@@ -33,18 +33,21 @@ class RegistrationContainerTest {
     }
 
     @Test
+    @DisplayName("throw when registering a null token identifier")
     void should_throw_when_registering_a_null_token_id() {
         assertThatExceptionOfType(NullPointerException.class)
                 .isThrownBy(() -> registrationContainer.register(null, Object.class, emptyList()));
     }
 
     @Test
+    @DisplayName("throw when registering a null token type")
     void should_throw_when_registering_a_null_token_type() {
         assertThatExceptionOfType(NullPointerException.class)
                 .isThrownBy(() -> registrationContainer.register(mock(Id.class), null, emptyList()));
     }
 
     @Test
+    @DisplayName("throw when registering a null token dependencies list")
     void should_throw_when_registering_a_null_token_dependencies() {
         assertThatExceptionOfType(NullPointerException.class)
                 .isThrownBy(() -> registrationContainer.register(mock(Id.class), Object.class, null));
@@ -64,12 +67,14 @@ class RegistrationContainerTest {
     }
 
     @Test
+    @DisplayName("throw when registering a null supplier identifier")
     void should_throw_when_registering_a_null_supplier_id() {
         assertThatExceptionOfType(NullPointerException.class)
                 .isThrownBy(() -> registrationContainer.register(null, () -> mock(Object.class)));
     }
 
     @Test
+    @DisplayName("throw when registering a null supplier instance")
     void should_throw_when_registering_a_null_supplier_instance() {
         assertThatExceptionOfType(NullPointerException.class)
                 .isThrownBy(() -> registrationContainer.register(mock(Id.class), null));
