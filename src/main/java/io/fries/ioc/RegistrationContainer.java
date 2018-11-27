@@ -6,7 +6,6 @@ import io.fries.ioc.instantiator.Instantiator;
 import io.fries.ioc.registry.*;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.function.Supplier;
 
 public class RegistrationContainer {
@@ -37,14 +36,6 @@ public class RegistrationContainer {
 
     @SuppressWarnings("WeakerAccess")
     public RegistrationContainer register(final Id id, final Class<?> interfaceType, final Class<?> type, final List<Id> dependencies) {
-        Objects.requireNonNull(id);
-        Objects.requireNonNull(interfaceType);
-        Objects.requireNonNull(type);
-        Objects.requireNonNull(dependencies);
-
-        if (!interfaceType.isInterface())
-            throw new IllegalArgumentException("Proxied type must be an interface");
-
         final DependencyProxy proxy = DependencyProxy.of(id, interfaceType, type, dependencies);
         return register(id, proxy);
     }

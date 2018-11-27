@@ -15,11 +15,48 @@ import static io.fries.ioc.registry.DependencyProxy.NO_DEPENDENCIES;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.Mockito.*;
 
 @DisplayName("Dependency proxy should")
 class DependencyProxyTest {
 
+    @Test
+    @DisplayName("throw when providing a null identifier")
+    void should_throw_when_providing_a_null_id() {
+        assertThatExceptionOfType(NullPointerException.class)
+                .isThrownBy(() -> DependencyProxy.of(null, Supplier.class, Object.class, emptyList()));
+    }
+
+    @Test
+    @DisplayName("throw when providing a null interface type")
+    void should_throw_when_providing_a_null_interface_type() {
+        assertThatExceptionOfType(NullPointerException.class)
+                .isThrownBy(() -> DependencyProxy.of(mock(Id.class), null, Object.class, emptyList()));
+    }
+
+    @Test
+    @DisplayName("throw when providing a class type instead of an interface type")
+    void should_throw_when_providing_a_with_a_class_type_instead_of_an_interface_type() {
+        assertThatExceptionOfType(IllegalArgumentException.class)
+                .isThrownBy(() -> DependencyProxy.of(mock(Id.class), Object.class, Object.class, emptyList()))
+                .withMessage("Proxied type must be an interface");
+    }
+
+    @Test
+    @DisplayName("throw when providing a null type")
+    void should_throw_when_providing_a_null_type() {
+        assertThatExceptionOfType(NullPointerException.class)
+                .isThrownBy(() -> DependencyProxy.of(mock(Id.class), Supplier.class, null, emptyList()));
+    }
+
+    @Test
+    @DisplayName("throw when providing null dependencies")
+    void should_throw_when_providing_null_dependencies() {
+        assertThatExceptionOfType(NullPointerException.class)
+                .isThrownBy(() -> DependencyProxy.of(mock(Id.class), Supplier.class, Object.class, null));
+    }
+    
     @Test
     @DisplayName("always count zero dependencies as they are not needed to create a proxy")
     void should_count_zero_dependencies() {

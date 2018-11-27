@@ -18,7 +18,6 @@ import java.util.function.Supplier;
 
 import static java.util.Collections.emptyList;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -61,42 +60,6 @@ class RegistrationContainerTest {
         registrationContainer.register(id, type, dependencies);
 
         verify(registry).add(id, token);
-    }
-
-    @Test
-    @DisplayName("throw when registering a null proxy identifier")
-    void should_throw_when_registering_a_null_proxy_id() {
-        assertThatExceptionOfType(NullPointerException.class)
-                .isThrownBy(() -> registrationContainer.register(null, Supplier.class, Object.class, emptyList()));
-    }
-
-    @Test
-    @DisplayName("throw when registering a null proxy interface type")
-    void should_throw_when_registering_a_null_proxy_interface_type() {
-        assertThatExceptionOfType(NullPointerException.class)
-                .isThrownBy(() -> registrationContainer.register(mock(Id.class), null, Object.class, emptyList()));
-    }
-
-    @Test
-    @DisplayName("throw when registering a proxy with a class type instead of an interface type")
-    void should_throw_when_registering_a_proxy_with_a_class_type_instead_of_an_interface_type() {
-        assertThatExceptionOfType(IllegalArgumentException.class)
-                .isThrownBy(() -> registrationContainer.register(mock(Id.class), Object.class, Object.class, emptyList()))
-                .withMessage("Proxied type must be an interface");
-    }
-
-    @Test
-    @DisplayName("throw when registering a null proxy type")
-    void should_throw_when_registering_a_null_proxy_type() {
-        assertThatExceptionOfType(NullPointerException.class)
-                .isThrownBy(() -> registrationContainer.register(mock(Id.class), Supplier.class, null, emptyList()));
-    }
-
-    @Test
-    @DisplayName("throw when registering a null proxy dependencies")
-    void should_throw_when_registering_a_null_proxy_dependencies() {
-        assertThatExceptionOfType(NullPointerException.class)
-                .isThrownBy(() -> registrationContainer.register(mock(Id.class), Supplier.class, Object.class, null));
     }
 
     @Test

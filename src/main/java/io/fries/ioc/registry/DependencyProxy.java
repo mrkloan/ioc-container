@@ -27,6 +27,14 @@ public class DependencyProxy implements RegisteredDependency {
     }
 
     public static DependencyProxy of(final Id id, final Class<?> interfaceType, final Class<?> type, final List<Id> dependencies) {
+        Objects.requireNonNull(id);
+        Objects.requireNonNull(interfaceType);
+        Objects.requireNonNull(type);
+        Objects.requireNonNull(dependencies);
+
+        if (!interfaceType.isInterface())
+            throw new IllegalArgumentException("Proxied type must be an interface");
+
         return new DependencyProxy(id, interfaceType, type, dependencies);
     }
 
