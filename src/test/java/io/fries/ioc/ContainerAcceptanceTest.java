@@ -54,7 +54,7 @@ class ContainerAcceptanceTest {
         final Circular a = container.provide(Id.of(CircularA.class));
         final Circular b = container.provide(Id.of(CircularB.class));
 
-        assertThat(a.value()).isEqualTo("Depends on: B");
-        assertThat(b.value()).isEqualTo("Depends on: A");
+        assertThat(a.dependsOn()).isEqualTo("B");
+        assertThat(b.dependsOn()).isEqualTo("A");
     }
 }

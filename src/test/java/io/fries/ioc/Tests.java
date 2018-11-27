@@ -70,7 +70,7 @@ class Tests {
     }
 
     interface Circular {
-        String value();
+        String dependsOn();
     }
 
     static class CircularA implements Circular {
@@ -82,8 +82,8 @@ class Tests {
         }
 
         @Override
-        public String value() {
-            return "Depends on: " + circular;
+        public String dependsOn() {
+            return circular.toString();
         }
 
         @Override
@@ -101,8 +101,8 @@ class Tests {
         }
 
         @Override
-        public String value() {
-            return "Depends on: " + circular;
+        public String dependsOn() {
+            return circular.toString();
         }
 
         @Override
