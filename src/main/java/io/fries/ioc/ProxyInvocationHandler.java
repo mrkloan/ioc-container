@@ -2,6 +2,7 @@ package io.fries.ioc;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
+import java.util.Objects;
 import java.util.function.Supplier;
 
 import static java.util.Objects.isNull;
@@ -16,6 +17,7 @@ class ProxyInvocationHandler implements InvocationHandler {
     }
 
     static InvocationHandler of(final Supplier<Object> instanceSupplier) {
+        Objects.requireNonNull(instanceSupplier);
         return new ProxyInvocationHandler(instanceSupplier);
     }
 
