@@ -5,13 +5,25 @@ import org.junit.jupiter.api.Test;
 
 import java.util.function.Supplier;
 
+import static io.fries.ioc.DependencyProxy.NO_DEPENDENCIES;
 import static java.util.Collections.emptyList;
+import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @DisplayName("Dependency proxy should")
 class DependencyProxyTest {
+
+    @Test
+    @DisplayName("always count zero dependencies as they are not needed to create a proxy")
+    void should_count_zero_dependencies() {
+        final DependencyProxy proxy = DependencyProxy.of(mock(Id.class), Supplier.class, Object.class, singletonList(mock(Id.class)));
+
+        final int dependenciesCount = proxy.countDependencies(mock(Registry.class));
+
+        assertThat(dependenciesCount).isEqualTo(NO_DEPENDENCIES);
+    }
 
     @Test
     @DisplayName("be equal")

@@ -9,6 +9,8 @@ import static java.util.stream.Collectors.toList;
 
 class DependencyProxy implements RegisteredDependency {
 
+    static final int NO_DEPENDENCIES = 0;
+
     private final Id id;
     private final Class<?> interfaceType;
     private final Class<?> type;
@@ -27,7 +29,7 @@ class DependencyProxy implements RegisteredDependency {
 
     @Override
     public int countDependencies(final Registry registry) {
-        return Integer.MAX_VALUE;
+        return NO_DEPENDENCIES;
     }
 
     @Override
