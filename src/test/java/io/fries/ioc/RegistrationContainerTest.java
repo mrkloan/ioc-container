@@ -118,6 +118,14 @@ class RegistrationContainerTest {
     }
 
     @Test
+    @DisplayName("throw when registering a null proxy interface type")
+    void should_throw_when_registering_a_proxy_with_a_class_type_instead_of_an_interface_type() {
+        assertThatExceptionOfType(IllegalArgumentException.class)
+                .isThrownBy(() -> registrationContainer.register(mock(Id.class), Object.class, Object.class, emptyList()))
+                .withMessage("Proxied type must be an interface");
+    }
+
+    @Test
     @DisplayName("create a container containing the token instances")
     void should_create_a_container_containing_the_instances_of_the_registered_tokens() {
         final Dependencies dependencies = mock(Dependencies.class);
