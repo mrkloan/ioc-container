@@ -23,6 +23,10 @@ public class DependencySupplier implements RegisteredDependency {
     }
 
     public static DependencySupplier of(final Id id, final Class<?> type, final Supplier<Object> instanceSupplier) {
+        Objects.requireNonNull(id);
+        Objects.requireNonNull(type);
+        Objects.requireNonNull(instanceSupplier);
+
         return new DependencySupplier(id, type, instanceSupplier);
     }
 

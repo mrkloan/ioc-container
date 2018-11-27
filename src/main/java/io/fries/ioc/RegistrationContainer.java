@@ -25,10 +25,6 @@ public class RegistrationContainer {
 
     @SuppressWarnings("WeakerAccess")
     public RegistrationContainer register(final Id id, final Class<?> type, final Supplier<Object> instanceSupplier) {
-        Objects.requireNonNull(id);
-        Objects.requireNonNull(type);
-        Objects.requireNonNull(instanceSupplier);
-
         final DependencySupplier supplier = DependencySupplier.of(id, type, instanceSupplier);
         return register(id, supplier);
     }

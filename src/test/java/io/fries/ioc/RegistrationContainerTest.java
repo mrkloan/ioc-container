@@ -39,29 +39,6 @@ class RegistrationContainerTest {
     }
 
     @Test
-    @DisplayName("throw when registering a null supplier identifier")
-    void should_throw_when_registering_a_null_supplier_id() {
-        assertThatExceptionOfType(NullPointerException.class)
-                .isThrownBy(() -> registrationContainer.register(null, Object.class, () -> mock(Object.class)));
-    }
-
-    @Test
-    @DisplayName("throw when registering a null supplier type")
-    void should_throw_when_registering_a_null_supplier_type() {
-        assertThatExceptionOfType(NullPointerException.class)
-                .isThrownBy(() -> registrationContainer.register(mock(Id.class), null, () -> mock(Object.class)));
-    }
-
-    @Test
-    @DisplayName("throw when registering a null supplier instance")
-    void should_throw_when_registering_a_null_supplier_instance() {
-        final Supplier<Object> instanceSupplier = null;
-
-        assertThatExceptionOfType(NullPointerException.class)
-                .isThrownBy(() -> registrationContainer.register(mock(Id.class), Object.class, instanceSupplier));
-    }
-
-    @Test
     @DisplayName("register a dependency supplier")
     void should_register_a_dependency_supplier() {
         final Id id = mock(Id.class);

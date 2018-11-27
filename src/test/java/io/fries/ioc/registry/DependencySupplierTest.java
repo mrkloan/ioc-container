@@ -12,6 +12,7 @@ import java.util.function.Supplier;
 
 import static io.fries.ioc.registry.DependencySupplier.NO_DEPENDENCIES;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.Mockito.*;
 
 @DisplayName("Dependency supplier should")
@@ -25,6 +26,29 @@ class DependencySupplierTest {
     void setUp() {
         this.id = mock(Id.class);
         this.instanceSupplier = mock(Supplier.class);
+    }
+
+    @Test
+    @DisplayName("throw when providing a null identifier")
+    void should_throw_when_providing_a_null_id() {
+        assertThatExceptionOfType(NullPointerException.class)
+                .isThrownBy(() -> DependencySupplier.of(null, Object.class, () -> mock(Object.class)));
+    }
+
+    @Test
+    @DisplayName("throw when providing a null type")
+    void should_throw_when_providing_a_null_type() {
+        assertThatExceptionOfType(NullPointerException.class)
+                .isThrownBy(() -> DependencySupplier.of(mock(Id.class), null, () -> mock(Object.class)));
+    }
+
+    @Test
+    @DisplayName("throw when providing a null instance supplier")
+    void should_throw_when_providing_a_null_instance_supplier() {
+        final Supplier<Object> instanceSupplier = null;
+
+        assertThatExceptionOfType(NullPointerException.class)
+                .isThrownBy(() -> DependencySupplier.of(mock(Id.class), Object.class, instanceSupplier));
     }
 
     @Test
