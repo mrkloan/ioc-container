@@ -47,6 +47,15 @@ class RegistrationContainerTest {
     }
 
     @Test
+    @DisplayName("throw when registering a null token dependencies")
+    void should_throw_when_registering_a_null_token_dependencies() {
+        final List<Id> dependencies = null;
+
+        assertThatExceptionOfType(NullPointerException.class)
+                .isThrownBy(() -> registrationContainer.register(mock(Id.class), Object.class, dependencies));
+    }
+
+    @Test
     @DisplayName("register a dependency token")
     void should_register_a_dependency_token() {
         final Id id = mock(Id.class);
