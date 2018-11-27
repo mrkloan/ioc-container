@@ -74,6 +74,18 @@ class DependenciesTest {
     }
 
     @Test
+    @DisplayName("throw when merging two dependencies holding the same identifier")
+    void should_throw_when_merging_two_dependencies_holding_the_same_id() {
+        final Id id = mock(Id.class);
+
+        final Dependencies firstDependencies = Dependencies.of(singletonMap(id, mock(Dependency.class)));
+        final Dependencies secondDependencies = Dependencies.of(singletonMap(id, mock(Dependency.class)));
+
+        assertThatExceptionOfType(IllegalStateException.class)
+                .isThrownBy(() -> firstDependencies.merge(secondDependencies));
+    }
+
+    @Test
     @DisplayName("be equal")
     void should_be_equal() {
         final Id id = mock(Id.class);

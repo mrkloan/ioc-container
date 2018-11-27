@@ -1,6 +1,7 @@
 package io.fries.ioc;
 
 import java.util.*;
+import java.util.Map.Entry;
 import java.util.stream.Stream;
 
 import static java.util.Objects.isNull;
@@ -52,7 +53,7 @@ class Dependencies {
     Dependencies merge(final Dependencies dependencies) {
         final Map<Id, Dependency> merged = Stream.of(this.dependencies, dependencies.dependencies)
                 .flatMap(map -> map.entrySet().stream())
-                .collect(toMap(Map.Entry::getKey, Map.Entry::getValue));
+                .collect(toMap(Entry::getKey, Entry::getValue));
 
         return Dependencies.of(merged);
     }
