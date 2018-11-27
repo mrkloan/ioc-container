@@ -9,14 +9,14 @@ import static java.util.Objects.isNull;
 
 class ProxyInvocationHandler implements InvocationHandler {
 
-    private final Supplier<Object> instanceSupplier;
+    private final Supplier<?> instanceSupplier;
     private Object instance;
 
-    private ProxyInvocationHandler(final Supplier<Object> instanceSupplier) {
+    private ProxyInvocationHandler(final Supplier<?> instanceSupplier) {
         this.instanceSupplier = instanceSupplier;
     }
 
-    static InvocationHandler of(final Supplier<Object> instanceSupplier) {
+    static ProxyInvocationHandler of(final Supplier<?> instanceSupplier) {
         Objects.requireNonNull(instanceSupplier);
         return new ProxyInvocationHandler(instanceSupplier);
     }
@@ -26,7 +26,7 @@ class ProxyInvocationHandler implements InvocationHandler {
         return method.invoke(this.getInstance(), args);
     }
 
-    private Object getInstance() {
+    private synchronized Object getInstance() {
         if (isNull(instance)) {
             instance = instanceSupplier.get();
         }
