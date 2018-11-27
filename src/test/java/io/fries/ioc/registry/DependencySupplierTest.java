@@ -1,5 +1,8 @@
-package io.fries.ioc;
+package io.fries.ioc.registry;
 
+import io.fries.ioc.dependencies.Dependencies;
+import io.fries.ioc.dependencies.Dependency;
+import io.fries.ioc.dependencies.Id;
 import io.fries.ioc.instantiator.Instantiator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -7,7 +10,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.function.Supplier;
 
-import static io.fries.ioc.DependencySupplier.NO_DEPENDENCIES;
+import static io.fries.ioc.registry.DependencySupplier.NO_DEPENDENCIES;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 

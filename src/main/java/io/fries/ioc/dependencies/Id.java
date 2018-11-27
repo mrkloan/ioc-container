@@ -1,8 +1,8 @@
-package io.fries.ioc;
+package io.fries.ioc.dependencies;
 
 import java.util.Objects;
 
-class Id {
+public class Id {
 
     private final String value;
 
@@ -10,7 +10,7 @@ class Id {
         this.value = value;
     }
 
-    static <T> Id of(final T value) {
+    public static <T> Id of(final T value) {
         return new Id(value.toString());
     }
 

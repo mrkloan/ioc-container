@@ -1,4 +1,4 @@
-package io.fries.ioc;
+package io.fries.ioc.dependencies;
 
 import java.util.Objects;
 
@@ -14,7 +14,7 @@ public class Dependency {
         this.instance = instance;
     }
 
-    static Dependency of(final Id id, final Class<?> type, final Object instance) {
+    public static Dependency of(final Id id, final Class<?> type, final Object instance) {
         return new Dependency(id, type, instance);
     }
 
@@ -22,12 +22,11 @@ public class Dependency {
         return id;
     }
 
-    @SuppressWarnings("WeakerAccess")
     public Class<?> getType() {
         return type;
     }
 
-    @SuppressWarnings({"unchecked", "WeakerAccess"})
+    @SuppressWarnings("unchecked")
     public <T> T getInstance() {
         return (T) instance;
     }

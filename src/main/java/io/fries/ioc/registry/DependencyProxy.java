@@ -1,5 +1,8 @@
-package io.fries.ioc;
+package io.fries.ioc.registry;
 
+import io.fries.ioc.dependencies.Dependencies;
+import io.fries.ioc.dependencies.Dependency;
+import io.fries.ioc.dependencies.Id;
 import io.fries.ioc.instantiator.Instantiator;
 
 import java.lang.reflect.Proxy;
@@ -7,7 +10,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.Supplier;
 
-class DependencyProxy implements RegisteredDependency {
+public class DependencyProxy implements RegisteredDependency {
 
     static final int NO_DEPENDENCIES = 0;
 

@@ -69,7 +69,8 @@ public class Tests {
         }
     }
 
-    interface Circular {
+    // TODO: try to remove the public access modifier
+    public interface Circular {
         String dependsOn();
     }
 

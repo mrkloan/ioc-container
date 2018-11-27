@@ -1,11 +1,14 @@
-package io.fries.ioc;
+package io.fries.ioc.registry;
 
+import io.fries.ioc.dependencies.Dependencies;
+import io.fries.ioc.dependencies.Dependency;
+import io.fries.ioc.dependencies.Id;
 import io.fries.ioc.instantiator.Instantiator;
 
 import java.util.Objects;
 import java.util.function.Supplier;
 
-class DependencySupplier implements RegisteredDependency {
+public class DependencySupplier implements RegisteredDependency {
 
     static final int NO_DEPENDENCIES = 0;
 
@@ -19,7 +22,7 @@ class DependencySupplier implements RegisteredDependency {
         this.instanceSupplier = instanceSupplier;
     }
 
-    static DependencySupplier of(final Id id, final Class<?> type, final Supplier<Object> instanceSupplier) {
+    public static DependencySupplier of(final Id id, final Class<?> type, final Supplier<Object> instanceSupplier) {
         return new DependencySupplier(id, type, instanceSupplier);
     }
 

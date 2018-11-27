@@ -1,4 +1,4 @@
-package io.fries.ioc;
+package io.fries.ioc.dependencies;
 
 import java.util.*;
 import java.util.Map.Entry;
@@ -8,7 +8,7 @@ import static java.util.Objects.isNull;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 
-class Dependencies {
+public class Dependencies {
 
     private final Map<Id, Dependency> dependencies;
 
@@ -16,21 +16,21 @@ class Dependencies {
         this.dependencies = dependencies;
     }
 
-    static Dependencies of(final Map<Id, Dependency> dependencies) {
+    public static Dependencies of(final Map<Id, Dependency> dependencies) {
         return new Dependencies(dependencies);
     }
 
-    static Dependencies empty() {
+    public static Dependencies empty() {
         return of(new HashMap<>());
     }
 
-    Dependencies add(final Dependency dependency) {
+    public Dependencies add(final Dependency dependency) {
         dependencies.put(dependency.getId(), dependency);
 
         return this;
     }
 
-    List<Dependency> findAllById(final List<Id> identifiers) {
+    public List<Dependency> findAllById(final List<Id> identifiers) {
         return identifiers
                 .stream()
                 .map(this::get)
@@ -46,11 +46,11 @@ class Dependencies {
         return dependency;
     }
 
-    <T> T getInstance(final Id id) {
+    public <T> T getInstance(final Id id) {
         return get(id).getInstance();
     }
 
-    Dependencies merge(final Dependencies dependencies) {
+    public Dependencies merge(final Dependencies dependencies) {
         final Map<Id, Dependency> merged = Stream.of(this.dependencies, dependencies.dependencies)
                 .flatMap(map -> map.entrySet().stream())
                 .collect(toMap(Entry::getKey, Entry::getValue));

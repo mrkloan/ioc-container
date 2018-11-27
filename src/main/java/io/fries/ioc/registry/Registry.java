@@ -1,5 +1,8 @@
-package io.fries.ioc;
+package io.fries.ioc.registry;
 
+import io.fries.ioc.dependencies.Dependencies;
+import io.fries.ioc.dependencies.Dependency;
+import io.fries.ioc.dependencies.Id;
 import io.fries.ioc.instantiator.Instantiator;
 
 import java.util.*;
@@ -10,7 +13,7 @@ import static java.util.Collections.unmodifiableMap;
 import static java.util.Objects.isNull;
 import static java.util.stream.Collectors.toList;
 
-class Registry {
+public class Registry {
 
     private final Map<Id, RegisteredDependency> registeredDependency;
 
@@ -18,15 +21,15 @@ class Registry {
         this.registeredDependency = unmodifiableMap(registeredDependency);
     }
 
-    static Registry of(final Map<Id, RegisteredDependency> tokens) {
+    public static Registry of(final Map<Id, RegisteredDependency> tokens) {
         return new Registry(tokens);
     }
 
-    static Registry empty() {
+    public static Registry empty() {
         return of(emptyMap());
     }
 
-    Registry add(final Id id, final RegisteredDependency token) {
+    public Registry add(final Id id, final RegisteredDependency token) {
         if(registeredDependency.containsKey(id))
             throw new IllegalStateException("Another dependency token was already registered with the id: " + id);
 
@@ -45,7 +48,7 @@ class Registry {
         return token;
     }
 
-    Dependencies instantiate(final Instantiator instantiator) {
+    public Dependencies instantiate(final Instantiator instantiator) {
         final List<RegisteredDependency> sortedTokens = topologicalSort(registeredDependency.values());
 
         return sortedTokens

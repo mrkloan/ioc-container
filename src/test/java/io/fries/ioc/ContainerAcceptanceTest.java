@@ -1,5 +1,6 @@
 package io.fries.ioc;
 
+import io.fries.ioc.dependencies.Id;
 import io.fries.ioc.instantiator.DefaultInstantiator;
 import io.fries.ioc.instantiator.Instantiator;
 import org.junit.jupiter.api.DisplayName;

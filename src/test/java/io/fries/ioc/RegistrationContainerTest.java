@@ -1,6 +1,11 @@
 package io.fries.ioc;
 
+import io.fries.ioc.dependencies.Dependencies;
+import io.fries.ioc.dependencies.Id;
 import io.fries.ioc.instantiator.Instantiator;
+import io.fries.ioc.registry.DependencySupplier;
+import io.fries.ioc.registry.DependencyToken;
+import io.fries.ioc.registry.Registry;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

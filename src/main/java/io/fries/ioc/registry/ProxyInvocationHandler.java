@@ -1,4 +1,4 @@
-package io.fries.ioc;
+package io.fries.ioc.registry;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;

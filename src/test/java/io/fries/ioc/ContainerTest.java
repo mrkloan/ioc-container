@@ -1,5 +1,7 @@
 package io.fries.ioc;
 
+import io.fries.ioc.dependencies.Dependencies;
+import io.fries.ioc.dependencies.Id;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

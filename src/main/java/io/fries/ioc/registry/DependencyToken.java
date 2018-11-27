@@ -1,11 +1,14 @@
-package io.fries.ioc;
+package io.fries.ioc.registry;
 
+import io.fries.ioc.dependencies.Dependencies;
+import io.fries.ioc.dependencies.Dependency;
+import io.fries.ioc.dependencies.Id;
 import io.fries.ioc.instantiator.Instantiator;
 
 import java.util.List;
 import java.util.Objects;
 
-class DependencyToken implements RegisteredDependency {
+public class DependencyToken implements RegisteredDependency {
 
     private final Id id;
     private final Class<?> type;
@@ -17,7 +20,7 @@ class DependencyToken implements RegisteredDependency {
         this.dependencies = dependencies;
     }
 
-    static DependencyToken of(final Id id, final Class<?> type, final List<Id> dependencies) {
+    public static DependencyToken of(final Id id, final Class<?> type, final List<Id> dependencies) {
         return new DependencyToken(id, type, dependencies);
     }
 

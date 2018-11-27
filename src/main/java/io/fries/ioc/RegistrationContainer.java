@@ -1,6 +1,9 @@
 package io.fries.ioc;
 
+import io.fries.ioc.dependencies.Dependencies;
+import io.fries.ioc.dependencies.Id;
 import io.fries.ioc.instantiator.Instantiator;
+import io.fries.ioc.registry.*;
 
 import java.util.List;
 import java.util.Objects;
