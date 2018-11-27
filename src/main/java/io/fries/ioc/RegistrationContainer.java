@@ -19,18 +19,6 @@ public class RegistrationContainer {
     }
 
     @SuppressWarnings("WeakerAccess")
-    public RegistrationContainer register(final Id id, final Class<?> type, final List<Id> dependencies) {
-        Objects.requireNonNull(id);
-        Objects.requireNonNull(type);
-        Objects.requireNonNull(dependencies);
-
-        final DependencyToken token = DependencyToken.of(id, type, dependencies);
-        registry = registry.add(id, token);
-
-        return this;
-    }
-
-    @SuppressWarnings("WeakerAccess")
     public RegistrationContainer register(final Id id, final Class<?> type, final Supplier<Object> instanceSupplier) {
         Objects.requireNonNull(id);
         Objects.requireNonNull(type);
@@ -38,6 +26,18 @@ public class RegistrationContainer {
 
         final DependencySupplier supplier = DependencySupplier.of(id, type, instanceSupplier);
         registry = registry.add(id, supplier);
+
+        return this;
+    }
+
+    @SuppressWarnings("WeakerAccess")
+    public RegistrationContainer register(final Id id, final Class<?> type, final List<Id> dependencies) {
+        Objects.requireNonNull(id);
+        Objects.requireNonNull(type);
+        Objects.requireNonNull(dependencies);
+
+        final DependencyToken token = DependencyToken.of(id, type, dependencies);
+        registry = registry.add(id, token);
 
         return this;
     }
