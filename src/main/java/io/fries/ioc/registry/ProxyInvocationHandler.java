@@ -10,7 +10,7 @@ import static java.util.Objects.isNull;
 class ProxyInvocationHandler implements InvocationHandler {
 
     private final Supplier<?> instanceSupplier;
-    private Object instance;
+    private volatile Object instance;
 
     private ProxyInvocationHandler(final Supplier<?> instanceSupplier) {
         this.instanceSupplier = instanceSupplier;
@@ -27,11 +27,17 @@ class ProxyInvocationHandler implements InvocationHandler {
         return method.invoke(this.getInstance(), args);
     }
 
-    private synchronized Object getInstance() {
+    private Object getInstance() {
         if (isNull(instance)) {
-            instance = instanceSupplier.get();
+            lockAndSupplyInstance();
         }
 
         return instance;
+    }
+
+    private synchronized void lockAndSupplyInstance() {
+        if (isNull(instance)) {
+            instance = instanceSupplier.get();
+        }
     }
 }
