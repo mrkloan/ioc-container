@@ -3,22 +3,42 @@
 
 ## Usage
 
-Complete usage example:
+### Complete usage example
+
+This example uses the following dependency graphs:
+
+    B -> A -> C
+          \-> D -> E
+               \-> String
+               
+    F -> G -> F
+    
+You may notice that `F` and `G` are mutually dependent: that is called a *circular dependency*. In order to resolve this 
+problem, `F` implements an `InterfaceF` on which `G` depends, and `G` implements an `InterfaceG` on which `F` depends.
+This allows us to inject interface proxies instead of concrete implementations, whose instantiation is deferred until
+the first method call.
 
 ```java
-// Dependency graph:
-// B -> A -> C
-//       \-> D -> E
 final Container container = Container.empty()
         .register(Id.of(A.class), A.class, asList(Id.of(C.class), Id.of(D.class)))
         .register(Id.of(B.class), B.class, singletonList(Id.of(A.class)))
         .register(Id.of(C.class), C.class, emptyList())
-        .register(Id.of(D.class), D.class, singletonList(Id.of(E.class)))
-        .register(Id.of(E.class), E::new)
+        .register(Id.of(D.class), D.class, asList(Id.of(E.class), Id.of("some.value")))
+        .register(Id.of(E.class), E.class, E::new)
+        .register(Id.of("some.value"), String.class, () -> "Raw string")
+        .register(Id.of(F.class), InterfaceF.class, F.class, singletonList(G.class))
+        .register(Id.of(G.class), InterfaceG.class, G.class, singletonList(F.class))
         .instantiate();
 
-final B b = container.provide(Id.of(B.class));
+final D d = container.provide(Id.of(D.class)); // Provides any registered instance.
+final B b = container.provide(Id.of(B.class)); // Provides the root of a dependency graph.
+
+final InterfaceF f = container.provide(Id.of(F.class)); // Provides a proxy to an interface, solving potential circular dependency problems
 ```
+
+### Identifiers
+
+Each dependency uses a unique identifier for registration and provision. 
 
 An `Id` can be created using any type. This way, you are in control of your identifiers and can register the same type 
 multiple times if needed:
@@ -27,36 +47,59 @@ multiple times if needed:
 final Id typeId = Id.of(Object.class);
 final Id integerId = Id.of(1);
 final Id stringId = Id.of("myDependency");
+// ...
 ```
 
-First, you will need a `RegistrationContainer` in order to register your dependency graph. The dependencies registration 
-can be done in any order; a topological sort will be executed before their instantiation.
+### Registering dependencies
+
+The first step is to use a `RegistrationContainer` in order to register your dependency graph. The dependencies registration 
+can be done in any order; a topological sort will be executed before their instantiation to reorder the graph.
+
+You can create an empty `RegistrationContainer` using the `Container.empty()` factory method:
 
 ```java
 final RegistrationContainer registrationContainer = Container.empty();
-
-// Register a class without any dependencies.
-registrationContainer.register(Id.of(E.class), E.class, emptyList());
-
-// Register a class with any number of dependencies.
-registrationContainer.register(Id.of(D.class), D.class, singletonList(Id.of(E.class)));
-
-// Register a supplied instance if you do not want the container to create it for you.
-registrationContainer.register(Id.of(C.class), C::new);
-registrationContainer.register(Id.of("my.string.value"), () -> "Some value");
 ```
 
+The `RegistrationContainer` exposes a `register` method for each type of dependency.
+
+Register a supplied instance if you do not want the container to create it for you:
+
+```java
+registrationContainer.register(Id.of(C.class), C.class, C::new);
+registrationContainer.register(Id.of("some.value"), String.class, () -> "Raw string");
+```
+
+Register a class whose instance will be managed by the container:
+
+```java
+registrationContainer.register(Id.of(E.class), E.class, emptyList());
+registrationContainer.register(Id.of(D.class), D.class, asList(Id.of(E.class), Id.of("some.value")));
+```
+
+Register an interface proxy managed by the container:
+
+```java
+registrationContainer.register(Id.of(F.class), InterfaceF.class, F.class, singletonList(Id.of(G.class)));
+registrationContainer.register(Id.of(G.class), InterfaceG.class, G.class, singletonList(Id.of(F.class)));
+```
+
+### Instantiation and provision
+
 Once your registration process is over, you can start the instantiation process and get the resulting `Container`.
-From now on, you can ask it to provide any instance that was previously registered in the `RegistrationContainer`:
+From now on, this `Container` can provide any instance that was previously registered in the `RegistrationContainer`:
 
 ```java
 final Container container = registrationContainer.instantiate();
 
-final String value = container.provide(Id.of("my.string.value"));
+final String value = container.provide(Id.of("some.value"));
 final D d = container.provide(Id.of(D.class));
+final InterfaceF f = container.provide(Id.of(F.class));
 ```
 
-The `RegistrationContainer` uses an `Instantiator` instance in order to... instantiate the registered objects.
+### Custom instantiators
+
+The `RegistrationContainer` uses an `Instantiator` in order to create instances of the registered classes.
 The default implementation uses reflection to find a constructor matching the provided dependencies and calls it to 
 create a new instance.
 
