@@ -3,6 +3,8 @@ package io.fries.ioc;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.NoSuchElementException;
 
 import static java.util.Collections.singletonMap;
@@ -24,7 +26,7 @@ class DependenciesTest {
         when(dependency.getId()).thenReturn(id);
         final Dependencies result = dependencies.add(dependency);
 
-//        assertThat(dependencies).isEqualTo(Dependencies.empty());
+        assertThat(result).isEqualTo(dependencies);
         assertThat(result).isEqualTo(Dependencies.of(singletonMap(id, dependency)));
     }
 
@@ -49,6 +51,26 @@ class DependenciesTest {
         assertThatExceptionOfType(NoSuchElementException.class)
                 .isThrownBy(() -> dependencies.get(mock(Id.class)))
                 .withMessage("The specified dependency is not registered in the container");
+    }
+
+    @Test
+    @DisplayName("merge two dependencies content")
+    void should_merge_two_dependencies() {
+        final Id firstId = mock(Id.class);
+        final Dependency firstDependency = mock(Dependency.class);
+        final Dependencies firstDependencies = Dependencies.of(singletonMap(firstId, firstDependency));
+
+        final Id secondId = mock(Id.class);
+        final Dependency secondDependency = mock(Dependency.class);
+        final Dependencies secondDependencies = Dependencies.of(singletonMap(secondId, secondDependency));
+
+        final Dependencies merged = firstDependencies.merge(secondDependencies);
+
+        final Map<Id, Dependency> mergedMap = new HashMap<>();
+        mergedMap.put(firstId, firstDependency);
+        mergedMap.put(secondId, secondDependency);
+
+        assertThat(merged).isEqualTo(Dependencies.of(mergedMap));
     }
 
     @Test
