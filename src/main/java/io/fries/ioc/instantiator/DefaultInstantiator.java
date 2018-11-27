@@ -1,4 +1,6 @@
-package io.fries.ioc;
+package io.fries.ioc.instantiator;
+
+import io.fries.ioc.Dependency;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -6,7 +8,7 @@ import java.util.List;
 
 import static java.util.stream.Collectors.toList;
 
-class DefaultInstantiator implements Instantiator {
+public class DefaultInstantiator implements Instantiator {
 
     @Override
     public <T> T createInstance(final Class<T> type, final List<Dependency> dependencies) {

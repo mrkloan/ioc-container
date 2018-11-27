@@ -1,8 +1,8 @@
 package io.fries.ioc;
 
-class Tests {
+public class Tests {
 
-    static class A {
+    public static class A {
         private final C c;
         private final D d;
 
@@ -17,7 +17,7 @@ class Tests {
         }
     }
 
-    static class B {
+    public static class B {
         private final A a;
 
         B(final A a) {
@@ -30,7 +30,7 @@ class Tests {
         }
     }
 
-    static class C {
+    public static class C {
 
         C() {
         }
@@ -41,7 +41,7 @@ class Tests {
         }
     }
 
-    static class D {
+    public static class D {
         private final E e;
 
         D(final E e) {
@@ -54,14 +54,14 @@ class Tests {
         }
     }
 
-    static class E {
+    public static class E {
         @Override
         public String toString() {
             return "E";
         }
     }
 
-    static class F {
+    public static class F {
         private final E e;
 
         private F(final E e) {

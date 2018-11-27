@@ -1,5 +1,7 @@
 package io.fries.ioc;
 
+import io.fries.ioc.instantiator.Instantiator;
+
 import java.util.Objects;
 import java.util.function.Supplier;
 
