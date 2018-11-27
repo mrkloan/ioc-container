@@ -4,9 +4,17 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 @DisplayName("Id should")
 class IdTest {
+
+    @Test
+    @DisplayName("throw when providing a null value")
+    void should_throw_when_providing_a_null_value() {
+        assertThatExceptionOfType(NullPointerException.class)
+                .isThrownBy(() -> Id.of(null));
+    }
 
     @Test
     @DisplayName("be equal")

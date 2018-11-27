@@ -11,6 +11,8 @@ public class Id {
     }
 
     public static <T> Id of(final T value) {
+        Objects.requireNonNull(value);
+
         return new Id(value.toString());
     }
 
