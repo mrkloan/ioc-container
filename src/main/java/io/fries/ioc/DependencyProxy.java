@@ -5,8 +5,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.Supplier;
 
-import static java.util.stream.Collectors.toList;
-
 class DependencyProxy implements RegisteredDependency {
 
     static final int NO_DEPENDENCIES = 0;
@@ -42,16 +40,9 @@ class DependencyProxy implements RegisteredDependency {
 
     private Supplier<Object> createInstanceSupplier(final Instantiator instantiator, final Dependencies dependencies) {
         return () -> {
-            final List<Dependency> requiredDependencies = mapRequiredDependencies(dependencies);
+            final List<Dependency> requiredDependencies = dependencies.findAllById(this.dependencies);
             return instantiator.createInstance(type, requiredDependencies);
         };
-    }
-
-    private List<Dependency> mapRequiredDependencies(final Dependencies dependencies) {
-        return this.dependencies
-                .stream()
-                .map(dependencies::get)
-                .collect(toList());
     }
 
     private Object createProxy(final Supplier<Object> instanceSupplier) {

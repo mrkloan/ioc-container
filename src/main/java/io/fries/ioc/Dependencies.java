@@ -1,12 +1,10 @@
 package io.fries.ioc;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.NoSuchElementException;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Stream;
 
 import static java.util.Objects.isNull;
+import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 
 class Dependencies {
@@ -29,6 +27,13 @@ class Dependencies {
         dependencies.put(dependency.getId(), dependency);
 
         return this;
+    }
+
+    List<Dependency> findAllById(final List<Id> identifiers) {
+        return identifiers
+                .stream()
+                .map(this::get)
+                .collect(toList());
     }
 
     Dependency get(final Id id) {

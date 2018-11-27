@@ -49,7 +49,7 @@ class DependencyTokenTest {
         final Object instance = mock(type);
         final Dependency expectedDependency = Dependency.of(id, Object.class, instance);
 
-        when(dependencies.get(dependencyId)).thenReturn(tokenDependency);
+        when(dependencies.findAllById(singletonList(dependencyId))).thenReturn(singletonList(tokenDependency));
         when(instantiator.createInstance(type, singletonList(tokenDependency))).thenReturn(instance);
         final Dependency dependency = token.instantiate(instantiator, dependencies);
 

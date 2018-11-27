@@ -3,8 +3,6 @@ package io.fries.ioc;
 import java.util.List;
 import java.util.Objects;
 
-import static java.util.stream.Collectors.toList;
-
 class DependencyToken implements RegisteredDependency {
 
     private final Id id;
@@ -39,17 +37,10 @@ class DependencyToken implements RegisteredDependency {
 
     @Override
     public Dependency instantiate(final Instantiator instantiator, final Dependencies dependencies) {
-        final List<Dependency> requiredDependencies = mapRequiredDependencies(dependencies);
+        final List<Dependency> requiredDependencies = dependencies.findAllById(this.dependencies);
         final Object instance = instantiator.createInstance(type, requiredDependencies);
 
         return Dependency.of(id, type, instance);
-    }
-
-    private List<Dependency> mapRequiredDependencies(final Dependencies dependencies) {
-        return this.dependencies
-                .stream()
-                .map(dependencies::get)
-                .collect(toList());
     }
 
     @Override
