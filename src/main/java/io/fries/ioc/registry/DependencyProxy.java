@@ -45,20 +45,20 @@ public class DependencyProxy implements RegisteredDependency {
 
     @Override
     public Dependency instantiate(final Instantiator instantiator, final Dependencies dependencies) {
-        final Supplier<Object> instanceSupplier = createInstanceSupplier(instantiator, dependencies);
+        final Supplier<?> instanceSupplier = createInstanceSupplier(instantiator, dependencies);
         final Object proxy = createProxy(instanceSupplier);
 
         return Dependency.of(id, interfaceType, proxy);
     }
 
-    private Supplier<Object> createInstanceSupplier(final Instantiator instantiator, final Dependencies dependencies) {
+    private Supplier<?> createInstanceSupplier(final Instantiator instantiator, final Dependencies dependencies) {
         return () -> {
             final List<Dependency> requiredDependencies = dependencies.findAllById(this.dependencies);
             return instantiator.createInstance(type, requiredDependencies);
         };
     }
 
-    private Object createProxy(final Supplier<Object> instanceSupplier) {
+    private Object createProxy(final Supplier<?> instanceSupplier) {
         return Proxy.newProxyInstance(
                 interfaceType.getClassLoader(),
                 new Class[]{interfaceType},

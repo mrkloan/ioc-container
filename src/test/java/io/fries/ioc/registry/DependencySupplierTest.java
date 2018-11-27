@@ -104,6 +104,6 @@ class DependencySupplierTest {
         when(instanceSupplier.toString()).thenReturn("Instance");
         final String result = supplier.toString();
 
-        assertThat(result).isEqualTo("DependencySupplier{id=Id, instanceSupplier=Instance}");
+        assertThat(result).isEqualTo("DependencySupplier{id=Id, type=class java.lang.Object, instanceSupplier=Instance}");
     }
 }

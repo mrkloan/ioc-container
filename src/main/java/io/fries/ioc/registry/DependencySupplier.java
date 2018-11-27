@@ -14,15 +14,15 @@ public class DependencySupplier implements RegisteredDependency {
 
     private final Id id;
     private final Class<?> type;
-    private final Supplier<Object> instanceSupplier;
+    private final Supplier<?> instanceSupplier;
 
-    private DependencySupplier(final Id id, final Class<?> type, final Supplier<Object> instanceSupplier) {
+    private DependencySupplier(final Id id, final Class<?> type, final Supplier<?> instanceSupplier) {
         this.id = id;
         this.type = type;
         this.instanceSupplier = instanceSupplier;
     }
 
-    public static DependencySupplier of(final Id id, final Class<?> type, final Supplier<Object> instanceSupplier) {
+    public static DependencySupplier of(final Id id, final Class<?> type, final Supplier<?> instanceSupplier) {
         Objects.requireNonNull(id);
         Objects.requireNonNull(type);
         Objects.requireNonNull(instanceSupplier);
@@ -46,18 +46,20 @@ public class DependencySupplier implements RegisteredDependency {
         if (o == null || getClass() != o.getClass()) return false;
         final DependencySupplier that = (DependencySupplier) o;
         return Objects.equals(id, that.id) &&
+                Objects.equals(type, that.type) &&
                 Objects.equals(instanceSupplier, that.instanceSupplier);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, instanceSupplier);
+        return Objects.hash(id, type, instanceSupplier);
     }
 
     @Override
     public String toString() {
         return "DependencySupplier{" +
                 "id=" + id +
+                ", type=" + type +
                 ", instanceSupplier=" + instanceSupplier +
                 '}';
     }

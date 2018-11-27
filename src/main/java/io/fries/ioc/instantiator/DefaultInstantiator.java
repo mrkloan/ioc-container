@@ -13,7 +13,7 @@ public class DefaultInstantiator implements Instantiator {
     @Override
     public <T> T createInstance(final Class<T> type, final List<Dependency> dependencies) {
         try {
-            final List<Object> parameterInstances = mapParameterInstances(dependencies);
+            final List<?> parameterInstances = mapParameterInstances(dependencies);
             final Class<?>[] parameterTypes = mapParameterTypes(dependencies);
 
             final Constructor<T> constructor = type.getDeclaredConstructor(parameterTypes);
@@ -25,7 +25,7 @@ public class DefaultInstantiator implements Instantiator {
         }
     }
 
-    private List<Object> mapParameterInstances(final List<Dependency> dependencies) {
+    private List<?> mapParameterInstances(final List<Dependency> dependencies) {
         return dependencies
                 .stream()
                 .map(Dependency::getInstance)
