@@ -31,7 +31,7 @@ public class Registry {
 
     public Registry add(final Id id, final RegisteredDependency token) {
         if(registeredDependency.containsKey(id))
-            throw new IllegalStateException("Another dependency token was already registered with the id: " + id);
+            throw new IllegalStateException("Another dependency was already registered with the id: " + id);
 
         final Map<Id, RegisteredDependency> tokens = new HashMap<>(this.registeredDependency);
         tokens.put(id, token);
@@ -43,7 +43,7 @@ public class Registry {
         final RegisteredDependency token = registeredDependency.get(id);
 
         if (isNull(token))
-            throw new NoSuchElementException("The specified dependency token is not registered in the registration container");
+            throw new NoSuchElementException("This identifier is not linked to any dependency inside the container: " + id);
 
         return token;
     }

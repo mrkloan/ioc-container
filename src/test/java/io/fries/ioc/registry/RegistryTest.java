@@ -40,7 +40,7 @@ class RegistryTest {
 
         assertThatExceptionOfType(IllegalStateException.class)
                 .isThrownBy(() -> registry.add(id, mock(DependencyToken.class)))
-                .withMessage("Another dependency token was already registered with the id: " + id);
+                .withMessage("Another dependency was already registered with the id: " + id);
     }
 
     @Test
@@ -61,9 +61,10 @@ class RegistryTest {
         final DependencyToken token = mock(DependencyToken.class);
         final Registry registry = Registry.of(singletonMap(mock(Id.class), token));
 
+        final Id id = mock(Id.class);
         assertThatExceptionOfType(NoSuchElementException.class)
-                .isThrownBy(() -> registry.get(mock(Id.class)))
-                .withMessage("The specified dependency token is not registered in the registration container");
+                .isThrownBy(() -> registry.get(id))
+                .withMessage("This identifier is not linked to any dependency inside the container: " + id);
     }
 
     @Test
