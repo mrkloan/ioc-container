@@ -11,8 +11,12 @@ class ProxyInvocationHandler implements InvocationHandler {
     private final Supplier<Object> instanceSupplier;
     private Object instance;
 
-    ProxyInvocationHandler(final Supplier<Object> instanceSupplier) {
+    private ProxyInvocationHandler(final Supplier<Object> instanceSupplier) {
         this.instanceSupplier = instanceSupplier;
+    }
+
+    static InvocationHandler of(final Supplier<Object> instanceSupplier) {
+        return new ProxyInvocationHandler(instanceSupplier);
     }
 
     @Override

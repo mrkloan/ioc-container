@@ -49,7 +49,7 @@ class DependencyProxy implements RegisteredDependency {
         return Proxy.newProxyInstance(
                 interfaceType.getClassLoader(),
                 new Class[]{interfaceType},
-                new ProxyInvocationHandler(instanceSupplier)
+                ProxyInvocationHandler.of(instanceSupplier)
         );
     }
 
