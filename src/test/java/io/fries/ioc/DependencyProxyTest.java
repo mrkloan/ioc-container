@@ -3,14 +3,15 @@ package io.fries.ioc;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.lang.reflect.Proxy;
+import java.util.List;
 import java.util.function.Supplier;
 
 import static io.fries.ioc.DependencyProxy.NO_DEPENDENCIES;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @DisplayName("Dependency proxy should")
 class DependencyProxyTest {
@@ -23,6 +24,28 @@ class DependencyProxyTest {
         final int dependenciesCount = proxy.countDependencies(mock(Registry.class));
 
         assertThat(dependenciesCount).isEqualTo(NO_DEPENDENCIES);
+    }
+
+    @Test
+    @DisplayName("create a proxy of the provided interface type without actually instantiating the object")
+    void should_create_a_proxy_of_the_provided_interface_type() {
+        final Id id = mock(Id.class);
+        final Class<Supplier> interfaceType = Supplier.class;
+        final Class<Object> type = Object.class;
+        final List<Id> proxyDependencies = emptyList();
+        final DependencyProxy proxy = DependencyProxy.of(id, interfaceType, type, proxyDependencies);
+
+        final Instantiator instantiator = mock(Instantiator.class);
+        final Dependencies dependencies = mock(Dependencies.class);
+
+        final Dependency dependency = proxy.instantiate(instantiator, dependencies);
+        final Supplier<Object> instance = dependency.getInstance();
+
+        verify(dependencies, never()).findAllById(proxyDependencies);
+        verify(instantiator, never()).createInstance(type, emptyList());
+
+        assertThat(dependency.getId()).isEqualTo(id);
+        assertThat(instance).isInstanceOf(Proxy.class);
     }
 
     @Test
