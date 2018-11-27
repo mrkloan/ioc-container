@@ -2,6 +2,7 @@ package io.fries.ioc;
 
 import java.lang.reflect.Proxy;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Supplier;
 
 import static java.util.stream.Collectors.toList;
@@ -57,5 +58,31 @@ class DependencyProxy implements RegisteredDependency {
                 new Class[]{interfaceType},
                 new ProxyInvocationHandler(instanceSupplier)
         );
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        final DependencyProxy proxy = (DependencyProxy) o;
+        return Objects.equals(id, proxy.id) &&
+                Objects.equals(interfaceType, proxy.interfaceType) &&
+                Objects.equals(type, proxy.type) &&
+                Objects.equals(dependencies, proxy.dependencies);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, interfaceType, type, dependencies);
+    }
+
+    @Override
+    public String toString() {
+        return "DependencyProxy{" +
+                "id=" + id +
+                ", interfaceType=" + interfaceType +
+                ", type=" + type +
+                ", dependencies=" + dependencies +
+                '}';
     }
 }
