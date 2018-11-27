@@ -25,8 +25,8 @@ class DependencyTest {
     @Test
     @DisplayName("not be equal")
     void should_not_be_equal() {
-        final Dependency firstDependency = Dependency.of(mock(Id.class), Object.class, mock(Object.class));
-        final Dependency secondDependency = Dependency.of(mock(Id.class), Object.class, mock(Object.class));
+        final Dependency firstDependency = Dependency.of(mock(Id.class), Long.class, mock(Object.class));
+        final Dependency secondDependency = Dependency.of(mock(Id.class), Integer.class, mock(Object.class));
 
         assertThat(firstDependency).isNotEqualTo(secondDependency);
         assertThat(firstDependency.hashCode()).isNotEqualTo(secondDependency.hashCode());
@@ -43,6 +43,6 @@ class DependencyTest {
         when(instance.toString()).thenReturn("Instance");
         final String result = dependency.toString();
 
-        assertThat(result).isEqualTo("Dependency{id=Id, instance=Instance}");
+        assertThat(result).isEqualTo("Dependency{id=Id, type=class java.lang.Object, instance=Instance}");
     }
 }

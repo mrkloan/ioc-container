@@ -37,18 +37,20 @@ public class Dependency {
         if (o == null || getClass() != o.getClass()) return false;
         final Dependency that = (Dependency) o;
         return Objects.equals(id, that.id) &&
+                Objects.equals(type, that.type) &&
                 Objects.equals(instance, that.instance);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, instance);
+        return Objects.hash(id, type, instance);
     }
 
     @Override
     public String toString() {
         return "Dependency{" +
                 "id=" + id +
+                ", type=" + type +
                 ", instance=" + instance +
                 '}';
     }
