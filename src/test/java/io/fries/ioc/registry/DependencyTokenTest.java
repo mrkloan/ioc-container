@@ -7,15 +7,41 @@ import io.fries.ioc.instantiator.Instantiator;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
+
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @DisplayName("Dependency token should")
 class DependencyTokenTest {
+
+    @Test
+    @DisplayName("throw when providing a null identifier")
+    void should_throw_when_providing_a_null_id() {
+        assertThatExceptionOfType(NullPointerException.class)
+                .isThrownBy(() -> DependencyToken.of(null, Object.class, emptyList()));
+    }
+
+    @Test
+    @DisplayName("throw when providing a null type")
+    void should_throw_when_providing_a_null_type() {
+        assertThatExceptionOfType(NullPointerException.class)
+                .isThrownBy(() -> DependencyToken.of(mock(Id.class), null, emptyList()));
+    }
+
+    @Test
+    @DisplayName("throw when providing null dependencies")
+    void should_throw_when_providing_null_dependencies() {
+        final List<Id> dependencies = null;
+
+        assertThatExceptionOfType(NullPointerException.class)
+                .isThrownBy(() -> DependencyToken.of(mock(Id.class), Object.class, dependencies));
+    }
 
     @Test
     @DisplayName("count its number of dependencies")

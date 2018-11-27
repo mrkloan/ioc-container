@@ -21,6 +21,10 @@ public class DependencyToken implements RegisteredDependency {
     }
 
     public static DependencyToken of(final Id id, final Class<?> type, final List<Id> dependencies) {
+        Objects.requireNonNull(id);
+        Objects.requireNonNull(type);
+        Objects.requireNonNull(dependencies);
+
         return new DependencyToken(id, type, dependencies);
     }
 
