@@ -118,11 +118,18 @@ class RegistrationContainerTest {
     }
 
     @Test
-    @DisplayName("throw when registering a null proxy interface type")
+    @DisplayName("throw when registering a proxy with a class type instead of an interface type")
     void should_throw_when_registering_a_proxy_with_a_class_type_instead_of_an_interface_type() {
         assertThatExceptionOfType(IllegalArgumentException.class)
                 .isThrownBy(() -> registrationContainer.register(mock(Id.class), Object.class, Object.class, emptyList()))
                 .withMessage("Proxied type must be an interface");
+    }
+
+    @Test
+    @DisplayName("throw when registering a null proxy type")
+    void should_throw_when_registering_a_null_proxy_type() {
+        assertThatExceptionOfType(NullPointerException.class)
+                .isThrownBy(() -> registrationContainer.register(mock(Id.class), Supplier.class, null, emptyList()));
     }
 
     @Test
