@@ -111,6 +111,13 @@ class RegistrationContainerTest {
     }
 
     @Test
+    @DisplayName("throw when registering a null proxy interface type")
+    void should_throw_when_registering_a_null_proxy_interface_type() {
+        assertThatExceptionOfType(NullPointerException.class)
+                .isThrownBy(() -> registrationContainer.register(mock(Id.class), null, Object.class, emptyList()));
+    }
+
+    @Test
     @DisplayName("create a container containing the token instances")
     void should_create_a_container_containing_the_instances_of_the_registered_tokens() {
         final Dependencies dependencies = mock(Dependencies.class);
