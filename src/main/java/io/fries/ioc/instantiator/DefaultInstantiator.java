@@ -11,16 +11,16 @@ import static java.util.stream.Collectors.toList;
 public class DefaultInstantiator implements Instantiator {
 
     @Override
+    @SuppressWarnings("unchecked")
     public <T> T createInstance(final Class<T> type, final List<Dependency> dependencies) {
         try {
             final List<?> parameterInstances = mapParameterInstances(dependencies);
-            final Class<?>[] parameterTypes = mapParameterTypes(dependencies);
 
-            final Constructor<T> constructor = type.getDeclaredConstructor(parameterTypes);
+            final Constructor<?> constructor = type.getDeclaredConstructors()[0];
             constructor.setAccessible(true);
 
-            return constructor.newInstance(parameterInstances.toArray());
-        } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
+            return (T) constructor.newInstance(parameterInstances.toArray());
+        } catch (InstantiationException | IllegalAccessException | InvocationTargetException | IllegalArgumentException e) {
             throw new DependencyInstantiationException(e);
         }
     }
@@ -30,12 +30,5 @@ public class DefaultInstantiator implements Instantiator {
                 .stream()
                 .map(Dependency::getInstance)
                 .collect(toList());
-    }
-
-    private Class[] mapParameterTypes(final List<Dependency> dependencies) {
-        return dependencies
-                .stream()
-                .map(Dependency::getType)
-                .toArray(Class[]::new);
     }
 }

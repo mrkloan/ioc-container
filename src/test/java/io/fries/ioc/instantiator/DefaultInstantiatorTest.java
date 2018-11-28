@@ -65,7 +65,8 @@ class DefaultInstantiatorTest {
 
         assertThatExceptionOfType(DependencyInstantiationException.class)
                 .isThrownBy(() -> instantiator.createInstance(F.class, emptyList()))
-                .withCauseInstanceOf(NoSuchMethodException.class);
+                .withCauseInstanceOf(IllegalArgumentException.class)
+                .withMessageContaining("wrong number of arguments");
     }
 
     @Test
@@ -78,6 +79,7 @@ class DefaultInstantiatorTest {
 
         assertThatExceptionOfType(DependencyInstantiationException.class)
                 .isThrownBy(() -> instantiator.createInstance(E.class, singletonList(dependency)))
-                .withCauseInstanceOf(NoSuchMethodException.class);
+                .withCauseInstanceOf(IllegalArgumentException.class)
+                .withMessageContaining("wrong number of arguments");
     }
 }

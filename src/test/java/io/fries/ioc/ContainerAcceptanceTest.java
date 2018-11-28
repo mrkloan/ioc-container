@@ -69,7 +69,7 @@ class ContainerAcceptanceTest {
                 .register(B.class)
                 .register(C.class)
                 .register(D.class)
-                .register(E.class, E::new)
+                .register(Id.of(InterfaceE.class), E.class, E::new)
                 .instantiate();
 
         final B providedInstance = container.provide(Id.of(B.class));

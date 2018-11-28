@@ -41,10 +41,13 @@ public class Tests {
         }
     }
 
-    public static class D {
-        private final E e;
+    interface InterfaceE {
+    }
 
-        D(final E e) {
+    public static class D {
+        private final InterfaceE e;
+
+        D(final InterfaceE e) {
             this.e = e;
         }
 
@@ -54,7 +57,7 @@ public class Tests {
         }
     }
 
-    public static class E {
+    public static class E implements InterfaceE {
         @Override
         public String toString() {
             return "E";
