@@ -67,12 +67,12 @@ class ContainerAcceptanceTest {
         final Container container = Container.empty()
                 .register(A.class)
                 .register(B.class)
-                .register(Id.of("c"), C.class)
-                .register(Id.of("d"), D.class)
+                .register(C.class)
+                .register(D.class)
                 .register(E.class)
                 .instantiate();
 
-        final B providedInstance = container.provide(Id.of("b"));
+        final B providedInstance = container.provide(Id.of(B.class));
 
         assertThat(providedInstance.toString()).isEqualTo("B(A(C,D(E)))");
     }

@@ -48,9 +48,10 @@ class DependenciesTest {
         final Dependency firstDependency = mock(Dependency.class);
         final Dependencies dependencies = Dependencies.of(singletonMap(mock(Id.class), firstDependency));
 
+        final Id id = mock(Id.class);
         assertThatExceptionOfType(NoSuchElementException.class)
-                .isThrownBy(() -> dependencies.get(mock(Id.class)))
-                .withMessage("The specified dependency is not registered in the container");
+                .isThrownBy(() -> dependencies.get(id))
+                .withMessage("No dependency registered with id: " + id);
     }
 
     @Test

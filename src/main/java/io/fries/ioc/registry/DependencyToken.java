@@ -33,8 +33,7 @@ public class DependencyToken implements RegisteredDependency {
         return new DependencyToken(id, type, dependencies);
     }
 
-    public static DependencyToken from(final Class<?> type) {
-        final Id id = Id.of(type);
+    public static DependencyToken from(final Id id, final Class<?> type) {
         final Constructor<?> constructor = type.getDeclaredConstructors()[0];
         final Parameter[] constructorParameters = constructor.getParameters();
         final List<Id> dependencies = stream(constructorParameters)
@@ -42,7 +41,7 @@ public class DependencyToken implements RegisteredDependency {
                 .map(Id::of)
                 .collect(Collectors.toList());
 
-        return DependencyToken.of(id, DependencyToken.class, dependencies);
+        return DependencyToken.of(id, type, dependencies);
     }
 
     @Override

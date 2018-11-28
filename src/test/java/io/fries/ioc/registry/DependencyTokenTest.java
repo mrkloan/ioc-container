@@ -49,9 +49,9 @@ class DependencyTokenTest {
         final Id id = Id.of(DependencyToken.class);
         final Class<?> type = DependencyToken.class;
         final List<Id> dependencies = asList(Id.of(Id.class), Id.of(Class.class), Id.of(List.class));
-        final DependencyToken token = DependencyToken.of(id, DependencyToken.class, dependencies);
+        final DependencyToken token = DependencyToken.of(id, type, dependencies);
 
-        final DependencyToken result = DependencyToken.from(type);
+        final DependencyToken result = DependencyToken.from(id, type);
 
         assertThat(result).isEqualTo(token);
     }

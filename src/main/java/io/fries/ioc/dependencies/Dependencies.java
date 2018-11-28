@@ -41,7 +41,7 @@ public class Dependencies {
         final Dependency dependency = dependencies.get(id);
 
         if (isNull(dependency))
-            throw new NoSuchElementException("The specified dependency is not registered in the container");
+            throw new NoSuchElementException("No dependency registered with id: " + id);
 
         return dependency;
     }
