@@ -29,6 +29,16 @@ public class RegistrationContainer {
     }
 
     @SuppressWarnings("WeakerAccess")
+    public RegistrationContainer register(final Class<?> type) {
+        throw new UnsupportedOperationException();
+    }
+
+    @SuppressWarnings("WeakerAccess")
+    public RegistrationContainer register(final Id id, final Class<?> type) {
+        throw new UnsupportedOperationException();
+    }
+
+    @SuppressWarnings("WeakerAccess")
     public RegistrationContainer register(final Id id, final Class<?> type, final List<Id> dependencies) {
         final DependencyToken token = DependencyToken.of(id, type, dependencies);
         return register(id, token);

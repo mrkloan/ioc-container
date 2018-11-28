@@ -60,4 +60,20 @@ class ContainerAcceptanceTest {
         assertThat(a.dependsOn()).isEqualTo("B");
         assertThat(b.dependsOn()).isEqualTo("A");
     }
+
+    @Test
+    @DisplayName("provide dependencies with inferred identifiers and dependencies")
+    void should_provide_dependencies_with_inferred_id_and_dependencies() {
+        final Container container = Container.empty()
+                .register(A.class)
+                .register(B.class)
+                .register(Id.of("c"), C.class)
+                .register(Id.of("d"), D.class)
+                .register(E.class)
+                .instantiate();
+
+        final B providedInstance = container.provide(Id.of("b"));
+
+        assertThat(providedInstance.toString()).isEqualTo("B(A(C,D(E)))");
+    }
 }
