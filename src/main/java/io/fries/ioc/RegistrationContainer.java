@@ -28,6 +28,12 @@ public class RegistrationContainer {
     }
 
     @SuppressWarnings("WeakerAccess")
+    public RegistrationContainer register(final Class<?> type, final Supplier<?> instanceSupplier) {
+        final Id id = Id.of(type);
+        return register(id, type, instanceSupplier);
+    }
+
+    @SuppressWarnings("WeakerAccess")
     public RegistrationContainer register(final Id id, final Class<?> type, final Supplier<?> instanceSupplier) {
         final DependencySupplier supplier = DependencySupplier.of(id, type, instanceSupplier);
         return register(id, supplier);
@@ -62,11 +68,6 @@ public class RegistrationContainer {
         return this;
     }
 
-    public Container instantiate() {
-        final Dependencies dependencies = registry.instantiate(instantiator);
-        return Container.of(dependencies);
-    }
-
     List<Id> inferDependenciesFrom(final Class<?> type) {
         final Constructor<?> constructor = type.getDeclaredConstructors()[0];
         final Parameter[] constructorParameters = constructor.getParameters();
@@ -75,5 +76,10 @@ public class RegistrationContainer {
                 .map(Parameter::getType)
                 .map(Id::of)
                 .collect(Collectors.toList());
+    }
+
+    public Container instantiate() {
+        final Dependencies dependencies = registry.instantiate(instantiator);
+        return Container.of(dependencies);
     }
 }
