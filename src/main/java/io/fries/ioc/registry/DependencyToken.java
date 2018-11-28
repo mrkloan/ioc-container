@@ -5,13 +5,8 @@ import io.fries.ioc.dependencies.Dependency;
 import io.fries.ioc.dependencies.Id;
 import io.fries.ioc.instantiator.Instantiator;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Parameter;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
-
-import static java.util.Arrays.stream;
 
 public class DependencyToken implements RegisteredDependency {
 
@@ -31,17 +26,6 @@ public class DependencyToken implements RegisteredDependency {
         Objects.requireNonNull(dependencies);
 
         return new DependencyToken(id, type, dependencies);
-    }
-
-    public static DependencyToken from(final Id id, final Class<?> type) {
-        final Constructor<?> constructor = type.getDeclaredConstructors()[0];
-        final Parameter[] constructorParameters = constructor.getParameters();
-        final List<Id> dependencies = stream(constructorParameters)
-                .map(Parameter::getType)
-                .map(Id::of)
-                .collect(Collectors.toList());
-
-        return DependencyToken.of(id, type, dependencies);
     }
 
     @Override

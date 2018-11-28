@@ -5,8 +5,13 @@ import io.fries.ioc.dependencies.Id;
 import io.fries.ioc.instantiator.Instantiator;
 import io.fries.ioc.registry.*;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Parameter;
 import java.util.List;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
+
+import static java.util.Arrays.stream;
 
 public class RegistrationContainer {
 
@@ -36,8 +41,8 @@ public class RegistrationContainer {
 
     @SuppressWarnings("WeakerAccess")
     public RegistrationContainer register(final Id id, final Class<?> type) {
-        final DependencyToken token = DependencyToken.from(id, type);
-        return register(id, token);
+        final List<Id> dependencies = inferDependenciesFrom(type);
+        return register(id, type, dependencies);
     }
 
     @SuppressWarnings("WeakerAccess")
@@ -60,5 +65,15 @@ public class RegistrationContainer {
     public Container instantiate() {
         final Dependencies dependencies = registry.instantiate(instantiator);
         return Container.of(dependencies);
+    }
+
+    List<Id> inferDependenciesFrom(final Class<?> type) {
+        final Constructor<?> constructor = type.getDeclaredConstructors()[0];
+        final Parameter[] constructorParameters = constructor.getParameters();
+
+        return stream(constructorParameters)
+                .map(Parameter::getType)
+                .map(Id::of)
+                .collect(Collectors.toList());
     }
 }

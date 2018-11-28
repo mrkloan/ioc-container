@@ -17,6 +17,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.List;
 import java.util.function.Supplier;
 
+import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
@@ -87,5 +88,16 @@ class RegistrationContainerTest {
 
         verify(registry).instantiate(instantiator);
         assertThat(container).isEqualTo(Container.of(dependencies));
+    }
+
+    @Test
+    @DisplayName("infer type dependencies from its constructor parameters")
+    void should_infer_dependencies_from_constructor_parameters() {
+        final Class<?> type = RegistrationContainer.class;
+        final List<Id> dependencies = asList(Id.of(Instantiator.class), Id.of(Registry.class));
+
+        final List<Id> inferredDependencies = registrationContainer.inferDependenciesFrom(type);
+
+        assertThat(inferredDependencies).isEqualTo(dependencies);
     }
 }
