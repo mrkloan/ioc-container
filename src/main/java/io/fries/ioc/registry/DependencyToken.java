@@ -49,7 +49,7 @@ public class DependencyToken implements RegisteredDependency {
         final List<Dependency> requiredDependencies = dependencies.findAllById(this.dependencies);
         final Object instance = instantiator.createInstance(type, requiredDependencies);
 
-        return Dependency.of(id, type, instance);
+        return Dependency.of(id, instance);
     }
 
     @Override

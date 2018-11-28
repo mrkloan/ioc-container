@@ -28,14 +28,8 @@ public class RegistrationContainer {
     }
 
     @SuppressWarnings("WeakerAccess")
-    public RegistrationContainer register(final Class<?> type, final Supplier<?> instanceSupplier) {
-        final Id id = Id.of(type);
-        return register(id, type, instanceSupplier);
-    }
-
-    @SuppressWarnings("WeakerAccess")
-    public RegistrationContainer register(final Id id, final Class<?> type, final Supplier<?> instanceSupplier) {
-        final DependencySupplier supplier = DependencySupplier.of(id, type, instanceSupplier);
+    public RegistrationContainer register(final Id id, final Supplier<?> instanceSupplier) {
+        final DependencySupplier supplier = DependencySupplier.of(id, instanceSupplier);
         return register(id, supplier);
     }
 

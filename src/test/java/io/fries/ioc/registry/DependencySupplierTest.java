@@ -32,14 +32,7 @@ class DependencySupplierTest {
     @DisplayName("throw when providing a null identifier")
     void should_throw_when_providing_a_null_id() {
         assertThatExceptionOfType(NullPointerException.class)
-                .isThrownBy(() -> DependencySupplier.of(null, Object.class, () -> mock(Object.class)));
-    }
-
-    @Test
-    @DisplayName("throw when providing a null type")
-    void should_throw_when_providing_a_null_type() {
-        assertThatExceptionOfType(NullPointerException.class)
-                .isThrownBy(() -> DependencySupplier.of(mock(Id.class), null, () -> mock(Object.class)));
+                .isThrownBy(() -> DependencySupplier.of(null, () -> mock(Object.class)));
     }
 
     @Test
@@ -48,13 +41,13 @@ class DependencySupplierTest {
         final Supplier<Object> instanceSupplier = null;
 
         assertThatExceptionOfType(NullPointerException.class)
-                .isThrownBy(() -> DependencySupplier.of(mock(Id.class), Object.class, instanceSupplier));
+                .isThrownBy(() -> DependencySupplier.of(mock(Id.class), instanceSupplier));
     }
 
     @Test
     @DisplayName("have 0 dependencies as it is already instanced")
     void should_have_zero_dependencies() {
-        final DependencySupplier supplier = DependencySupplier.of(id, Object.class, instanceSupplier);
+        final DependencySupplier supplier = DependencySupplier.of(id, instanceSupplier);
 
         final int dependenciesCount = supplier.countDependencies(mock(Registry.class));
 
@@ -65,8 +58,8 @@ class DependencySupplierTest {
     @DisplayName("create a dependency contained the supplied instance")
     void should_inject_the_supplied_instance_into_a_dependency() {
         final Object instance = mock(Object.class);
-        final Dependency dependency = Dependency.of(id, Object.class, instance);
-        final DependencySupplier supplier = DependencySupplier.of(id, Object.class, instanceSupplier);
+        final Dependency dependency = Dependency.of(id, instance);
+        final DependencySupplier supplier = DependencySupplier.of(id, instanceSupplier);
 
         when(instanceSupplier.get()).thenReturn(instance);
         final Dependency instancedDependency = supplier.instantiate(mock(Instantiator.class), mock(Dependencies.class));
@@ -78,8 +71,8 @@ class DependencySupplierTest {
     @Test
     @DisplayName("be equal")
     void should_be_equal() {
-        final DependencySupplier firstSupplier = DependencySupplier.of(id, Object.class, instanceSupplier);
-        final DependencySupplier secondSupplier = DependencySupplier.of(id, Object.class, instanceSupplier);
+        final DependencySupplier firstSupplier = DependencySupplier.of(id, instanceSupplier);
+        final DependencySupplier secondSupplier = DependencySupplier.of(id, instanceSupplier);
 
         assertThat(firstSupplier).isEqualTo(secondSupplier);
         assertThat(firstSupplier.hashCode()).isEqualTo(secondSupplier.hashCode());
@@ -88,8 +81,8 @@ class DependencySupplierTest {
     @Test
     @DisplayName("not be equal")
     void should_not_be_equal() {
-        final DependencySupplier firstSupplier = DependencySupplier.of(mock(Id.class), Object.class, () -> mock(Object.class));
-        final DependencySupplier secondSupplier = DependencySupplier.of(mock(Id.class), Object.class, () -> mock(Object.class));
+        final DependencySupplier firstSupplier = DependencySupplier.of(mock(Id.class), () -> mock(Object.class));
+        final DependencySupplier secondSupplier = DependencySupplier.of(mock(Id.class), () -> mock(Object.class));
 
         assertThat(firstSupplier).isNotEqualTo(secondSupplier);
         assertThat(firstSupplier.hashCode()).isNotEqualTo(secondSupplier.hashCode());
@@ -98,12 +91,12 @@ class DependencySupplierTest {
     @Test
     @DisplayName("be formatted as a string")
     void should_be_formatted_as_a_string() {
-        final DependencySupplier supplier = DependencySupplier.of(id, Object.class, instanceSupplier);
+        final DependencySupplier supplier = DependencySupplier.of(id, instanceSupplier);
 
         when(id.toString()).thenReturn("Id");
         when(instanceSupplier.toString()).thenReturn("Instance");
         final String result = supplier.toString();
 
-        assertThat(result).isEqualTo("DependencySupplier{id=Id, type=class java.lang.Object, instanceSupplier=Instance}");
+        assertThat(result).isEqualTo("DependencySupplier{id=Id, instanceSupplier=Instance}");
     }
 }

@@ -15,8 +15,8 @@ class DependencyTest {
     void should_be_equal() {
         final Id id = mock(Id.class);
         final Object instance = mock(Object.class);
-        final Dependency firstDependency = Dependency.of(id, Object.class, instance);
-        final Dependency secondDependency = Dependency.of(id, Object.class, instance);
+        final Dependency firstDependency = Dependency.of(id, instance);
+        final Dependency secondDependency = Dependency.of(id, instance);
 
         assertThat(firstDependency).isEqualTo(secondDependency);
         assertThat(firstDependency.hashCode()).isEqualTo(secondDependency.hashCode());
@@ -25,8 +25,8 @@ class DependencyTest {
     @Test
     @DisplayName("not be equal")
     void should_not_be_equal() {
-        final Dependency firstDependency = Dependency.of(mock(Id.class), Long.class, mock(Object.class));
-        final Dependency secondDependency = Dependency.of(mock(Id.class), Integer.class, mock(Object.class));
+        final Dependency firstDependency = Dependency.of(mock(Id.class), mock(Object.class));
+        final Dependency secondDependency = Dependency.of(mock(Id.class), mock(Object.class));
 
         assertThat(firstDependency).isNotEqualTo(secondDependency);
         assertThat(firstDependency.hashCode()).isNotEqualTo(secondDependency.hashCode());
@@ -37,12 +37,12 @@ class DependencyTest {
     void should_be_formatted_as_a_string() {
         final Id id = mock(Id.class);
         final Object instance = mock(Object.class);
-        final Dependency dependency = Dependency.of(id, Object.class, instance);
+        final Dependency dependency = Dependency.of(id, instance);
 
         when(id.toString()).thenReturn("Id");
         when(instance.toString()).thenReturn("Instance");
         final String result = dependency.toString();
 
-        assertThat(result).isEqualTo("Dependency{id=Id, type=class java.lang.Object, instance=Instance}");
+        assertThat(result).isEqualTo("Dependency{id=Id, instance=Instance}");
     }
 }

@@ -39,7 +39,6 @@ class DefaultInstantiatorTest {
         final Instantiator instantiator = new DefaultInstantiator();
         final Dependency dependency = mock(Dependency.class);
 
-        when(dependency.getType()).then(invocation -> E.class);
         when(dependency.getInstance()).thenReturn(new E());
         final D instance = assertDoesNotThrow(() -> instantiator.createInstance(D.class, singletonList(dependency)));
 
@@ -51,7 +50,6 @@ class DefaultInstantiatorTest {
         final Instantiator instantiator = new DefaultInstantiator();
         final Dependency dependency = mock(Dependency.class);
 
-        when(dependency.getType()).then(invocation -> E.class);
         when(dependency.getInstance()).thenReturn(new E());
         final F instance = assertDoesNotThrow(() -> instantiator.createInstance(F.class, singletonList(dependency)));
 

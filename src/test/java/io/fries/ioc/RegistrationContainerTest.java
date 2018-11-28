@@ -44,9 +44,9 @@ class RegistrationContainerTest {
     void should_register_a_dependency_supplier() {
         final Id id = mock(Id.class);
         final Supplier<Object> instanceSupplier = () -> mock(Object.class);
-        final DependencySupplier supplier = DependencySupplier.of(id, Object.class, instanceSupplier);
+        final DependencySupplier supplier = DependencySupplier.of(id, instanceSupplier);
 
-        registrationContainer.register(id, Object.class, instanceSupplier);
+        registrationContainer.register(id, instanceSupplier);
 
         verify(registry).add(id, supplier);
     }

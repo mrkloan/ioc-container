@@ -48,7 +48,7 @@ public class DependencyProxy implements RegisteredDependency {
         final Supplier<?> instanceSupplier = createInstanceSupplier(instantiator, dependencies);
         final Object proxy = createProxy(instanceSupplier);
 
-        return Dependency.of(id, interfaceType, proxy);
+        return Dependency.of(id, proxy);
     }
 
     private Supplier<?> createInstanceSupplier(final Instantiator instantiator, final Dependencies dependencies) {

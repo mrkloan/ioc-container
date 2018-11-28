@@ -5,26 +5,21 @@ import java.util.Objects;
 public class Dependency {
 
     private final Id id;
-    private final Class<?> type;
     private final Object instance;
 
-    private Dependency(final Id id, final Class<?> type, final Object instance) {
+    private Dependency(final Id id, final Object instance) {
         this.id = id;
-        this.type = type;
         this.instance = instance;
     }
 
-    public static Dependency of(final Id id, final Class<?> type, final Object instance) {
-        return new Dependency(id, type, instance);
+    public static Dependency of(final Id id, final Object instance) {
+        return new Dependency(id, instance);
     }
 
     public Id getId() {
         return id;
     }
 
-    public Class<?> getType() {
-        return type;
-    }
 
     @SuppressWarnings("unchecked")
     public <T> T getInstance() {
@@ -37,20 +32,18 @@ public class Dependency {
         if (o == null || getClass() != o.getClass()) return false;
         final Dependency that = (Dependency) o;
         return Objects.equals(id, that.id) &&
-                Objects.equals(type, that.type) &&
                 Objects.equals(instance, that.instance);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, type, instance);
+        return Objects.hash(id, instance);
     }
 
     @Override
     public String toString() {
         return "Dependency{" +
                 "id=" + id +
-                ", type=" + type +
                 ", instance=" + instance +
                 '}';
     }

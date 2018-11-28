@@ -38,7 +38,7 @@ class ContainerAcceptanceTest {
     void should_provide_pre_instanced_dependencies() {
         final Container container = Container.empty()
                 .register(Id.of(D.class), D.class, singletonList(Id.of(E.class)))
-                .register(Id.of(E.class), E.class, E::new)
+                .register(Id.of(E.class), E::new)
                 .instantiate();
 
         final D providedInstance = container.provide(Id.of(D.class));
@@ -67,9 +67,9 @@ class ContainerAcceptanceTest {
         final Container container = Container.empty()
                 .register(A.class)
                 .register(B.class)
-                .register(C.class)
+                .register(Id.of(C.class), C.class)
                 .register(D.class)
-                .register(Id.of(InterfaceE.class), E.class, E::new)
+                .register(Id.of(InterfaceE.class), E::new)
                 .instantiate();
 
         final B providedInstance = container.provide(Id.of(B.class));
