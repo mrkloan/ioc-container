@@ -44,6 +44,19 @@ class DependencyTokenTest {
     }
 
     @Test
+    @DisplayName("be created from a type")
+    void should_create_a_dependency_token_from_a_type() {
+        final Id id = Id.of(DependencyToken.class);
+        final Class<?> type = DependencyToken.class;
+        final List<Id> dependencies = asList(Id.of(Id.class), Id.of(Class.class), Id.of(List.class));
+        final DependencyToken token = DependencyToken.of(id, DependencyToken.class, dependencies);
+
+        final DependencyToken result = DependencyToken.from(type);
+
+        assertThat(result).isEqualTo(token);
+    }
+
+    @Test
     @DisplayName("count its number of dependencies")
     void should_count_its_number_of_dependencies() {
         final Id firstId = mock(Id.class);
