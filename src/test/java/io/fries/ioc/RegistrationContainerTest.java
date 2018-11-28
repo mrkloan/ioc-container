@@ -3,6 +3,7 @@ package io.fries.ioc;
 import io.fries.ioc.dependencies.Dependencies;
 import io.fries.ioc.dependencies.Id;
 import io.fries.ioc.instantiator.Instantiator;
+import io.fries.ioc.registry.DependencyProxy;
 import io.fries.ioc.registry.DependencySupplier;
 import io.fries.ioc.registry.DependencyToken;
 import io.fries.ioc.registry.Registry;
@@ -60,6 +61,20 @@ class RegistrationContainerTest {
         registrationContainer.register(id, type, dependencies);
 
         verify(registry).add(id, token);
+    }
+
+    @Test
+    @DisplayName("register a dependency proxy")
+    void should_register_a_dependency_proxy() {
+        final Id id = mock(Id.class);
+        final Class<?> interfaceType = Supplier.class;
+        final Class<?> type = Object.class;
+        final List<Id> dependencies = emptyList();
+        final DependencyProxy proxy = DependencyProxy.of(id, interfaceType, type, dependencies);
+
+        registrationContainer.register(id, interfaceType, type, dependencies);
+
+        verify(registry).add(id, proxy);
     }
 
     @Test
