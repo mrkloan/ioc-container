@@ -72,7 +72,6 @@ class ContainerAcceptanceTest {
     void should_provide_dependencies_with_inferred_id_and_dependencies() {
         final Container container = Container.empty()
                 .register(Id.of(Story.class), FantasyStory.class)
-                .register(Id.of(FantasyStory.class), FantasyStory.class)
                 .register(NovelBook.class)
                 .register(Id.of(Plot.class), IncrediblePlot.class)
                 .register(Id.of(Protagonist.class), HeroicProtagonist.class)

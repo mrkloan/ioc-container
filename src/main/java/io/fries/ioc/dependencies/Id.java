@@ -10,7 +10,7 @@ public class Id {
         this.value = value;
     }
 
-    public static <T> Id of(final T value) {
+    public static <ID> Id of(final ID value) {
         Objects.requireNonNull(value);
 
         return new Id(value.toString());

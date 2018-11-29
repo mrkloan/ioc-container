@@ -29,12 +29,12 @@ public class Registry {
         return of(emptyMap());
     }
 
-    public Registry add(final Id id, final RegisteredDependency token) {
-        if(registeredDependency.containsKey(id))
-            throw new IllegalStateException("Another dependency was already registered with the id: " + id);
+    public Registry add(final RegisteredDependency token) {
+        if (registeredDependency.containsKey(token.getId()))
+            throw new IllegalStateException("Another dependency was already registered with the id: " + token.getId());
 
         final Map<Id, RegisteredDependency> tokens = new HashMap<>(this.registeredDependency);
-        tokens.put(id, token);
+        tokens.put(token.getId(), token);
 
         return of(tokens);
     }

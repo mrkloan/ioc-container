@@ -30,7 +30,7 @@ public class RegistrationContainer {
     @SuppressWarnings("WeakerAccess")
     public RegistrationContainer register(final Id id, final Supplier<?> instanceSupplier) {
         final DependencySupplier supplier = DependencySupplier.of(id, instanceSupplier);
-        return register(id, supplier);
+        return register(supplier);
     }
 
     @SuppressWarnings("WeakerAccess")
@@ -48,17 +48,17 @@ public class RegistrationContainer {
     @SuppressWarnings("WeakerAccess")
     public RegistrationContainer register(final Id id, final Class<?> type, final List<Id> dependencies) {
         final DependencyToken token = DependencyToken.of(id, type, dependencies);
-        return register(id, token);
+        return register(token);
     }
 
     @SuppressWarnings("WeakerAccess")
     public RegistrationContainer register(final Id id, final Class<?> interfaceType, final Class<?> type, final List<Id> dependencies) {
         final DependencyProxy proxy = DependencyProxy.of(id, interfaceType, type, dependencies);
-        return register(id, proxy);
+        return register(proxy);
     }
 
-    private RegistrationContainer register(final Id id, final RegisteredDependency registeredDependency) {
-        registry = registry.add(id, registeredDependency);
+    private RegistrationContainer register(final RegisteredDependency registeredDependency) {
+        registry = registry.add(registeredDependency);
         return this;
     }
 

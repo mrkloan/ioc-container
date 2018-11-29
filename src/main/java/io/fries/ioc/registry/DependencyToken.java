@@ -29,6 +29,11 @@ public class DependencyToken implements RegisteredDependency {
     }
 
     @Override
+    public Id getId() {
+        return id;
+    }
+
+    @Override
     public int countDependencies(final Registry registry) {
         final int firstLevelDependencies = dependencies.size();
         final int deepDependencies = countDeepDependencies(registry);

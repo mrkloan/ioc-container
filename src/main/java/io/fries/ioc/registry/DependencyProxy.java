@@ -39,6 +39,11 @@ public class DependencyProxy implements RegisteredDependency {
     }
 
     @Override
+    public Id getId() {
+        return id;
+    }
+
+    @Override
     public int countDependencies(final Registry registry) {
         return NO_DEPENDENCIES;
     }

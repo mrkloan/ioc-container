@@ -48,7 +48,7 @@ class RegistrationContainerTest {
 
         registrationContainer.register(id, instanceSupplier);
 
-        verify(registry).add(id, supplier);
+        verify(registry).add(supplier);
     }
 
     @Test
@@ -61,7 +61,7 @@ class RegistrationContainerTest {
 
         registrationContainer.register(id, type, dependencies);
 
-        verify(registry).add(id, token);
+        verify(registry).add(token);
     }
 
     @Test
@@ -75,7 +75,7 @@ class RegistrationContainerTest {
 
         registrationContainer.register(id, interfaceType, type, dependencies);
 
-        verify(registry).add(id, proxy);
+        verify(registry).add(proxy);
     }
 
     @Test

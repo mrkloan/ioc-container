@@ -20,46 +20,49 @@ import static org.mockito.Mockito.*;
 class RegistryTest {
 
     @Test
-    @DisplayName("add a new dependency token")
-    void should_create_a_new_tokens_instance_containing_the_added_token() {
+    @DisplayName("add a new registered dependency")
+    void should_create_a_new_registry_instance_containing_the_added_registered_dependency() {
         final Id id = mock(Id.class);
-        final DependencyToken token = mock(DependencyToken.class);
+        final RegisteredDependency registeredDependency = mock(RegisteredDependency.class);
         final Registry registry = Registry.empty();
 
-        final Registry result = registry.add(id, token);
+        when(registeredDependency.getId()).thenReturn(id);
+        final Registry result = registry.add(registeredDependency);
 
         assertThat(registry).isEqualTo(Registry.empty());
-        assertThat(result).isEqualTo(Registry.of(singletonMap(id, token)));
+        assertThat(result).isEqualTo(Registry.of(singletonMap(id, registeredDependency)));
     }
 
     @Test
-    @DisplayName("throw when adding a new token with an identifier that already exists")
-    void should_throw_when_a_token_with_the_same_id_already_exists() {
+    @DisplayName("throw when adding a new registered dependency with an identifier that already exists")
+    void should_throw_when_a_registered_dependency_with_the_same_id_already_exists() {
         final Id id = mock(Id.class);
+        final RegisteredDependency registeredDependency = mock(RegisteredDependency.class);
         final Registry registry = Registry.of(singletonMap(id, mock(DependencyToken.class)));
 
+        when(registeredDependency.getId()).thenReturn(id);
         assertThatExceptionOfType(IllegalStateException.class)
-                .isThrownBy(() -> registry.add(id, mock(DependencyToken.class)))
+                .isThrownBy(() -> registry.add(registeredDependency))
                 .withMessage("Another dependency was already registered with the id: " + id);
     }
 
     @Test
-    @DisplayName("get a token using its identifier")
-    void should_get_a_token_by_its_id() {
+    @DisplayName("get a registered dependency using its identifier")
+    void should_get_a_registered_dependency_by_its_id() {
         final Id id = mock(Id.class);
-        final DependencyToken token = mock(DependencyToken.class);
-        final Registry registry = Registry.of(singletonMap(id, token));
+        final RegisteredDependency registeredDependency = mock(RegisteredDependency.class);
+        final Registry registry = Registry.of(singletonMap(id, registeredDependency));
 
         final RegisteredDependency result = registry.get(id);
 
-        assertThat(result).isEqualTo(token);
+        assertThat(result).isEqualTo(registeredDependency);
     }
 
     @Test
-    @DisplayName("throw an exception when the required token is not present")
-    void should_throw_when_the_required_token_is_not_present() {
-        final DependencyToken token = mock(DependencyToken.class);
-        final Registry registry = Registry.of(singletonMap(mock(Id.class), token));
+    @DisplayName("throw an exception when the required registered dependency is not present")
+    void should_throw_when_the_required_registered_dependency_is_not_present() {
+        final RegisteredDependency registeredDependency = mock(RegisteredDependency.class);
+        final Registry registry = Registry.of(singletonMap(mock(Id.class), registeredDependency));
 
         final Id id = mock(Id.class);
         assertThatExceptionOfType(NoSuchElementException.class)
@@ -68,19 +71,19 @@ class RegistryTest {
     }
 
     @Test
-    @DisplayName("instantiate a dependency from its token")
-    void should_instantiate_a_dependency_from_its_token() {
+    @DisplayName("instantiate a dependency from its registration")
+    void should_instantiate_a_dependency_from_its_registration() {
         final Instantiator instantiator = mock(Instantiator.class);
 
-        final DependencyToken firstToken = mock(DependencyToken.class);
-        final DependencyToken secondToken = mock(DependencyToken.class);
-        final Map<Id, RegisteredDependency> tokenMap = new HashMap<>();
-        tokenMap.put(mock(Id.class), firstToken);
-        tokenMap.put(mock(Id.class), secondToken);
+        final RegisteredDependency firstRegistered = mock(RegisteredDependency.class);
+        final RegisteredDependency secondRegistered = mock(RegisteredDependency.class);
+        final Map<Id, RegisteredDependency> registryMap = new HashMap<>();
+        registryMap.put(mock(Id.class), firstRegistered);
+        registryMap.put(mock(Id.class), secondRegistered);
 
-        final Registry registry = Registry.of(tokenMap);
-        when(firstToken.countDependencies(registry)).thenReturn(1);
-        when(secondToken.countDependencies(registry)).thenReturn(0);
+        final Registry registry = Registry.of(registryMap);
+        when(firstRegistered.countDependencies(registry)).thenReturn(1);
+        when(secondRegistered.countDependencies(registry)).thenReturn(0);
 
         final Id firstDependencyId = mock(Id.class);
         final Dependency firstDependency = mock(Dependency.class);
@@ -95,8 +98,8 @@ class RegistryTest {
         dependencyMap.put(secondDependencyId, secondDependency);
 
         final Dependencies dependencies = Dependencies.of(dependencyMap);
-        when(firstToken.instantiate(any(), any())).thenReturn(firstDependency);
-        when(secondToken.instantiate(any(), any())).thenReturn(secondDependency);
+        when(firstRegistered.instantiate(any(), any())).thenReturn(firstDependency);
+        when(secondRegistered.instantiate(any(), any())).thenReturn(secondDependency);
 
         final Dependencies result = registry.instantiate(instantiator);
 
@@ -107,9 +110,9 @@ class RegistryTest {
     @DisplayName("be equal")
     void should_be_equal() {
         final Id id = mock(Id.class);
-        final DependencyToken token = mock(DependencyToken.class);
-        final Registry firstRegistry = Registry.of(singletonMap(id, token));
-        final Registry secondRegistry = Registry.of(singletonMap(id, token));
+        final RegisteredDependency registeredDependency = mock(RegisteredDependency.class);
+        final Registry firstRegistry = Registry.of(singletonMap(id, registeredDependency));
+        final Registry secondRegistry = Registry.of(singletonMap(id, registeredDependency));
 
         assertThat(firstRegistry).isEqualTo(secondRegistry);
         assertThat(firstRegistry.hashCode()).isEqualTo(secondRegistry.hashCode());
@@ -118,8 +121,8 @@ class RegistryTest {
     @Test
     @DisplayName("not be equal")
     void should_not_be_equal() {
-        final Registry firstRegistry = Registry.of(singletonMap(mock(Id.class), mock(DependencyToken.class)));
-        final Registry secondRegistry = Registry.of(singletonMap(mock(Id.class), mock(DependencyToken.class)));
+        final Registry firstRegistry = Registry.of(singletonMap(mock(Id.class), mock(RegisteredDependency.class)));
+        final Registry secondRegistry = Registry.of(singletonMap(mock(Id.class), mock(RegisteredDependency.class)));
 
         assertThat(firstRegistry).isNotEqualTo(secondRegistry);
         assertThat(firstRegistry.hashCode()).isNotEqualTo(secondRegistry.hashCode());
