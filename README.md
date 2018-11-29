@@ -3,37 +3,33 @@
 
 ## Usage
 
-### Complete usage example
+These examples use the following object hierarchy, which you can found under the `testable` package in `src/test/java`:
 
-This example uses the following dependency graphs:
+    +-------------+-------------------------------------------------------+
+    | Interface   | Implementation(Dependency, ...), ...                  |
+    +-------------+-------------------------------------------------------+
+    | Book        | NovelBook(Story)                                      |
+    | Story       | FantasyStory(Plot, Protagonist)                       |
+    | Plot        | IncrediblePlot(), PredictablePlot(String)             |
+    | Protagonist | HeroicProtagonist(), FriendlyProtagonist(Protagonist) |
+    +-------------+-------------------------------------------------------+
 
-    B -> A -> C
-          \-> D -> E
-               \-> String
-               
-    F -> G -> F
-    
-You may notice that `F` and `G` are mutually dependent: that is called a *circular dependency*. In order to resolve this 
-problem, `F` implements an `InterfaceF` on which `G` depends, and `G` implements an `InterfaceG` on which `F` depends.
-This allows us to inject interface proxies instead of concrete implementations, whose instantiation is deferred until
-the first method call.
+You may notice that `FriendlyProtagonist` depends on the `Protagonist` interface. This design could cause a circular
+dependency if two `FriendlyProtagonist` instances are mutually dependent. In order to solve this problem, we could
+inject an interface proxy instead of a concrete implementation, whose instantiation would be deferred until the first 
+method call.
 
 ```java
 final Container container = Container.empty()
-        .register(Id.of(A.class), A.class, asList(Id.of(C.class), Id.of(D.class)))
-        .register(Id.of(B.class), B.class, singletonList(Id.of(A.class)))
-        .register(Id.of(C.class), C.class, emptyList())
-        .register(Id.of(D.class), D.class, asList(Id.of(E.class), Id.of("some.value")))
-        .register(Id.of(E.class), E.class, E::new)
-        .register(Id.of("some.value"), String.class, () -> "Raw string")
-        .register(Id.of(F.class), InterfaceF.class, F.class, singletonList(G.class))
-        .register(Id.of(G.class), InterfaceG.class, G.class, singletonList(F.class))
+        .register(Id.of(FantasyStory.class), FantasyStory.class, asList(Id.of(PredictablePlot.class), Id.of("knights.perceval")))
+        .register(Id.of(NovelBook.class), NovelBook.class, singletonList(Id.of(FantasyStory.class)))
+        .register(Id.of(PredictablePlot.class), PredictablePlot.class, singletonList(Id.of("plot.outcome")))
+        .register(Id.of("plot.outcome"), () -> "Outcome")
+        .register(Id.of("knights.perceval"), Protagonist.class, FriendlyProtagonist.class, singletonList(Id.of("knights.karadoc")))
+        .register(Id.of("knights.karadoc"), FriendlyProtagonist.class, singletonList(Id.of("knights.perceval")))
         .instantiate();
 
-final D d = container.provide(Id.of(D.class)); // Provides any registered instance.
-final B b = container.provide(Id.of(B.class)); // Provides the root of a dependency graph.
-
-final InterfaceF f = container.provide(Id.of(F.class)); // Provides a proxy to an interface, solving potential circular dependency problems
+final Book book = container.provide(Id.of(NovelBook.class));
 ```
 
 ### Identifiers
@@ -44,9 +40,9 @@ An `Id` can be created using any type. This way, you are in control of your iden
 multiple times if needed:
 
 ```java
-final Id typeId = Id.of(Object.class);
+final Id typeId = Id.of(Book.class);
 final Id integerId = Id.of(1);
-final Id stringId = Id.of("myDependency");
+final Id stringId = Id.of("knights.arthur");
 // ...
 ```
 
@@ -61,27 +57,32 @@ You can create an empty `RegistrationContainer` using the `Container.empty()` fa
 final RegistrationContainer registrationContainer = Container.empty();
 ```
 
-The `RegistrationContainer` exposes a `register` method for each type of dependency.
+The `RegistrationContainer` exposes a set of `register` factory methods for each type of dependency.
 
 Register a supplied instance if you do not want the container to create it for you:
 
 ```java
-registrationContainer.register(Id.of(C.class), C.class, C::new);
-registrationContainer.register(Id.of("some.value"), String.class, () -> "Raw string");
+registrationContainer.register(Id.of(HeroicProtagonist.class), HeroicProtagonist::new);
+registrationContainer.register(Id.of("plot.outcome"), () -> "Outcome");
 ```
 
 Register a class whose instance will be managed by the container:
 
 ```java
-registrationContainer.register(Id.of(E.class), E.class, emptyList());
-registrationContainer.register(Id.of(D.class), D.class, asList(Id.of(E.class), Id.of("some.value")));
+// These 3 examples are equivalent: the identifier and dependencies can be inferred by the container.
+registrationContainer.register(NovelBook.class);
+registrationContainer.register(Id.of(NovelBook.class), NovelBook.class);
+registrationContainer.register(Id.of(NovelBook.class), NovelBook.class, singletonList(Id.of(Story.class)));
 ```
 
-Register an interface proxy managed by the container:
+Register an interface proxy managed by the container: 
 
 ```java
-registrationContainer.register(Id.of(F.class), InterfaceF.class, F.class, singletonList(Id.of(G.class)));
-registrationContainer.register(Id.of(G.class), InterfaceG.class, G.class, singletonList(Id.of(F.class)));
+// Register a FriendlyProtagonist as a proxy for the Protagonist interface.
+registrationContainer.register(Id.of("knights.karadoc"), Protagonist.class, FriendlyProtagonist.class, singletonList(Id.of("knights.perceval")))
+
+// Depends on the proxy, not the concrete implementation.
+registrationContainer.register(Id.of("knights.perceval"), FriendlyProtagonist.class, singletonList(Id.of("knights.karadoc")))
 ```
 
 ### Instantiation and provision
@@ -92,9 +93,9 @@ From now on, this `Container` can provide any instance that was previously regis
 ```java
 final Container container = registrationContainer.instantiate();
 
-final String value = container.provide(Id.of("some.value"));
-final D d = container.provide(Id.of(D.class));
-final InterfaceF f = container.provide(Id.of(F.class));
+final String outcome = container.provide(Id.of("plot.outcome"));
+final Book novelBook = container.provide(Id.of(NovelBook.class));
+final Protagonist karadoc = container.provide(Id.of("knights.karadoc"));
 ```
 
 ### Custom instantiators
