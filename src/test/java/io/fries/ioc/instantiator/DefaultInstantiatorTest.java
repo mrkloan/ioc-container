@@ -3,8 +3,14 @@ package io.fries.ioc.instantiator;
 import io.fries.ioc.dependencies.Dependency;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import testable.Book;
+import testable.NovelBook;
+import testable.stories.Story;
+import testable.stories.plots.IncrediblePlot;
+import testable.stories.protagonists.FriendlyProtagonist;
+import testable.stories.protagonists.HeroicProtagonist;
+import testable.stories.protagonists.Protagonist;
 
-import static io.fries.ioc.Tests.*;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -20,7 +26,7 @@ class DefaultInstantiatorTest {
     void should_create_an_object_instance_using_the_default_constructor() {
         final Instantiator instantiator = new DefaultInstantiator();
 
-        final E instance = assertDoesNotThrow(() -> instantiator.createInstance(E.class, emptyList()));
+        final HeroicProtagonist instance = assertDoesNotThrow(() -> instantiator.createInstance(HeroicProtagonist.class, emptyList()));
 
         assertThat(instance).isNotNull();
     }
@@ -29,7 +35,7 @@ class DefaultInstantiatorTest {
     void should_create_an_object_instance_using_an_empty_constructor() {
         final Instantiator instantiator = new DefaultInstantiator();
 
-        final C instance = assertDoesNotThrow(() -> instantiator.createInstance(C.class, emptyList()));
+        final IncrediblePlot instance = assertDoesNotThrow(() -> instantiator.createInstance(IncrediblePlot.class, emptyList()));
 
         assertThat(instance).isNotNull();
     }
@@ -39,8 +45,8 @@ class DefaultInstantiatorTest {
         final Instantiator instantiator = new DefaultInstantiator();
         final Dependency dependency = mock(Dependency.class);
 
-        when(dependency.getInstance()).thenReturn(new E());
-        final D instance = assertDoesNotThrow(() -> instantiator.createInstance(D.class, singletonList(dependency)));
+        when(dependency.getInstance()).thenReturn(new HeroicProtagonist());
+        final Protagonist instance = assertDoesNotThrow(() -> instantiator.createInstance(FriendlyProtagonist.class, singletonList(dependency)));
 
         assertThat(instance).isNotNull();
     }
@@ -50,8 +56,8 @@ class DefaultInstantiatorTest {
         final Instantiator instantiator = new DefaultInstantiator();
         final Dependency dependency = mock(Dependency.class);
 
-        when(dependency.getInstance()).thenReturn(new E());
-        final F instance = assertDoesNotThrow(() -> instantiator.createInstance(F.class, singletonList(dependency)));
+        when(dependency.getInstance()).thenReturn(mock(Story.class));
+        final Book instance = assertDoesNotThrow(() -> instantiator.createInstance(NovelBook.class, singletonList(dependency)));
 
         assertThat(instance).isNotNull();
     }
@@ -62,7 +68,7 @@ class DefaultInstantiatorTest {
         final Instantiator instantiator = new DefaultInstantiator();
 
         assertThatExceptionOfType(DependencyInstantiationException.class)
-                .isThrownBy(() -> instantiator.createInstance(F.class, emptyList()))
+                .isThrownBy(() -> instantiator.createInstance(NovelBook.class, emptyList()))
                 .withCauseInstanceOf(IllegalArgumentException.class)
                 .withMessageContaining("wrong number of arguments");
     }
@@ -73,10 +79,10 @@ class DefaultInstantiatorTest {
         final Instantiator instantiator = new DefaultInstantiator();
         final Dependency dependency = mock(Dependency.class);
 
-        when(dependency.getInstance()).thenReturn(new E());
+        when(dependency.getInstance()).thenReturn(mock(Protagonist.class));
 
         assertThatExceptionOfType(DependencyInstantiationException.class)
-                .isThrownBy(() -> instantiator.createInstance(E.class, singletonList(dependency)))
+                .isThrownBy(() -> instantiator.createInstance(HeroicProtagonist.class, singletonList(dependency)))
                 .withCauseInstanceOf(IllegalArgumentException.class)
                 .withMessageContaining("wrong number of arguments");
     }
