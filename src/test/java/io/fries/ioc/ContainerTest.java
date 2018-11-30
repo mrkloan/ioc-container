@@ -20,31 +20,6 @@ class ContainerTest {
     }
 
     @Test
-    @DisplayName("throw when trying to provide with a null identifier")
-    void should_throw_when_trying_to_provide_with_a_null_id() {
-        final Container container = Container.of(mock(Components.class));
-
-        assertThatExceptionOfType(NullPointerException.class)
-                .isThrownBy(() -> container.provide(null));
-    }
-
-    @Test
-    @DisplayName("provide a component instance using its identifier")
-    void should_provide_a_component_instance_by_its_id() {
-        final Id id = mock(Id.class);
-        final Object instance = mock(Object.class);
-        final Components components = mock(Components.class);
-
-        final Container container = Container.of(components);
-
-        when(components.getInstance(id)).thenReturn(instance);
-        final Object providedInstance = container.provide(id);
-
-        verify(components).getInstance(id);
-        assertThat(providedInstance).isEqualTo(instance);
-    }
-
-    @Test
     @DisplayName("provide a component instance using its identifier value")
     void should_provide_a_component_instance_using_its_id_value() {
         final Object identifierValue = mock(Object.class);
