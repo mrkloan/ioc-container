@@ -61,7 +61,8 @@ public class ProxyRegistrableBuilder implements RegistrableBuilder {
     }
 
     public <ID> ProxyRegistrableBuilder as(final ID id) {
-        throw new UnsupportedOperationException();
+        this.id = Id.of(id);
+        return this;
     }
 
     @Override

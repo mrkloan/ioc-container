@@ -71,6 +71,18 @@ class ProxyRegistrableBuilderTest {
     }
 
     @Test
+    @DisplayName("update its identifier")
+    void should_update_the_registrable_id() {
+        final Object newId = Object.class;
+        final ProxyRegistrableBuilder builder = new ProxyRegistrableBuilder(mock(Id.class), Supplier.class, Object.class, emptyList());
+        final ProxyRegistrableBuilder expected = new ProxyRegistrableBuilder(Id.of(newId), Supplier.class, Object.class, emptyList());
+
+        final ProxyRegistrableBuilder result = builder.as(newId);
+
+        assertThat(result).isEqualTo(expected);
+    }
+
+    @Test
     @DisplayName("be equal")
     void should_be_equal() {
         final Id id = mock(Id.class);
