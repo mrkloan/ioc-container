@@ -29,7 +29,7 @@ public class SuppliedRegistrableBuilder implements RegistrableBuilder {
 
     @Override
     public Registrable build() {
-        throw new UnsupportedOperationException();
+        return SuppliedRegistrable.of(id, instanceSupplier);
     }
 
     @Override

@@ -64,6 +64,7 @@ class ManagedRegistrableBuilderTest {
     }
 
     @Test
+    @DisplayName("build the managed registrable")
     void should_build_the_managed_registrable() {
         final Id id = mock(Id.class);
         final ManagedRegistrableBuilder builder = new ManagedRegistrableBuilder(id, Object.class, emptyList());
