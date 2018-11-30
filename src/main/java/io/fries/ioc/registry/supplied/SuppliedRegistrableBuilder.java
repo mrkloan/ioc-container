@@ -7,7 +7,7 @@ import java.util.function.Supplier;
 
 public class SuppliedRegistrableBuilder implements RegistrableBuilder {
 
-    public static SuppliedRegistrableBuilder supplied(final Supplier<?> instanceSupplier) {
+    public static SuppliedRegistrableBuilder supply(final Supplier<?> instanceSupplier) {
         throw new UnsupportedOperationException();
     }
 

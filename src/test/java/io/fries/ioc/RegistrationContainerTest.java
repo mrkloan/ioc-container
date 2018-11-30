@@ -54,7 +54,7 @@ class RegistrationContainerTest {
     }
 
     @Test
-    @DisplayName("register a managed registrable")
+    @DisplayName("register a manage registrable")
     void should_register_a_managed_registrable() {
         final Id id = mock(Id.class);
         final Class<?> type = Object.class;
