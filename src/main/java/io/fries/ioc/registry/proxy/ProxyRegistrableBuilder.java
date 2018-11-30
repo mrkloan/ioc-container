@@ -30,13 +30,20 @@ public class ProxyRegistrableBuilder extends RegistrableWithDependenciesBuilder 
     }
 
     public static ProxyRegistrableBuilder proxy(final Class<?> type) {
-        if (type.getInterfaces().length == 0)
-            throw new IllegalArgumentException("The provided type does not implement any interface");
-
         final Id id = Id.of(type);
-        final Class<?> interfaceType = type.getInterfaces()[0];
+        final Class<?> interfaceType = findFirstImplementedInterface(type);
 
         return new ProxyRegistrableBuilder(id, interfaceType, type);
+    }
+
+    private static Class<?> findFirstImplementedInterface(final Class<?> type) {
+        if (type.getInterfaces().length > 0)
+            return type.getInterfaces()[0];
+
+        if (type.getSuperclass() != null)
+            return findFirstImplementedInterface(type.getSuperclass());
+
+        throw new IllegalArgumentException("The provided type does not implement any interface");
     }
 
     public ProxyRegistrableBuilder of(final Class<?> interfaceType) {

@@ -20,6 +20,7 @@ import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -45,6 +46,11 @@ class ProxyRegistrableBuilderTest {
         assertThatExceptionOfType(IllegalArgumentException.class)
                 .isThrownBy(() -> proxy(Object.class))
                 .withMessage("The provided type does not implement any interface");
+    }
+
+    @Test
+    void should_not_throw_if_the_type_implements_an_interface_through_its_ancestors() {
+        assertDoesNotThrow(() -> proxy(ProxyRegistrableBuilder.class));
     }
 
     @Test
