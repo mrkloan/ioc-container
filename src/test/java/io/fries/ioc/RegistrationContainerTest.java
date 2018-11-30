@@ -1,12 +1,12 @@
 package io.fries.ioc;
 
-import io.fries.ioc.dependencies.Dependencies;
-import io.fries.ioc.dependencies.Id;
+import io.fries.ioc.components.Components;
+import io.fries.ioc.components.Id;
 import io.fries.ioc.instantiator.Instantiator;
-import io.fries.ioc.registry.DependencyProxy;
-import io.fries.ioc.registry.DependencySupplier;
-import io.fries.ioc.registry.DependencyToken;
 import io.fries.ioc.registry.Registry;
+import io.fries.ioc.registry.managed.ManagedRegistrable;
+import io.fries.ioc.registry.proxy.ProxyRegistrable;
+import io.fries.ioc.registry.supplied.SuppliedRegistrable;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -40,11 +40,11 @@ class RegistrationContainerTest {
     }
 
     @Test
-    @DisplayName("register a dependency supplier")
-    void should_register_a_dependency_supplier() {
+    @DisplayName("register a component supplier")
+    void should_register_a_component_supplier() {
         final Id id = mock(Id.class);
         final Supplier<Object> instanceSupplier = () -> mock(Object.class);
-        final DependencySupplier supplier = DependencySupplier.of(id, instanceSupplier);
+        final SuppliedRegistrable supplier = SuppliedRegistrable.of(id, instanceSupplier);
 
         registrationContainer.register(id, instanceSupplier);
 
@@ -52,26 +52,26 @@ class RegistrationContainerTest {
     }
 
     @Test
-    @DisplayName("register a dependency token")
-    void should_register_a_dependency_token() {
+    @DisplayName("register a managed registrable")
+    void should_register_a_managed_registrable() {
         final Id id = mock(Id.class);
         final Class<?> type = Object.class;
         final List<Id> dependencies = emptyList();
-        final DependencyToken token = DependencyToken.of(id, type, dependencies);
+        final ManagedRegistrable registrable = ManagedRegistrable.of(id, type, dependencies);
 
         registrationContainer.register(id, type, dependencies);
 
-        verify(registry).add(token);
+        verify(registry).add(registrable);
     }
 
     @Test
-    @DisplayName("register a dependency proxy")
-    void should_register_a_dependency_proxy() {
+    @DisplayName("register a component proxy")
+    void should_register_a_component_proxy() {
         final Id id = mock(Id.class);
         final Class<?> interfaceType = Supplier.class;
         final Class<?> type = Object.class;
         final List<Id> dependencies = emptyList();
-        final DependencyProxy proxy = DependencyProxy.of(id, interfaceType, type, dependencies);
+        final ProxyRegistrable proxy = ProxyRegistrable.of(id, interfaceType, type, dependencies);
 
         registrationContainer.register(id, interfaceType, type, dependencies);
 
@@ -79,19 +79,19 @@ class RegistrationContainerTest {
     }
 
     @Test
-    @DisplayName("create a container containing the token instances")
-    void should_create_a_container_containing_the_instances_of_the_registered_tokens() {
-        final Dependencies dependencies = mock(Dependencies.class);
+    @DisplayName("create a container containing the instanced component of each registrable")
+    void should_create_a_container_containing_the_instanced_component_of_each_registrable() {
+        final Components components = mock(Components.class);
 
-        when(registry.instantiate(instantiator)).thenReturn(dependencies);
+        when(registry.instantiate(instantiator)).thenReturn(components);
         final Container container = registrationContainer.instantiate();
 
         verify(registry).instantiate(instantiator);
-        assertThat(container).isEqualTo(Container.of(dependencies));
+        assertThat(container).isEqualTo(Container.of(components));
     }
 
     @Test
-    @DisplayName("infer type dependencies from its constructor parameters")
+    @DisplayName("infer type components from its constructor parameters")
     void should_infer_dependencies_from_constructor_parameters() {
         final Class<?> type = RegistrationContainer.class;
         final List<Id> dependencies = asList(Id.of(Instantiator.class), Id.of(Registry.class));

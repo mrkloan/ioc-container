@@ -1,9 +1,10 @@
 package io.fries.ioc.registry;
 
-import io.fries.ioc.dependencies.Dependencies;
-import io.fries.ioc.dependencies.Dependency;
-import io.fries.ioc.dependencies.Id;
+import io.fries.ioc.components.Component;
+import io.fries.ioc.components.Components;
+import io.fries.ioc.components.Id;
 import io.fries.ioc.instantiator.Instantiator;
+import io.fries.ioc.registry.managed.ManagedRegistrable;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -20,64 +21,64 @@ import static org.mockito.Mockito.*;
 class RegistryTest {
 
     @Test
-    @DisplayName("add a new registered dependency")
-    void should_create_a_new_registry_instance_containing_the_added_registered_dependency() {
+    @DisplayName("add a new registered component")
+    void should_create_a_new_registry_instance_containing_the_added_registered_component() {
         final Id id = mock(Id.class);
-        final RegisteredDependency registeredDependency = mock(RegisteredDependency.class);
+        final Registrable registrable = mock(Registrable.class);
         final Registry registry = Registry.empty();
 
-        when(registeredDependency.getId()).thenReturn(id);
-        final Registry result = registry.add(registeredDependency);
+        when(registrable.getId()).thenReturn(id);
+        final Registry result = registry.add(registrable);
 
         assertThat(registry).isEqualTo(Registry.empty());
-        assertThat(result).isEqualTo(Registry.of(singletonMap(id, registeredDependency)));
+        assertThat(result).isEqualTo(Registry.of(singletonMap(id, registrable)));
     }
 
     @Test
-    @DisplayName("throw when adding a new registered dependency with an identifier that already exists")
-    void should_throw_when_a_registered_dependency_with_the_same_id_already_exists() {
+    @DisplayName("throw when adding a new registered component with an identifier that already exists")
+    void should_throw_when_a_registered_component_with_the_same_id_already_exists() {
         final Id id = mock(Id.class);
-        final RegisteredDependency registeredDependency = mock(RegisteredDependency.class);
-        final Registry registry = Registry.of(singletonMap(id, mock(DependencyToken.class)));
+        final Registrable registrable = mock(Registrable.class);
+        final Registry registry = Registry.of(singletonMap(id, mock(ManagedRegistrable.class)));
 
-        when(registeredDependency.getId()).thenReturn(id);
+        when(registrable.getId()).thenReturn(id);
         assertThatExceptionOfType(IllegalStateException.class)
-                .isThrownBy(() -> registry.add(registeredDependency))
-                .withMessage("Another dependency was already registered with the id: " + id);
+                .isThrownBy(() -> registry.add(registrable))
+                .withMessage("Another component was already registered with the id: " + id);
     }
 
     @Test
-    @DisplayName("get a registered dependency using its identifier")
-    void should_get_a_registered_dependency_by_its_id() {
+    @DisplayName("get a registered component using its identifier")
+    void should_get_a_registered_component_by_its_id() {
         final Id id = mock(Id.class);
-        final RegisteredDependency registeredDependency = mock(RegisteredDependency.class);
-        final Registry registry = Registry.of(singletonMap(id, registeredDependency));
+        final Registrable registrable = mock(Registrable.class);
+        final Registry registry = Registry.of(singletonMap(id, registrable));
 
-        final RegisteredDependency result = registry.get(id);
+        final Registrable result = registry.get(id);
 
-        assertThat(result).isEqualTo(registeredDependency);
+        assertThat(result).isEqualTo(registrable);
     }
 
     @Test
-    @DisplayName("throw an exception when the required registered dependency is not present")
-    void should_throw_when_the_required_registered_dependency_is_not_present() {
-        final RegisteredDependency registeredDependency = mock(RegisteredDependency.class);
-        final Registry registry = Registry.of(singletonMap(mock(Id.class), registeredDependency));
+    @DisplayName("throw an exception when the required registered component is not present")
+    void should_throw_when_the_required_registered_component_is_not_present() {
+        final Registrable registrable = mock(Registrable.class);
+        final Registry registry = Registry.of(singletonMap(mock(Id.class), registrable));
 
         final Id id = mock(Id.class);
         assertThatExceptionOfType(NoSuchElementException.class)
                 .isThrownBy(() -> registry.get(id))
-                .withMessage("This identifier is not linked to any dependency inside the container: " + id);
+                .withMessage("This identifier is not linked to any component inside the container: " + id);
     }
 
     @Test
-    @DisplayName("instantiate a dependency from its registration")
-    void should_instantiate_a_dependency_from_its_registration() {
+    @DisplayName("instantiate a component from its registration")
+    void should_instantiate_a_component_from_its_registration() {
         final Instantiator instantiator = mock(Instantiator.class);
 
-        final RegisteredDependency firstRegistered = mock(RegisteredDependency.class);
-        final RegisteredDependency secondRegistered = mock(RegisteredDependency.class);
-        final Map<Id, RegisteredDependency> registryMap = new HashMap<>();
+        final Registrable firstRegistered = mock(Registrable.class);
+        final Registrable secondRegistered = mock(Registrable.class);
+        final Map<Id, Registrable> registryMap = new HashMap<>();
         registryMap.put(mock(Id.class), firstRegistered);
         registryMap.put(mock(Id.class), secondRegistered);
 
@@ -85,34 +86,34 @@ class RegistryTest {
         when(firstRegistered.countDependencies(registry)).thenReturn(1);
         when(secondRegistered.countDependencies(registry)).thenReturn(0);
 
-        final Id firstDependencyId = mock(Id.class);
-        final Dependency firstDependency = mock(Dependency.class);
-        when(firstDependency.getId()).thenReturn(firstDependencyId);
+        final Id firstComponentId = mock(Id.class);
+        final Component firstComponent = mock(Component.class);
+        when(firstComponent.getId()).thenReturn(firstComponentId);
 
-        final Id secondDependencyId = mock(Id.class);
-        final Dependency secondDependency = mock(Dependency.class);
-        when(secondDependency.getId()).thenReturn(secondDependencyId);
+        final Id secondComponentId = mock(Id.class);
+        final Component secondComponent = mock(Component.class);
+        when(secondComponent.getId()).thenReturn(secondComponentId);
 
-        final Map<Id, Dependency> dependencyMap = new HashMap<>();
-        dependencyMap.put(firstDependencyId, firstDependency);
-        dependencyMap.put(secondDependencyId, secondDependency);
+        final Map<Id, Component> componentMap = new HashMap<>();
+        componentMap.put(firstComponentId, firstComponent);
+        componentMap.put(secondComponentId, secondComponent);
 
-        final Dependencies dependencies = Dependencies.of(dependencyMap);
-        when(firstRegistered.instantiate(any(), any())).thenReturn(firstDependency);
-        when(secondRegistered.instantiate(any(), any())).thenReturn(secondDependency);
+        final Components components = Components.of(componentMap);
+        when(firstRegistered.instantiate(any(), any())).thenReturn(firstComponent);
+        when(secondRegistered.instantiate(any(), any())).thenReturn(secondComponent);
 
-        final Dependencies result = registry.instantiate(instantiator);
+        final Components result = registry.instantiate(instantiator);
 
-        assertThat(result).isEqualTo(dependencies);
+        assertThat(result).isEqualTo(components);
     }
 
     @Test
     @DisplayName("be equal")
     void should_be_equal() {
         final Id id = mock(Id.class);
-        final RegisteredDependency registeredDependency = mock(RegisteredDependency.class);
-        final Registry firstRegistry = Registry.of(singletonMap(id, registeredDependency));
-        final Registry secondRegistry = Registry.of(singletonMap(id, registeredDependency));
+        final Registrable registrable = mock(Registrable.class);
+        final Registry firstRegistry = Registry.of(singletonMap(id, registrable));
+        final Registry secondRegistry = Registry.of(singletonMap(id, registrable));
 
         assertThat(firstRegistry).isEqualTo(secondRegistry);
         assertThat(firstRegistry.hashCode()).isEqualTo(secondRegistry.hashCode());
@@ -121,8 +122,8 @@ class RegistryTest {
     @Test
     @DisplayName("not be equal")
     void should_not_be_equal() {
-        final Registry firstRegistry = Registry.of(singletonMap(mock(Id.class), mock(RegisteredDependency.class)));
-        final Registry secondRegistry = Registry.of(singletonMap(mock(Id.class), mock(RegisteredDependency.class)));
+        final Registry firstRegistry = Registry.of(singletonMap(mock(Id.class), mock(Registrable.class)));
+        final Registry secondRegistry = Registry.of(singletonMap(mock(Id.class), mock(Registrable.class)));
 
         assertThat(firstRegistry).isNotEqualTo(secondRegistry);
         assertThat(firstRegistry.hashCode()).isNotEqualTo(secondRegistry.hashCode());

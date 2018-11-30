@@ -1,7 +1,7 @@
 package io.fries.ioc;
 
-import io.fries.ioc.dependencies.Dependencies;
-import io.fries.ioc.dependencies.Id;
+import io.fries.ioc.components.Components;
+import io.fries.ioc.components.Id;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -22,34 +22,34 @@ class ContainerTest {
     @Test
     @DisplayName("throw when trying to provide with a null identifier")
     void should_throw_when_trying_to_provide_with_a_null_id() {
-        final Container container = Container.of(mock(Dependencies.class));
+        final Container container = Container.of(mock(Components.class));
 
         assertThatExceptionOfType(NullPointerException.class)
                 .isThrownBy(() -> container.provide(null));
     }
 
     @Test
-    @DisplayName("provide a dependency instance using its identifier")
-    void should_provide_a_dependency_instance_by_its_id() {
+    @DisplayName("provide a component instance using its identifier")
+    void should_provide_a_component_instance_by_its_id() {
         final Id id = mock(Id.class);
         final Object instance = mock(Object.class);
-        final Dependencies dependencies = mock(Dependencies.class);
+        final Components components = mock(Components.class);
 
-        final Container container = Container.of(dependencies);
+        final Container container = Container.of(components);
 
-        when(dependencies.getInstance(id)).thenReturn(instance);
+        when(components.getInstance(id)).thenReturn(instance);
         final Object providedInstance = container.provide(id);
 
-        verify(dependencies).getInstance(id);
+        verify(components).getInstance(id);
         assertThat(providedInstance).isEqualTo(instance);
     }
 
     @Test
     @DisplayName("be equal")
     void should_be_equal() {
-        final Dependencies dependencies = mock(Dependencies.class);
-        final Container firstContainer = Container.of(dependencies);
-        final Container secondContainer = Container.of(dependencies);
+        final Components components = mock(Components.class);
+        final Container firstContainer = Container.of(components);
+        final Container secondContainer = Container.of(components);
 
         assertThat(firstContainer).isEqualTo(secondContainer);
         assertThat(firstContainer.hashCode()).isEqualTo(secondContainer.hashCode());
@@ -58,8 +58,8 @@ class ContainerTest {
     @Test
     @DisplayName("not be equal")
     void should_not_be_equal() {
-        final Container firstContainer = Container.of(mock(Dependencies.class));
-        final Container secondContainer = Container.of(mock(Dependencies.class));
+        final Container firstContainer = Container.of(mock(Components.class));
+        final Container secondContainer = Container.of(mock(Components.class));
 
         assertThat(firstContainer).isNotEqualTo(secondContainer);
         assertThat(firstContainer.hashCode()).isNotEqualTo(secondContainer.hashCode());
@@ -68,12 +68,12 @@ class ContainerTest {
     @Test
     @DisplayName("be formatted as a string")
     void should_be_formatted_as_a_string() {
-        final Dependencies dependencies = mock(Dependencies.class);
-        final Container container = Container.of(dependencies);
+        final Components components = mock(Components.class);
+        final Container container = Container.of(components);
 
-        when(dependencies.toString()).thenReturn("Dependencies");
+        when(components.toString()).thenReturn("Components");
         final String result = container.toString();
 
-        assertThat(result).isEqualTo("Container{dependencies=Dependencies}");
+        assertThat(result).isEqualTo("Container{components=Components}");
     }
 }

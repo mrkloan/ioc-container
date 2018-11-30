@@ -1,9 +1,13 @@
 package io.fries.ioc;
 
-import io.fries.ioc.dependencies.Dependencies;
-import io.fries.ioc.dependencies.Id;
+import io.fries.ioc.components.Components;
+import io.fries.ioc.components.Id;
 import io.fries.ioc.instantiator.Instantiator;
-import io.fries.ioc.registry.*;
+import io.fries.ioc.registry.Registrable;
+import io.fries.ioc.registry.Registry;
+import io.fries.ioc.registry.managed.ManagedRegistrable;
+import io.fries.ioc.registry.proxy.ProxyRegistrable;
+import io.fries.ioc.registry.supplied.SuppliedRegistrable;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Parameter;
@@ -29,7 +33,7 @@ public class RegistrationContainer {
 
     @SuppressWarnings("WeakerAccess")
     public RegistrationContainer register(final Id id, final Supplier<?> instanceSupplier) {
-        final DependencySupplier supplier = DependencySupplier.of(id, instanceSupplier);
+        final SuppliedRegistrable supplier = SuppliedRegistrable.of(id, instanceSupplier);
         return register(supplier);
     }
 
@@ -47,18 +51,18 @@ public class RegistrationContainer {
 
     @SuppressWarnings("WeakerAccess")
     public RegistrationContainer register(final Id id, final Class<?> type, final List<Id> dependencies) {
-        final DependencyToken token = DependencyToken.of(id, type, dependencies);
-        return register(token);
+        final ManagedRegistrable registrable = ManagedRegistrable.of(id, type, dependencies);
+        return register(registrable);
     }
 
     @SuppressWarnings("WeakerAccess")
     public RegistrationContainer register(final Id id, final Class<?> interfaceType, final Class<?> type, final List<Id> dependencies) {
-        final DependencyProxy proxy = DependencyProxy.of(id, interfaceType, type, dependencies);
+        final ProxyRegistrable proxy = ProxyRegistrable.of(id, interfaceType, type, dependencies);
         return register(proxy);
     }
 
-    private RegistrationContainer register(final RegisteredDependency registeredDependency) {
-        registry = registry.add(registeredDependency);
+    private RegistrationContainer register(final Registrable registrable) {
+        registry = registry.add(registrable);
         return this;
     }
 
@@ -73,7 +77,7 @@ public class RegistrationContainer {
     }
 
     public Container instantiate() {
-        final Dependencies dependencies = registry.instantiate(instantiator);
-        return Container.of(dependencies);
+        final Components components = registry.instantiate(instantiator);
+        return Container.of(components);
     }
 }

@@ -1,16 +1,18 @@
-package io.fries.ioc.registry;
+package io.fries.ioc.registry.proxy;
 
-import io.fries.ioc.dependencies.Dependencies;
-import io.fries.ioc.dependencies.Dependency;
-import io.fries.ioc.dependencies.Id;
+import io.fries.ioc.components.Component;
+import io.fries.ioc.components.Components;
+import io.fries.ioc.components.Id;
 import io.fries.ioc.instantiator.Instantiator;
+import io.fries.ioc.registry.Registrable;
+import io.fries.ioc.registry.Registry;
 
 import java.lang.reflect.Proxy;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Supplier;
 
-public class DependencyProxy implements RegisteredDependency {
+public class ProxyRegistrable implements Registrable {
 
     static final int NO_DEPENDENCIES = 0;
 
@@ -19,14 +21,14 @@ public class DependencyProxy implements RegisteredDependency {
     private final Class<?> type;
     private final List<Id> dependencies;
 
-    private DependencyProxy(final Id id, final Class<?> interfaceType, final Class<?> type, final List<Id> dependencies) {
+    private ProxyRegistrable(final Id id, final Class<?> interfaceType, final Class<?> type, final List<Id> dependencies) {
         this.id = id;
         this.interfaceType = interfaceType;
         this.type = type;
         this.dependencies = dependencies;
     }
 
-    public static DependencyProxy of(final Id id, final Class<?> interfaceType, final Class<?> type, final List<Id> dependencies) {
+    public static ProxyRegistrable of(final Id id, final Class<?> interfaceType, final Class<?> type, final List<Id> dependencies) {
         Objects.requireNonNull(id);
         Objects.requireNonNull(interfaceType);
         Objects.requireNonNull(type);
@@ -35,7 +37,7 @@ public class DependencyProxy implements RegisteredDependency {
         if (!interfaceType.isInterface())
             throw new IllegalArgumentException("Proxied type must be an interface");
 
-        return new DependencyProxy(id, interfaceType, type, dependencies);
+        return new ProxyRegistrable(id, interfaceType, type, dependencies);
     }
 
     @Override
@@ -49,16 +51,16 @@ public class DependencyProxy implements RegisteredDependency {
     }
 
     @Override
-    public Dependency instantiate(final Instantiator instantiator, final Dependencies dependencies) {
-        final Supplier<?> instanceSupplier = createInstanceSupplier(instantiator, dependencies);
+    public Component instantiate(final Instantiator instantiator, final Components components) {
+        final Supplier<?> instanceSupplier = createInstanceSupplier(instantiator, components);
         final Object proxy = createProxy(instanceSupplier);
 
-        return Dependency.of(id, proxy);
+        return Component.of(id, proxy);
     }
 
-    private Supplier<?> createInstanceSupplier(final Instantiator instantiator, final Dependencies dependencies) {
+    private Supplier<?> createInstanceSupplier(final Instantiator instantiator, final Components components) {
         return () -> {
-            final List<Dependency> requiredDependencies = dependencies.findAllById(this.dependencies);
+            final List<Component> requiredDependencies = components.findAllById(this.dependencies);
             return instantiator.createInstance(type, requiredDependencies);
         };
     }
@@ -75,7 +77,7 @@ public class DependencyProxy implements RegisteredDependency {
     public boolean equals(final Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        final DependencyProxy proxy = (DependencyProxy) o;
+        final ProxyRegistrable proxy = (ProxyRegistrable) o;
         return Objects.equals(id, proxy.id) &&
                 Objects.equals(interfaceType, proxy.interfaceType) &&
                 Objects.equals(type, proxy.type) &&
@@ -89,11 +91,11 @@ public class DependencyProxy implements RegisteredDependency {
 
     @Override
     public String toString() {
-        return "DependencyProxy{" +
+        return "ProxyRegistrable{" +
                 "id=" + id +
                 ", interfaceType=" + interfaceType +
                 ", type=" + type +
-                ", dependencies=" + dependencies +
+                ", components=" + dependencies +
                 '}';
     }
 }

@@ -14,10 +14,15 @@ These examples use the following object hierarchy, which you can found under the
     | Protagonist | HeroicProtagonist(), FriendlyProtagonist(Protagonist) |
     +-------------+-------------------------------------------------------+
 
-You may notice that `FriendlyProtagonist` depends on the `Protagonist` interface. This design could cause a circular
+You may notice that `FriendlyProtagonist` depends on the `Protagonist` interface. This design could create a circular
 dependency if two `FriendlyProtagonist` instances are mutually dependent. In order to solve this problem, we could
 inject an interface proxy instead of a concrete implementation, whose instantiation would be deferred until the first 
 method call.
+
+### Complete usage example
+
+We want to create a `NovelBook` of a `FantasyStory` with a `PredictablePlot` of "Outcome" and a `FriendlyProtagonist`,
+the Knight Perceval, depending on its best friend, the Knight Karadoc.
 
 ```java
 final Container container = Container.empty()
@@ -34,7 +39,7 @@ final Book book = container.provide(Id.of(NovelBook.class));
 
 ### Identifiers
 
-Each dependency uses a unique identifier for registration and provision. 
+Each component uses a unique identifier for registration and provision. 
 
 An `Id` can be created using any type. This way, you are in control of your identifiers and can register the same type 
 multiple times if needed:
@@ -46,9 +51,9 @@ final Id stringId = Id.of("knights.arthur");
 // ...
 ```
 
-### Registering dependencies
+### Registering components
 
-The first step is to use a `RegistrationContainer` in order to register your dependency graph. The dependencies registration 
+The first step is to use a `RegistrationContainer` in order to register your component graph. The components registration 
 can be done in any order; a topological sort will be executed before their instantiation to reorder the graph.
 
 You can create an empty `RegistrationContainer` using the `Container.empty()` factory method:
@@ -57,7 +62,7 @@ You can create an empty `RegistrationContainer` using the `Container.empty()` fa
 final RegistrationContainer registrationContainer = Container.empty();
 ```
 
-The `RegistrationContainer` exposes a set of `register` factory methods for each type of dependency.
+The `RegistrationContainer` exposes a set of `register` factory methods for each type of `Registrable` component.
 
 Register a supplied instance if you do not want the container to create it for you:
 
@@ -101,7 +106,7 @@ final Protagonist karadoc = container.provide(Id.of("knights.karadoc"));
 ### Custom instantiators
 
 The `RegistrationContainer` uses an `Instantiator` in order to create instances of the registered classes.
-The default implementation uses reflection to find a constructor matching the provided dependencies and calls it to 
+The default implementation uses reflection to find a constructor matching the provided components and calls it to 
 create a new instance.
 
 You can create your own `Instantiator` implementation and use it like so:

@@ -1,6 +1,6 @@
 package io.fries.ioc.instantiator;
 
-import io.fries.ioc.dependencies.Dependency;
+import io.fries.ioc.components.Component;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -12,7 +12,7 @@ public class DefaultInstantiator implements Instantiator {
 
     @Override
     @SuppressWarnings("unchecked")
-    public <T> T createInstance(final Class<T> type, final List<Dependency> dependencies) {
+    public <T> T createInstance(final Class<T> type, final List<Component> dependencies) {
         try {
             final List<?> parameterInstances = mapParameterInstances(dependencies);
 
@@ -21,14 +21,14 @@ public class DefaultInstantiator implements Instantiator {
 
             return (T) constructor.newInstance(parameterInstances.toArray());
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException | IllegalArgumentException e) {
-            throw new DependencyInstantiationException(e);
+            throw new ComponentInstantiationException(e);
         }
     }
 
-    private List<?> mapParameterInstances(final List<Dependency> dependencies) {
+    private List<?> mapParameterInstances(final List<Component> dependencies) {
         return dependencies
                 .stream()
-                .map(Dependency::getInstance)
+                .map(Component::getInstance)
                 .collect(toList());
     }
 }

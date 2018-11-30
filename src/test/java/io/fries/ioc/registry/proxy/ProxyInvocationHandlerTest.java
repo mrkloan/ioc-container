@@ -1,4 +1,4 @@
-package io.fries.ioc.registry;
+package io.fries.ioc.registry.proxy;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

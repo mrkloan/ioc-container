@@ -1,7 +1,7 @@
 package io.fries.ioc;
 
-import io.fries.ioc.dependencies.Dependencies;
-import io.fries.ioc.dependencies.Id;
+import io.fries.ioc.components.Components;
+import io.fries.ioc.components.Id;
 import io.fries.ioc.instantiator.DefaultInstantiator;
 import io.fries.ioc.instantiator.Instantiator;
 import io.fries.ioc.registry.Registry;
@@ -10,14 +10,14 @@ import java.util.Objects;
 
 public class Container {
 
-    private final Dependencies dependencies;
+    private final Components components;
 
-    private Container(final Dependencies dependencies) {
-        this.dependencies = dependencies;
+    private Container(final Components components) {
+        this.components = components;
     }
 
-    static Container of(final Dependencies dependencies) {
-        return new Container(dependencies);
+    static Container of(final Components components) {
+        return new Container(components);
     }
 
     @SuppressWarnings("WeakerAccess")
@@ -34,7 +34,7 @@ public class Container {
     @SuppressWarnings("WeakerAccess")
     public <T> T provide(final Id id) {
         Objects.requireNonNull(id);
-        return dependencies.getInstance(id);
+        return components.getInstance(id);
     }
 
     @Override
@@ -42,18 +42,18 @@ public class Container {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         final Container container = (Container) o;
-        return Objects.equals(dependencies, container.dependencies);
+        return Objects.equals(components, container.components);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(dependencies);
+        return Objects.hash(components);
     }
 
     @Override
     public String toString() {
         return "Container{" +
-                "dependencies=" + dependencies +
+                "components=" + components +
                 '}';
     }
 }

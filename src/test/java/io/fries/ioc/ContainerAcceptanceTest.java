@@ -1,6 +1,6 @@
 package io.fries.ioc;
 
-import io.fries.ioc.dependencies.Id;
+import io.fries.ioc.components.Id;
 import io.fries.ioc.instantiator.DefaultInstantiator;
 import io.fries.ioc.instantiator.Instantiator;
 import org.junit.jupiter.api.DisplayName;
@@ -25,7 +25,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 class ContainerAcceptanceTest {
 
     @Test
-    @DisplayName("provide the root instance of a dependency tree")
+    @DisplayName("provide the root instance of a dependency graph")
     void should_provide_the_instances_of_registered_classes() {
         final Instantiator instantiator = new DefaultInstantiator();
         final RegistrationContainer registrationContainer = Container.using(instantiator);
@@ -42,7 +42,7 @@ class ContainerAcceptanceTest {
     }
 
     @Test
-    @DisplayName("provide pre-instanced dependencies")
+    @DisplayName("provide pre-instanced components")
     void should_provide_pre_instanced_dependencies() {
         final Container container = Container.empty()
                 .register(Id.of(PredictablePlot.class), PredictablePlot.class, singletonList(Id.of("plot.outcome")))
@@ -55,7 +55,7 @@ class ContainerAcceptanceTest {
     }
 
     @Test
-    @DisplayName("provide circular dependencies")
+    @DisplayName("provide circular components")
     void should_provide_circular_dependencies() {
         final Container container = Container.empty()
                 .register(Id.of("knights.perceval"), FriendlyProtagonist.class, singletonList(Id.of("knights.karadoc")))
@@ -68,7 +68,7 @@ class ContainerAcceptanceTest {
     }
 
     @Test
-    @DisplayName("provide dependencies with inferred identifiers and dependencies")
+    @DisplayName("provide components with inferred identifiers and components")
     void should_provide_dependencies_with_inferred_id_and_dependencies() {
         final Container container = Container.empty()
                 .register(Id.of(Story.class), FantasyStory.class)

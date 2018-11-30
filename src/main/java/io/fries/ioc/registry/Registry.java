@@ -1,8 +1,8 @@
 package io.fries.ioc.registry;
 
-import io.fries.ioc.dependencies.Dependencies;
-import io.fries.ioc.dependencies.Dependency;
-import io.fries.ioc.dependencies.Id;
+import io.fries.ioc.components.Component;
+import io.fries.ioc.components.Components;
+import io.fries.ioc.components.Id;
 import io.fries.ioc.instantiator.Instantiator;
 
 import java.util.*;
@@ -15,67 +15,67 @@ import static java.util.stream.Collectors.toList;
 
 public class Registry {
 
-    private final Map<Id, RegisteredDependency> registeredDependency;
+    private final Map<Id, Registrable> registrables;
 
-    private Registry(final Map<Id, RegisteredDependency> registeredDependency) {
-        this.registeredDependency = unmodifiableMap(registeredDependency);
+    private Registry(final Map<Id, Registrable> registrables) {
+        this.registrables = unmodifiableMap(registrables);
     }
 
-    public static Registry of(final Map<Id, RegisteredDependency> tokens) {
-        return new Registry(tokens);
+    public static Registry of(final Map<Id, Registrable> registrables) {
+        return new Registry(registrables);
     }
 
     public static Registry empty() {
         return of(emptyMap());
     }
 
-    public Registry add(final RegisteredDependency token) {
-        if (registeredDependency.containsKey(token.getId()))
-            throw new IllegalStateException("Another dependency was already registered with the id: " + token.getId());
+    public Registry add(final Registrable registrable) {
+        if (registrables.containsKey(registrable.getId()))
+            throw new IllegalStateException("Another component was already registered with the id: " + registrable.getId());
 
-        final Map<Id, RegisteredDependency> tokens = new HashMap<>(this.registeredDependency);
-        tokens.put(token.getId(), token);
+        final Map<Id, Registrable> registrables = new HashMap<>(this.registrables);
+        registrables.put(registrable.getId(), registrable);
 
-        return of(tokens);
+        return of(registrables);
     }
 
-    RegisteredDependency get(final Id id) {
-        final RegisteredDependency token = registeredDependency.get(id);
+    public Registrable get(final Id id) {
+        final Registrable registrable = registrables.get(id);
 
-        if (isNull(token))
-            throw new NoSuchElementException("This identifier is not linked to any dependency inside the container: " + id);
+        if (isNull(registrable))
+            throw new NoSuchElementException("This identifier is not linked to any component inside the container: " + id);
 
-        return token;
+        return registrable;
     }
 
-    public Dependencies instantiate(final Instantiator instantiator) {
-        final List<RegisteredDependency> sortedTokens = topologicalSort(registeredDependency.values());
+    public Components instantiate(final Instantiator instantiator) {
+        final List<Registrable> sortedRegistrables = topologicalSort(registrables.values());
 
-        return sortedTokens
+        return sortedRegistrables
                 .stream()
                 .reduce(
-                        Dependencies.empty(),
+                        Components.empty(),
                         reduceDependencies(instantiator),
-                        Dependencies::merge
+                        Components::merge
                 );
     }
 
-    private BiFunction<Dependencies, RegisteredDependency, Dependencies> reduceDependencies(final Instantiator instantiator) {
-        return (dependencies, token) -> {
-            final Dependency dependency = token.instantiate(instantiator, dependencies);
-            return dependencies.add(dependency);
+    private BiFunction<Components, Registrable, Components> reduceDependencies(final Instantiator instantiator) {
+        return (components, registrable) -> {
+            final Component component = registrable.instantiate(instantiator, components);
+            return components.add(component);
         };
     }
 
-    private List<RegisteredDependency> topologicalSort(final Collection<RegisteredDependency> tokens) {
-        return tokens
+    private List<Registrable> topologicalSort(final Collection<Registrable> registrables) {
+        return registrables
                 .stream()
-                .sorted(this::compareTokens)
+                .sorted(this::compareRegistrables)
                 .collect(toList());
     }
 
-    private int compareTokens(final RegisteredDependency firstToken, final RegisteredDependency secondToken) {
-        return firstToken.countDependencies(this) - secondToken.countDependencies(this);
+    private int compareRegistrables(final Registrable firstRegistrable, final Registrable secondRegistrable) {
+        return firstRegistrable.countDependencies(this) - secondRegistrable.countDependencies(this);
     }
 
     @Override
@@ -83,18 +83,18 @@ public class Registry {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         final Registry registry1 = (Registry) o;
-        return Objects.equals(registeredDependency, registry1.registeredDependency);
+        return Objects.equals(registrables, registry1.registrables);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(registeredDependency);
+        return Objects.hash(registrables);
     }
 
     @Override
     public String toString() {
         return "Registry{" +
-                "registeredDependencies=" + registeredDependency +
+                "registeredDependencies=" + registrables +
                 '}';
     }
 }

@@ -1,6 +1,6 @@
 package io.fries.ioc.instantiator;
 
-import io.fries.ioc.dependencies.Dependency;
+import io.fries.ioc.components.Component;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import testable.Book;
@@ -43,10 +43,10 @@ class DefaultInstantiatorTest {
     @Test
     void should_create_an_object_instance_using_a_constructor_with_a_parameter() {
         final Instantiator instantiator = new DefaultInstantiator();
-        final Dependency dependency = mock(Dependency.class);
+        final Component component = mock(Component.class);
 
-        when(dependency.getInstance()).thenReturn(new HeroicProtagonist());
-        final Protagonist instance = assertDoesNotThrow(() -> instantiator.createInstance(FriendlyProtagonist.class, singletonList(dependency)));
+        when(component.getInstance()).thenReturn(new HeroicProtagonist());
+        final Protagonist instance = assertDoesNotThrow(() -> instantiator.createInstance(FriendlyProtagonist.class, singletonList(component)));
 
         assertThat(instance).isNotNull();
     }
@@ -54,35 +54,35 @@ class DefaultInstantiatorTest {
     @Test
     void should_create_an_object_instance_using_a_private_constructor_with_a_parameter() {
         final Instantiator instantiator = new DefaultInstantiator();
-        final Dependency dependency = mock(Dependency.class);
+        final Component component = mock(Component.class);
 
-        when(dependency.getInstance()).thenReturn(mock(Story.class));
-        final Book instance = assertDoesNotThrow(() -> instantiator.createInstance(NovelBook.class, singletonList(dependency)));
+        when(component.getInstance()).thenReturn(mock(Story.class));
+        final Book instance = assertDoesNotThrow(() -> instantiator.createInstance(NovelBook.class, singletonList(component)));
 
         assertThat(instance).isNotNull();
     }
 
     @Test
-    @DisplayName("throw when trying to create an object instance without the required dependencies")
+    @DisplayName("throw when trying to create an object instance without the required components")
     void should_throw_when_trying_to_instantiate_an_object_without_the_required_dependencies() {
         final Instantiator instantiator = new DefaultInstantiator();
 
-        assertThatExceptionOfType(DependencyInstantiationException.class)
+        assertThatExceptionOfType(ComponentInstantiationException.class)
                 .isThrownBy(() -> instantiator.createInstance(NovelBook.class, emptyList()))
                 .withCauseInstanceOf(IllegalArgumentException.class)
                 .withMessageContaining("wrong number of arguments");
     }
 
     @Test
-    @DisplayName("throw when trying to create an object instance without the required dependencies")
+    @DisplayName("throw when trying to create an object instance without the required components")
     void should_throw_when_trying_to_instantiate_an_object_with_too_many_dependencies() {
         final Instantiator instantiator = new DefaultInstantiator();
-        final Dependency dependency = mock(Dependency.class);
+        final Component component = mock(Component.class);
 
-        when(dependency.getInstance()).thenReturn(mock(Protagonist.class));
+        when(component.getInstance()).thenReturn(mock(Protagonist.class));
 
-        assertThatExceptionOfType(DependencyInstantiationException.class)
-                .isThrownBy(() -> instantiator.createInstance(HeroicProtagonist.class, singletonList(dependency)))
+        assertThatExceptionOfType(ComponentInstantiationException.class)
+                .isThrownBy(() -> instantiator.createInstance(HeroicProtagonist.class, singletonList(component)))
                 .withCauseInstanceOf(IllegalArgumentException.class)
                 .withMessageContaining("wrong number of arguments");
     }
