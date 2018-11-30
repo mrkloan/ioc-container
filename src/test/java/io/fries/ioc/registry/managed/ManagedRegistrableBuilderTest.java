@@ -54,7 +54,7 @@ class ManagedRegistrableBuilderTest {
     @Test
     @DisplayName("update its identifier")
     void should_update_the_registrable_id() {
-        final String newId = "new.id";
+        final Object newId = mock(Object.class);
         final ManagedRegistrableBuilder expected = new ManagedRegistrableBuilder(Id.of(newId), Object.class, emptyList());
 
         final ManagedRegistrableBuilder builder = new ManagedRegistrableBuilder(mock(Id.class), Object.class, emptyList());

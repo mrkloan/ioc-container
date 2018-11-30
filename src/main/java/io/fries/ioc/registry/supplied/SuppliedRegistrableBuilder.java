@@ -9,7 +9,7 @@ import java.util.function.Supplier;
 
 public class SuppliedRegistrableBuilder implements RegistrableBuilder {
 
-    private final Id id;
+    private Id id;
     private final Supplier<?> instanceSupplier;
 
     SuppliedRegistrableBuilder(final Id id, final Supplier<?> instanceSupplier) {
@@ -23,7 +23,8 @@ public class SuppliedRegistrableBuilder implements RegistrableBuilder {
     }
 
     public <ID> SuppliedRegistrableBuilder as(final ID id) {
-        throw new UnsupportedOperationException();
+        this.id = Id.of(id);
+        return this;
     }
 
     @Override

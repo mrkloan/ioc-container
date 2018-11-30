@@ -27,6 +27,19 @@ class SuppliedRegistrableBuilderTest {
     }
 
     @Test
+    @DisplayName("update its identifier")
+    void should_update_the_registrable_id() {
+        final Object newId = mock(Object.class);
+        final Supplier instanceSupplier = mock(Supplier.class);
+        final SuppliedRegistrableBuilder expected = new SuppliedRegistrableBuilder(Id.of(newId), instanceSupplier);
+
+        final SuppliedRegistrableBuilder builder = new SuppliedRegistrableBuilder(mock(Id.class), instanceSupplier);
+        final SuppliedRegistrableBuilder result = builder.as(newId);
+
+        assertThat(result).isEqualTo(expected);
+    }
+
+    @Test
     @DisplayName("be equal")
     void should_be_equal() {
         final Id id = mock(Id.class);
