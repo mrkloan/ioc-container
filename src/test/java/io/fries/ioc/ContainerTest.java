@@ -45,6 +45,23 @@ class ContainerTest {
     }
 
     @Test
+    @DisplayName("provide a component instance using its identifier value")
+    void should_provide_a_component_instance_using_its_id_value() {
+        final Object identifierValue = mock(Object.class);
+        final Id id = Id.of(identifierValue);
+        final Components components = mock(Components.class);
+        final Object instance = mock(Object.class);
+
+        final Container container = Container.of(components);
+
+        when(components.getInstance(id)).thenReturn(instance);
+        final Object providedInstance = container.provide(identifierValue);
+
+        verify(components).getInstance(id);
+        assertThat(providedInstance).isEqualTo(instance);
+    }
+
+    @Test
     @DisplayName("be equal")
     void should_be_equal() {
         final Components components = mock(Components.class);
