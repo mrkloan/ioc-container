@@ -1,15 +1,18 @@
 package io.fries.ioc.registry.managed;
 
+import io.fries.ioc.RegistrationContainer;
 import io.fries.ioc.components.Id;
+import io.fries.ioc.instantiator.Instantiator;
 import io.fries.ioc.registry.Registrable;
+import io.fries.ioc.registry.Registry;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import testable.NovelBook;
-import testable.stories.Story;
 
 import java.util.List;
 
 import static io.fries.ioc.registry.managed.ManagedRegistrableBuilder.managed;
+import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -21,11 +24,10 @@ class ManagedRegistrableBuilderTest {
 
     @Test
     @DisplayName("infer the identifier and dependencies of the managed type")
-    void should_infer_the_id_and_dependencies_of_the_managed_type() {
+    void should_infer_the_id_of_the_managed_type() {
         final Class<?> type = NovelBook.class;
         final Id id = Id.of(type);
-        final List<Id> dependencies = singletonList(Id.of(Story.class));
-        final ManagedRegistrableBuilder builder = new ManagedRegistrableBuilder(id, type, dependencies);
+        final ManagedRegistrableBuilder builder = new ManagedRegistrableBuilder(id, type, emptyList());
 
         final ManagedRegistrableBuilder result = managed(type);
 
@@ -62,11 +64,25 @@ class ManagedRegistrableBuilderTest {
     }
 
     @Test
-    @DisplayName("build the managed registrable")
-    void should_build_the_managed_registrable() {
+    @DisplayName("build the managed registrable without inferring its dependencies")
+    void should_build_the_managed_registrable_without_inferring_its_dependencies() {
         final Id id = mock(Id.class);
-        final ManagedRegistrableBuilder builder = new ManagedRegistrableBuilder(id, Object.class, emptyList());
-        final ManagedRegistrable expected = ManagedRegistrable.of(id, Object.class, emptyList());
+        final List<Id> dependencies = singletonList(Id.of(mock(Object.class)));
+        final ManagedRegistrableBuilder builder = new ManagedRegistrableBuilder(id, Object.class, dependencies);
+        final ManagedRegistrable expected = ManagedRegistrable.of(id, Object.class, dependencies);
+
+        final Registrable result = builder.build();
+
+        assertThat(result).isEqualTo(expected);
+    }
+
+    @Test
+    @DisplayName("build the managed registrable with inferred dependencies")
+    void should_build_the_managed_registrable_with_inferred_dependencies() {
+        final Id id = mock(Id.class);
+        final List<Id> dependencies = asList(Id.of(Instantiator.class), Id.of(Registry.class));
+        final ManagedRegistrableBuilder builder = new ManagedRegistrableBuilder(id, RegistrationContainer.class, emptyList());
+        final ManagedRegistrable expected = ManagedRegistrable.of(id, RegistrationContainer.class, dependencies);
 
         final Registrable result = builder.build();
 
