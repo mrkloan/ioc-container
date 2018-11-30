@@ -6,12 +6,25 @@ import org.junit.jupiter.api.Test;
 
 import java.util.function.Supplier;
 
+import static io.fries.ioc.registry.supplied.SuppliedRegistrableBuilder.supply;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @DisplayName("Supplied registrable builder should")
 class SuppliedRegistrableBuilderTest {
+
+    @Test
+    @DisplayName("infer the identifier of the instance supplier")
+    void should_infer_the_identifier_of_the_instance_supplier() {
+        final Id id = Id.of(Supplier.class);
+        final Supplier instanceSupplier = mock(Supplier.class);
+        final SuppliedRegistrableBuilder expected = new SuppliedRegistrableBuilder(id, instanceSupplier);
+
+        final SuppliedRegistrableBuilder builder = supply(instanceSupplier);
+
+        assertThat(builder).isEqualTo(expected);
+    }
 
     @Test
     @DisplayName("be equal")

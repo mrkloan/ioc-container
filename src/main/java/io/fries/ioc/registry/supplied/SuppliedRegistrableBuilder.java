@@ -18,7 +18,8 @@ public class SuppliedRegistrableBuilder implements RegistrableBuilder {
     }
 
     public static SuppliedRegistrableBuilder supply(final Supplier<?> instanceSupplier) {
-        throw new UnsupportedOperationException();
+        final Id id = Id.of(Supplier.class);
+        return new SuppliedRegistrableBuilder(id, instanceSupplier);
     }
 
     public <ID> SuppliedRegistrableBuilder as(final ID id) {
