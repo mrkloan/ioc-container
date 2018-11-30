@@ -50,7 +50,8 @@ public class ManagedRegistrableBuilder implements RegistrableBuilder {
     }
 
     public <ID> ManagedRegistrableBuilder as(final ID id) {
-        throw new UnsupportedOperationException();
+        this.id = Id.of(id);
+        return this;
     }
 
     @Override
