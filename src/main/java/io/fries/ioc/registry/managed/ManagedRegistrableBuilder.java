@@ -8,9 +8,9 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Parameter;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 import static java.util.Arrays.stream;
+import static java.util.stream.Collectors.toList;
 
 public class ManagedRegistrableBuilder implements RegistrableBuilder {
 
@@ -38,11 +38,15 @@ public class ManagedRegistrableBuilder implements RegistrableBuilder {
         return stream(constructorParameters)
                 .map(Parameter::getType)
                 .map(Id::of)
-                .collect(Collectors.toList());
+                .collect(toList());
     }
 
     public ManagedRegistrableBuilder with(final Object... dependencies) {
-        throw new UnsupportedOperationException();
+        this.dependencies = stream(dependencies)
+                .map(Id::of)
+                .collect(toList());
+
+        return this;
     }
 
     public <ID> ManagedRegistrableBuilder as(final ID id) {

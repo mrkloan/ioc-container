@@ -12,6 +12,7 @@ import java.util.List;
 import static io.fries.ioc.registry.managed.ManagedRegistrableBuilder.manage;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
+import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -30,6 +31,23 @@ class ManagedRegistrableBuilderTest {
         final ManagedRegistrableBuilder result = manage(type);
 
         assertThat(result).isEqualTo(builder);
+    }
+
+    @Test
+    @DisplayName("update the dependencies identifiers")
+    void should_update_the_dependencies_id() {
+        final Id id = mock(Id.class);
+        final Class<?> type = Object.class;
+        final List<Id> dependencies = singletonList(Id.of(Object.class));
+
+        final String dependency = "type.dependency";
+        final List<Id> expectedDependencies = singletonList(Id.of(dependency));
+        final ManagedRegistrableBuilder expected = new ManagedRegistrableBuilder(id, type, expectedDependencies);
+
+        final ManagedRegistrableBuilder builder = new ManagedRegistrableBuilder(id, type, dependencies);
+        final ManagedRegistrableBuilder result = builder.with(dependency);
+
+        assertThat(result).isEqualTo(expected);
     }
 
     @Test
