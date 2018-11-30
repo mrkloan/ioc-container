@@ -6,7 +6,7 @@
 These examples use the following object hierarchy, which you can found under the `testable` package in `src/test/java`:
 
     +-------------+-------------------------------------------------------+
-    | Interface   | Implementation(Dependency, ...), ...                  |
+    | Interface   | Implementation(Dependency...)...                      |
     +-------------+-------------------------------------------------------+
     | Book        | NovelBook(Story)                                      |
     | Story       | FantasyStory(Plot, Protagonist)                       |
@@ -22,19 +22,19 @@ method call.
 ### Complete usage example
 
 We want to create a `NovelBook` of a `FantasyStory` with a `PredictablePlot` of "Outcome" and a `FriendlyProtagonist`,
-the Knight Perceval, depending on its best friend, the Knight Karadoc.
+the Knight Perceval, depending on his best friend, the Knight Karadoc.
 
 ```java
 final Container container = Container.empty()
-        .register(Id.of(FantasyStory.class), FantasyStory.class, asList(Id.of(PredictablePlot.class), Id.of("knights.perceval")))
-        .register(Id.of(NovelBook.class), NovelBook.class, singletonList(Id.of(FantasyStory.class)))
-        .register(Id.of(PredictablePlot.class), PredictablePlot.class, singletonList(Id.of("plot.outcome")))
-        .register(Id.of("plot.outcome"), () -> "Outcome")
-        .register(Id.of("knights.perceval"), Protagonist.class, FriendlyProtagonist.class, singletonList(Id.of("knights.karadoc")))
-        .register(Id.of("knights.karadoc"), FriendlyProtagonist.class, singletonList(Id.of("knights.perceval")))
+        .register(managed(FantasyStory.class).with(PredictablePlot.class, "knights.perceval").as(FantasyStory.class))
+        .register(managed(NovelBook.class).with(FantasyStory.class).as(NovelBook.class))
+        .register(managed(PredictablePlot.class).with("plot.outcome").as(PredictablePlot.class))
+        .register(supplied(() -> "Outcome").as("plot.outcome"))
+        .register(proxy(FriendlyProtagonist.class).of(Protagonist.class).with("knights.karadoc").as("knights.perceval"))
+        .register(managed(FriendlyProtagonist.class).with("knights.perceval").as("knights.karadoc"))
         .instantiate();
 
-final Book book = container.provide(Id.of(NovelBook.class));
+final Book book = container.provide(NovelBook.class);
 ```
 
 ### Identifiers
@@ -62,32 +62,34 @@ You can create an empty `RegistrationContainer` using the `Container.empty()` fa
 final RegistrationContainer registrationContainer = Container.empty();
 ```
 
-The `RegistrationContainer` exposes a set of `register` factory methods for each type of `Registrable` component.
+The `RegistrationContainer` exposes a single `register` method consuming a `RegistrableBuilder` in order to stay extensible.
+In the following examples, we assume that every required builder has been statically imported.
 
-Register a supplied instance if you do not want the container to create it for you:
+If you do not want the container to manage your object instances, or if you want to register hard-coded/configurations
+values, use a `SuppliedRegistrableBuilder` in order to register a supplied instance:
 
 ```java
-registrationContainer.register(Id.of(HeroicProtagonist.class), HeroicProtagonist::new);
-registrationContainer.register(Id.of("plot.outcome"), () -> "Outcome");
+registrationContainer.register(supplied(HeroicProtagonist.class).as("hero"));
+registrationContainer.register(supplied(() -> "Outcome").as("plot.outcome"));
 ```
 
-Register a class whose instance will be managed by the container:
+If you want your objects to be managed by the container, use a `ManagedRegistrableBuilder` to perform the registration:
 
 ```java
 // These 3 examples are equivalent: the identifier and dependencies can be inferred by the container.
-registrationContainer.register(NovelBook.class);
-registrationContainer.register(Id.of(NovelBook.class), NovelBook.class);
-registrationContainer.register(Id.of(NovelBook.class), NovelBook.class, singletonList(Id.of(Story.class)));
+registrationContainer.register(managed(NovelBook.class));
+registrationContainer.register(managed(NovelBook.class).as(NovelBook.class));
+registrationContainer.register(managed(NovelBook.class).as(NovelBook.class).with(Story.class));
 ```
 
-Register an interface proxy managed by the container: 
+Finally, use a `ProxyRegistrableBuilder` if you want to register an interface proxy managed by the container: 
 
 ```java
-// Register a FriendlyProtagonist as a proxy for the Protagonist interface.
-registrationContainer.register(Id.of("knights.karadoc"), Protagonist.class, FriendlyProtagonist.class, singletonList(Id.of("knights.perceval")))
-
-// Depends on the proxy, not the concrete implementation.
-registrationContainer.register(Id.of("knights.perceval"), FriendlyProtagonist.class, singletonList(Id.of("knights.karadoc")))
+// These 4 example are equivalent: the proxied interface, dependencies and identifier can be inferred by the container.
+registrationContainer.register(proxy(FriendlyProtagonist.class));
+registrationContainer.register(proxy(FriendlyProtagonist.class).of(Protagonist.class));
+registrationContainer.register(proxy(FriendlyProtagonist.class).of(Protagonist.class).with(Protagonist.class));
+registrationContainer.register(proxy(FriendlyProtagonist.class).of(Protagonist.class).with(Protagonist.class).as(FriendlyProtagnosit.class));
 ```
 
 ### Instantiation and provision
@@ -98,15 +100,15 @@ From now on, this `Container` can provide any instance that was previously regis
 ```java
 final Container container = registrationContainer.instantiate();
 
-final String outcome = container.provide(Id.of("plot.outcome"));
-final Book novelBook = container.provide(Id.of(NovelBook.class));
-final Protagonist karadoc = container.provide(Id.of("knights.karadoc"));
+final String outcome = container.provide("plot.outcome");
+final Book novelBook = container.provide(NovelBook.class);
+final Protagonist karadoc = container.provide("knights.karadoc");
 ```
 
 ### Custom instantiators
 
 The `RegistrationContainer` uses an `Instantiator` in order to create instances of the registered classes.
-The default implementation uses reflection to find a constructor matching the provided components and calls it to 
+The default implementation uses reflection to find a constructor and tries to call it with the provided dependencies to 
 create a new instance.
 
 You can create your own `Instantiator` implementation and use it like so:
