@@ -69,7 +69,10 @@ public class RegistrationContainer {
 
     @SuppressWarnings("WeakerAccess")
     public RegistrationContainer register(final RegistrableBuilder registrableBuilder) {
-        throw new UnsupportedOperationException();
+        final Registrable registrable = registrableBuilder.build();
+        registry = registry.add(registrable);
+
+        return this;
     }
 
     List<Id> inferDependenciesFrom(final Class<?> type) {

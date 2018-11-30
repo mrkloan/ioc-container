@@ -3,6 +3,8 @@ package io.fries.ioc;
 import io.fries.ioc.components.Components;
 import io.fries.ioc.components.Id;
 import io.fries.ioc.instantiator.Instantiator;
+import io.fries.ioc.registry.Registrable;
+import io.fries.ioc.registry.RegistrableBuilder;
 import io.fries.ioc.registry.Registry;
 import io.fries.ioc.registry.managed.ManagedRegistrable;
 import io.fries.ioc.registry.proxy.ProxyRegistrable;
@@ -79,6 +81,30 @@ class RegistrationContainerTest {
     }
 
     @Test
+    @DisplayName("infer type components from its constructor parameters")
+    void should_infer_dependencies_from_constructor_parameters() {
+        final Class<?> type = RegistrationContainer.class;
+        final List<Id> dependencies = asList(Id.of(Instantiator.class), Id.of(Registry.class));
+
+        final List<Id> inferredDependencies = registrationContainer.inferDependenciesFrom(type);
+
+        assertThat(inferredDependencies).isEqualTo(dependencies);
+    }
+
+    @Test
+    @DisplayName("register from a builder")
+    void should_register_from_a_builder() {
+        final RegistrableBuilder builder = mock(RegistrableBuilder.class);
+        final Registrable registrable = mock(Registrable.class);
+
+        when(builder.build()).thenReturn(registrable);
+        registrationContainer.register(builder);
+
+        verify(builder).build();
+        verify(registry).add(registrable);
+    }
+
+    @Test
     @DisplayName("create a container containing the instanced component of each registrable")
     void should_create_a_container_containing_the_instanced_component_of_each_registrable() {
         final Components components = mock(Components.class);
@@ -88,16 +114,5 @@ class RegistrationContainerTest {
 
         verify(registry).instantiate(instantiator);
         assertThat(container).isEqualTo(Container.of(components));
-    }
-
-    @Test
-    @DisplayName("infer type components from its constructor parameters")
-    void should_infer_dependencies_from_constructor_parameters() {
-        final Class<?> type = RegistrationContainer.class;
-        final List<Id> dependencies = asList(Id.of(Instantiator.class), Id.of(Registry.class));
-
-        final List<Id> inferredDependencies = registrationContainer.inferDependenciesFrom(type);
-
-        assertThat(inferredDependencies).isEqualTo(dependencies);
     }
 }
