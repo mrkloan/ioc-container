@@ -1,7 +1,6 @@
 package io.fries.ioc;
 
 import io.fries.ioc.components.Components;
-import io.fries.ioc.components.Id;
 import io.fries.ioc.instantiator.Instantiator;
 import io.fries.ioc.registry.Registrable;
 import io.fries.ioc.registry.RegistrableBuilder;
@@ -13,9 +12,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.List;
-
-import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
@@ -34,17 +30,6 @@ class RegistrationContainerTest {
     @BeforeEach
     void setUp() {
         this.registrationContainer = RegistrationContainer.of(instantiator, registry);
-    }
-
-    @Test
-    @DisplayName("infer type components from its constructor parameters")
-    void should_infer_dependencies_from_constructor_parameters() {
-        final Class<?> type = RegistrationContainer.class;
-        final List<Id> dependencies = asList(Id.of(Instantiator.class), Id.of(Registry.class));
-
-        final List<Id> inferredDependencies = registrationContainer.inferDependenciesFrom(type);
-
-        assertThat(inferredDependencies).isEqualTo(dependencies);
     }
 
     @Test

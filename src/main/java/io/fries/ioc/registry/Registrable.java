@@ -8,6 +8,5 @@ import io.fries.ioc.instantiator.Instantiator;
 public interface Registrable {
     Id getId();
     int countDependencies(final Registry registry);
-
     Component instantiate(final Instantiator instantiator, final Components components);
 }
