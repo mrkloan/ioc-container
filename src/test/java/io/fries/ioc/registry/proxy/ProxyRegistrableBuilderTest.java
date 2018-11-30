@@ -8,6 +8,7 @@ import testable.NovelBook;
 import testable.stories.Story;
 
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import static io.fries.ioc.registry.proxy.ProxyRegistrableBuilder.proxy;
@@ -41,6 +42,19 @@ class ProxyRegistrableBuilderTest {
         assertThatExceptionOfType(IllegalArgumentException.class)
                 .isThrownBy(() -> proxy(Object.class))
                 .withMessage("The provided type does not implement any interface");
+    }
+
+    @Test
+    @DisplayName("update the interface type")
+    void should_update_the_interface_type() {
+        final Id id = mock(Id.class);
+        final Class<?> newInterfaceType = Consumer.class;
+        final ProxyRegistrableBuilder builder = new ProxyRegistrableBuilder(id, Supplier.class, Object.class, emptyList());
+        final ProxyRegistrableBuilder expected = new ProxyRegistrableBuilder(id, newInterfaceType, Object.class, emptyList());
+
+        final ProxyRegistrableBuilder result = builder.of(newInterfaceType);
+
+        assertThat(result).isEqualTo(expected);
     }
 
     @Test

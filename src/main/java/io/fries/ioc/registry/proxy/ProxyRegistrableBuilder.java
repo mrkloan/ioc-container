@@ -48,7 +48,8 @@ public class ProxyRegistrableBuilder implements RegistrableBuilder {
     }
 
     public ProxyRegistrableBuilder of(final Class<?> interfaceType) {
-        throw new UnsupportedOperationException();
+        this.interfaceType = interfaceType;
+        return this;
     }
 
     public ProxyRegistrableBuilder with(final Object... dependencies) {
