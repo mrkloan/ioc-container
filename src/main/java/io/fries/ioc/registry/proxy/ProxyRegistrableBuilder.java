@@ -2,22 +2,25 @@ package io.fries.ioc.registry.proxy;
 
 import io.fries.ioc.components.Id;
 import io.fries.ioc.registry.Registrable;
-import io.fries.ioc.registry.RegistrableBuilder;
+import io.fries.ioc.registry.RegistrableWithDependenciesBuilder;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Parameter;
 import java.util.List;
 import java.util.Objects;
 
 import static java.util.Arrays.stream;
+import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toList;
 
-public class ProxyRegistrableBuilder implements RegistrableBuilder {
+public class ProxyRegistrableBuilder extends RegistrableWithDependenciesBuilder {
 
     private Id id;
     private Class<?> interfaceType;
     private Class<?> type;
     private List<Id> dependencies;
+
+    private ProxyRegistrableBuilder(final Id id, final Class<?> interfaceType, final Class<?> type) {
+        this(id, interfaceType, type, emptyList());
+    }
 
     ProxyRegistrableBuilder(final Id id, final Class<?> interfaceType, final Class<?> type, final List<Id> dependencies) {
         this.id = id;
@@ -32,19 +35,8 @@ public class ProxyRegistrableBuilder implements RegistrableBuilder {
 
         final Id id = Id.of(type);
         final Class<?> interfaceType = type.getInterfaces()[0];
-        final List<Id> dependencies = inferDependenciesFrom(type);
 
-        return new ProxyRegistrableBuilder(id, interfaceType, type, dependencies);
-    }
-
-    private static List<Id> inferDependenciesFrom(final Class<?> type) {
-        final Constructor<?> constructor = type.getDeclaredConstructors()[0];
-        final Parameter[] constructorParameters = constructor.getParameters();
-
-        return stream(constructorParameters)
-                .map(Parameter::getType)
-                .map(Id::of)
-                .collect(toList());
+        return new ProxyRegistrableBuilder(id, interfaceType, type);
     }
 
     public ProxyRegistrableBuilder of(final Class<?> interfaceType) {
@@ -67,6 +59,9 @@ public class ProxyRegistrableBuilder implements RegistrableBuilder {
 
     @Override
     public Registrable build() {
+        if (dependencies.isEmpty())
+            dependencies = inferDependenciesFrom(type);
+
         return ProxyRegistrable.of(id, interfaceType, type, dependencies);
     }
 

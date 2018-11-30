@@ -1,18 +1,21 @@
 package io.fries.ioc.registry.proxy;
 
+import io.fries.ioc.RegistrationContainer;
 import io.fries.ioc.components.Id;
+import io.fries.ioc.instantiator.Instantiator;
 import io.fries.ioc.registry.Registrable;
+import io.fries.ioc.registry.Registry;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import testable.Book;
 import testable.NovelBook;
-import testable.stories.Story;
 
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import static io.fries.ioc.registry.proxy.ProxyRegistrableBuilder.proxy;
+import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -24,13 +27,12 @@ import static org.mockito.Mockito.when;
 class ProxyRegistrableBuilderTest {
 
     @Test
-    @DisplayName("infer the identifier and dependencies of the managed type")
-    void should_infer_the_id_and_dependencies_of_the_managed_type() {
+    @DisplayName("infer the identifier of the managed type")
+    void should_infer_the_id_of_the_managed_type() {
         final Class<?> interfaceType = Book.class;
         final Class<?> type = NovelBook.class;
         final Id id = Id.of(type);
-        final List<Id> dependencies = singletonList(Id.of(Story.class));
-        final ProxyRegistrableBuilder builder = new ProxyRegistrableBuilder(id, interfaceType, type, dependencies);
+        final ProxyRegistrableBuilder builder = new ProxyRegistrableBuilder(id, interfaceType, type, emptyList());
 
         final ProxyRegistrableBuilder result = proxy(type);
 
@@ -84,11 +86,25 @@ class ProxyRegistrableBuilderTest {
     }
 
     @Test
-    @DisplayName("build the registrable proxy")
-    void should_build_the_registrable_proxy() {
+    @DisplayName("build the registrable proxy without inferring its dependencies")
+    void should_build_the_registrable_proxy_without_inferring_its_dependencies() {
         final Id id = mock(Id.class);
-        final ProxyRegistrableBuilder builder = new ProxyRegistrableBuilder(id, Supplier.class, Object.class, emptyList());
-        final ProxyRegistrable registrable = ProxyRegistrable.of(id, Supplier.class, Object.class, emptyList());
+        final List<Id> dependencies = singletonList(Id.of(mock(Object.class)));
+        final ProxyRegistrableBuilder builder = new ProxyRegistrableBuilder(id, Supplier.class, Object.class, dependencies);
+        final ProxyRegistrable registrable = ProxyRegistrable.of(id, Supplier.class, Object.class, dependencies);
+
+        final Registrable result = builder.build();
+
+        assertThat(result).isEqualTo(registrable);
+    }
+
+    @Test
+    @DisplayName("build the registrable proxy with inferred dependencies")
+    void should_build_the_registrable_proxy_with_inferred_dependencies() {
+        final Id id = mock(Id.class);
+        final List<Id> dependencies = asList(Id.of(Instantiator.class), Id.of(Registry.class));
+        final ProxyRegistrableBuilder builder = new ProxyRegistrableBuilder(id, Supplier.class, RegistrationContainer.class, emptyList());
+        final ProxyRegistrable registrable = ProxyRegistrable.of(id, Supplier.class, RegistrationContainer.class, dependencies);
 
         final Registrable result = builder.build();
 

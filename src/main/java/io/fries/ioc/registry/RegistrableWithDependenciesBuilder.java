@@ -11,7 +11,7 @@ import static java.util.Arrays.stream;
 
 public abstract class RegistrableWithDependenciesBuilder implements RegistrableBuilder {
 
-    List<Id> inferDependenciesFrom(final Class<?> type) {
+    protected List<Id> inferDependenciesFrom(final Class<?> type) {
         final Constructor<?> constructor = type.getDeclaredConstructors()[0];
         final Parameter[] constructorParameters = constructor.getParameters();
 
