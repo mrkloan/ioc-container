@@ -4,8 +4,13 @@ import io.fries.ioc.components.Id;
 import io.fries.ioc.registry.Registrable;
 import io.fries.ioc.registry.RegistrableBuilder;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Parameter;
 import java.util.List;
 import java.util.Objects;
+
+import static java.util.Arrays.stream;
+import static java.util.stream.Collectors.toList;
 
 public class ProxyRegistrableBuilder implements RegistrableBuilder {
 
@@ -22,7 +27,21 @@ public class ProxyRegistrableBuilder implements RegistrableBuilder {
     }
 
     public static ProxyRegistrableBuilder proxy(final Class<?> type) {
-        throw new UnsupportedOperationException();
+        final Id id = Id.of(type);
+        final Class<?> interfaceType = type.getInterfaces()[0];
+        final List<Id> dependencies = inferDependenciesFrom(type);
+
+        return new ProxyRegistrableBuilder(id, interfaceType, type, dependencies);
+    }
+
+    private static List<Id> inferDependenciesFrom(final Class<?> type) {
+        final Constructor<?> constructor = type.getDeclaredConstructors()[0];
+        final Parameter[] constructorParameters = constructor.getParameters();
+
+        return stream(constructorParameters)
+                .map(Parameter::getType)
+                .map(Id::of)
+                .collect(toList());
     }
 
     public ProxyRegistrableBuilder of(final Class<?> interfaceType) {

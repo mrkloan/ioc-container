@@ -1,17 +1,15 @@
 package io.fries.ioc.registry.managed;
 
-import io.fries.ioc.RegistrationContainer;
 import io.fries.ioc.components.Id;
-import io.fries.ioc.instantiator.Instantiator;
 import io.fries.ioc.registry.Registrable;
-import io.fries.ioc.registry.Registry;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import testable.NovelBook;
+import testable.stories.Story;
 
 import java.util.List;
 
 import static io.fries.ioc.registry.managed.ManagedRegistrableBuilder.manage;
-import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -24,9 +22,9 @@ class ManagedRegistrableBuilderTest {
     @Test
     @DisplayName("infer the identifier and dependencies of the managed type")
     void should_infer_the_id_and_dependencies_of_the_managed_type() {
-        final Class<?> type = RegistrationContainer.class;
+        final Class<?> type = NovelBook.class;
         final Id id = Id.of(type);
-        final List<Id> dependencies = asList(Id.of(Instantiator.class), Id.of(Registry.class));
+        final List<Id> dependencies = singletonList(Id.of(Story.class));
         final ManagedRegistrableBuilder builder = new ManagedRegistrableBuilder(id, type, dependencies);
 
         final ManagedRegistrableBuilder result = manage(type);
