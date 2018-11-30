@@ -27,6 +27,9 @@ public class ProxyRegistrableBuilder implements RegistrableBuilder {
     }
 
     public static ProxyRegistrableBuilder proxy(final Class<?> type) {
+        if (type.getInterfaces().length == 0)
+            throw new IllegalArgumentException("The provided type does not implement any interface");
+
         final Id id = Id.of(type);
         final Class<?> interfaceType = type.getInterfaces()[0];
         final List<Id> dependencies = inferDependenciesFrom(type);

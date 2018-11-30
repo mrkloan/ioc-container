@@ -14,6 +14,7 @@ import static io.fries.ioc.registry.proxy.ProxyRegistrableBuilder.proxy;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -32,6 +33,14 @@ class ProxyRegistrableBuilderTest {
         final ProxyRegistrableBuilder result = proxy(type);
 
         assertThat(result).isEqualTo(builder);
+    }
+
+    @Test
+    @DisplayName("throw if the type does not implement any interface")
+    void should_throw_if_the_type_does_not_implement_any_interface() {
+        assertThatExceptionOfType(IllegalArgumentException.class)
+                .isThrownBy(() -> proxy(Object.class))
+                .withMessage("The provided type does not implement any interface");
     }
 
     @Test
