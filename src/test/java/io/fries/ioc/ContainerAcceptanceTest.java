@@ -3,6 +3,9 @@ package io.fries.ioc;
 import io.fries.ioc.components.Id;
 import io.fries.ioc.instantiator.DefaultInstantiator;
 import io.fries.ioc.instantiator.Instantiator;
+import io.fries.ioc.registry.managed.ManagedRegistrableBuilder;
+import io.fries.ioc.registry.proxy.ProxyRegistrableBuilder;
+import io.fries.ioc.registry.supplied.SuppliedRegistrableBuilder;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import testable.Book;
@@ -80,5 +83,22 @@ class ContainerAcceptanceTest {
         final Book providedInstance = container.provide(Id.of(NovelBook.class));
 
         assertThat(providedInstance.toString()).isEqualTo("NovelBook(FantasyStory(IncrediblePlot, HeroicProtagonist))");
+    }
+
+    @Test
+    @DisplayName("provide register components using a fluent builder API")
+    void should_register_components_using_a_fluent_builder_api() {
+        final Container container = Container.empty()
+                .register(ManagedRegistrableBuilder.managed(FantasyStory.class).with(PredictablePlot.class, "knights.perceval").as(FantasyStory.class))
+                .register(ManagedRegistrableBuilder.managed(NovelBook.class).with(FantasyStory.class).as(NovelBook.class))
+                .register(ManagedRegistrableBuilder.managed(PredictablePlot.class).with("plot.outcome").as(PredictablePlot.class))
+                .register(SuppliedRegistrableBuilder.supplied(() -> "Outcome").as("plot.outcome"))
+                .register(ProxyRegistrableBuilder.proxy(FriendlyProtagonist.class).of(Protagonist.class).with("knights.karadoc").as("knights.perceval"))
+                .register(ManagedRegistrableBuilder.managed(FriendlyProtagonist.class).with("knights.perceval").as("knights.karadoc"))
+                .instantiate();
+
+        final Book book = container.provide(NovelBook.class);
+
+        assertThat(book.toString()).isEqualTo("NovelBook(FantasyStory(PredictablePlot('Outcome'), FriendlyProtagonist(FriendlyProtagonist)))");
     }
 }

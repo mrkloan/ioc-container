@@ -4,6 +4,7 @@ import io.fries.ioc.components.Components;
 import io.fries.ioc.components.Id;
 import io.fries.ioc.instantiator.Instantiator;
 import io.fries.ioc.registry.Registrable;
+import io.fries.ioc.registry.RegistrableBuilder;
 import io.fries.ioc.registry.Registry;
 import io.fries.ioc.registry.managed.ManagedRegistrable;
 import io.fries.ioc.registry.proxy.ProxyRegistrable;
@@ -64,6 +65,11 @@ public class RegistrationContainer {
     private RegistrationContainer register(final Registrable registrable) {
         registry = registry.add(registrable);
         return this;
+    }
+
+    @SuppressWarnings("WeakerAccess")
+    public RegistrationContainer register(final RegistrableBuilder registrableBuilder) {
+        throw new UnsupportedOperationException();
     }
 
     List<Id> inferDependenciesFrom(final Class<?> type) {

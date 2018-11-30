@@ -32,6 +32,11 @@ public class Container {
     }
 
     @SuppressWarnings("WeakerAccess")
+    public <T, ID> T provide(final ID id) {
+        return provide(Id.of(id));
+    }
+
+    @SuppressWarnings("WeakerAccess")
     public <T> T provide(final Id id) {
         Objects.requireNonNull(id);
         return components.getInstance(id);
