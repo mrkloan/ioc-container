@@ -17,7 +17,7 @@ public class SuppliedRegistrableBuilder implements RegistrableBuilder {
         this.instanceSupplier = instanceSupplier;
     }
 
-    public static SuppliedRegistrableBuilder supply(final Supplier<?> instanceSupplier) {
+    public static SuppliedRegistrableBuilder supplied(final Supplier<?> instanceSupplier) {
         final Id id = Id.of(Supplier.class);
         return new SuppliedRegistrableBuilder(id, instanceSupplier);
     }

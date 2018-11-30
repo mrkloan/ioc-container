@@ -67,7 +67,7 @@ public class ProxyRegistrableBuilder implements RegistrableBuilder {
 
     @Override
     public Registrable build() {
-        throw new UnsupportedOperationException();
+        return ProxyRegistrable.of(id, interfaceType, type, dependencies);
     }
 
     @Override

@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.function.Supplier;
 
-import static io.fries.ioc.registry.supplied.SuppliedRegistrableBuilder.supply;
+import static io.fries.ioc.registry.supplied.SuppliedRegistrableBuilder.supplied;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -22,7 +22,7 @@ class SuppliedRegistrableBuilderTest {
         final Supplier instanceSupplier = mock(Supplier.class);
         final SuppliedRegistrableBuilder expected = new SuppliedRegistrableBuilder(id, instanceSupplier);
 
-        final SuppliedRegistrableBuilder builder = supply(instanceSupplier);
+        final SuppliedRegistrableBuilder builder = supplied(instanceSupplier);
 
         assertThat(builder).isEqualTo(expected);
     }

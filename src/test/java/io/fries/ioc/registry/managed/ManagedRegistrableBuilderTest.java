@@ -9,7 +9,7 @@ import testable.stories.Story;
 
 import java.util.List;
 
-import static io.fries.ioc.registry.managed.ManagedRegistrableBuilder.manage;
+import static io.fries.ioc.registry.managed.ManagedRegistrableBuilder.managed;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -27,7 +27,7 @@ class ManagedRegistrableBuilderTest {
         final List<Id> dependencies = singletonList(Id.of(Story.class));
         final ManagedRegistrableBuilder builder = new ManagedRegistrableBuilder(id, type, dependencies);
 
-        final ManagedRegistrableBuilder result = manage(type);
+        final ManagedRegistrableBuilder result = managed(type);
 
         assertThat(result).isEqualTo(builder);
     }

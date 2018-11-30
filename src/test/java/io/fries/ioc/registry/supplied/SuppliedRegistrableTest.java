@@ -56,7 +56,7 @@ class SuppliedRegistrableTest {
     }
 
     @Test
-    @DisplayName("create a component containing the supply instance")
+    @DisplayName("create a component containing the supplied instance")
     void should_inject_the_supplied_instance_into_a_component() {
         final Object instance = mock(Object.class);
         final Component component = Component.of(id, instance);

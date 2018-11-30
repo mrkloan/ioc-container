@@ -24,7 +24,7 @@ public class ManagedRegistrableBuilder implements RegistrableBuilder {
         this.dependencies = dependencies;
     }
 
-    public static ManagedRegistrableBuilder manage(final Class<?> type) {
+    public static ManagedRegistrableBuilder managed(final Class<?> type) {
         final Id id = Id.of(type);
         final List<Id> dependencies = inferDependenciesFrom(type);
 

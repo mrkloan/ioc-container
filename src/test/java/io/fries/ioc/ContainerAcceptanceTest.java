@@ -16,9 +16,9 @@ import testable.stories.protagonists.FriendlyProtagonist;
 import testable.stories.protagonists.HeroicProtagonist;
 import testable.stories.protagonists.Protagonist;
 
-import static io.fries.ioc.registry.managed.ManagedRegistrableBuilder.manage;
+import static io.fries.ioc.registry.managed.ManagedRegistrableBuilder.managed;
 import static io.fries.ioc.registry.proxy.ProxyRegistrableBuilder.proxy;
-import static io.fries.ioc.registry.supplied.SuppliedRegistrableBuilder.supply;
+import static io.fries.ioc.registry.supplied.SuppliedRegistrableBuilder.supplied;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
@@ -89,12 +89,12 @@ class ContainerAcceptanceTest {
     @DisplayName("provide register components using a fluent builder API")
     void should_register_components_using_a_fluent_builder_api() {
         final Container container = Container.empty()
-                .register(manage(FantasyStory.class).with(PredictablePlot.class, "knights.perceval").as(FantasyStory.class))
-                .register(manage(NovelBook.class).with(FantasyStory.class).as(NovelBook.class))
-                .register(manage(PredictablePlot.class).with("plot.outcome").as(PredictablePlot.class))
-                .register(supply(() -> "Outcome").as("plot.outcome"))
+                .register(managed(FantasyStory.class).with(PredictablePlot.class, "knights.perceval").as(FantasyStory.class))
+                .register(managed(NovelBook.class).with(FantasyStory.class).as(NovelBook.class))
+                .register(managed(PredictablePlot.class).with("plot.outcome").as(PredictablePlot.class))
+                .register(supplied(() -> "Outcome").as("plot.outcome"))
                 .register(proxy(FriendlyProtagonist.class).of(Protagonist.class).with("knights.karadoc").as("knights.perceval"))
-                .register(manage(FriendlyProtagonist.class).with("knights.perceval").as("knights.karadoc"))
+                .register(managed(FriendlyProtagonist.class).with("knights.perceval").as("knights.karadoc"))
                 .instantiate();
 
         final Book book = container.provide(NovelBook.class);

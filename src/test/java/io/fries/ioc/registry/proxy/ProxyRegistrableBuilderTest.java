@@ -1,6 +1,7 @@
 package io.fries.ioc.registry.proxy;
 
 import io.fries.ioc.components.Id;
+import io.fries.ioc.registry.Registrable;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import testable.Book;
@@ -80,6 +81,18 @@ class ProxyRegistrableBuilderTest {
         final ProxyRegistrableBuilder result = builder.as(newId);
 
         assertThat(result).isEqualTo(expected);
+    }
+
+    @Test
+    @DisplayName("build the registrable proxy")
+    void should_build_the_registrable_proxy() {
+        final Id id = mock(Id.class);
+        final ProxyRegistrableBuilder builder = new ProxyRegistrableBuilder(id, Supplier.class, Object.class, emptyList());
+        final ProxyRegistrable registrable = ProxyRegistrable.of(id, Supplier.class, Object.class, emptyList());
+
+        final Registrable result = builder.build();
+
+        assertThat(result).isEqualTo(registrable);
     }
 
     @Test

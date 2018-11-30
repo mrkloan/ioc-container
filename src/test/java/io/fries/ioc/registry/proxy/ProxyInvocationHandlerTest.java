@@ -23,7 +23,7 @@ class ProxyInvocationHandlerTest {
 
     @Test
     @SuppressWarnings("unchecked")
-    @DisplayName("supply the instance when invoking a method for the first time")
+    @DisplayName("supplied the instance when invoking a method for the first time")
     void should_supply_the_instance_when_invoking_a_method_for_the_first_time() {
         final Object instance = mock(Object.class);
         final Supplier<Object> supplier = (Supplier<Object>) mock(Supplier.class);
