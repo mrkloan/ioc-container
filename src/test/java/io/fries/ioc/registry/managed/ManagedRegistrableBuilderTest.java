@@ -39,7 +39,7 @@ class ManagedRegistrableBuilderTest {
         final Class<?> type = Object.class;
         final List<Id> dependencies = singletonList(Id.of(Object.class));
 
-        final String dependency = "type.dependency";
+        final Object dependency = mock(Object.class);
         final List<Id> expectedDependencies = singletonList(Id.of(dependency));
         final ManagedRegistrableBuilder expected = new ManagedRegistrableBuilder(id, type, expectedDependencies);
 

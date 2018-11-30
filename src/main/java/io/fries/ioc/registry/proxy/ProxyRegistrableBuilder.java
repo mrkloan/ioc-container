@@ -53,7 +53,11 @@ public class ProxyRegistrableBuilder implements RegistrableBuilder {
     }
 
     public ProxyRegistrableBuilder with(final Object... dependencies) {
-        throw new UnsupportedOperationException();
+        this.dependencies = stream(dependencies)
+                .map(Id::of)
+                .collect(toList());
+
+        return this;
     }
 
     public <ID> ProxyRegistrableBuilder as(final ID id) {

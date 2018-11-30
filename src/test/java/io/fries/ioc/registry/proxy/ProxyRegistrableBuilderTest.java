@@ -58,6 +58,19 @@ class ProxyRegistrableBuilderTest {
     }
 
     @Test
+    @DisplayName("update the dependencies identifiers")
+    void should_update_the_dependencies_id() {
+        final Id id = mock(Id.class);
+        final Object dependency = mock(Object.class);
+        final ProxyRegistrableBuilder builder = new ProxyRegistrableBuilder(id, Supplier.class, Object.class, singletonList(Id.of(Object.class)));
+        final ProxyRegistrableBuilder expected = new ProxyRegistrableBuilder(id, Supplier.class, Object.class, singletonList(Id.of(dependency)));
+
+        final ProxyRegistrableBuilder result = builder.with(dependency);
+
+        assertThat(result).isEqualTo(expected);
+    }
+
+    @Test
     @DisplayName("be equal")
     void should_be_equal() {
         final Id id = mock(Id.class);
