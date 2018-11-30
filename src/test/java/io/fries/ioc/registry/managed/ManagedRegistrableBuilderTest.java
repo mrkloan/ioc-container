@@ -3,6 +3,7 @@ package io.fries.ioc.registry.managed;
 import io.fries.ioc.RegistrationContainer;
 import io.fries.ioc.components.Id;
 import io.fries.ioc.instantiator.Instantiator;
+import io.fries.ioc.registry.Registrable;
 import io.fries.ioc.registry.Registry;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -58,6 +59,17 @@ class ManagedRegistrableBuilderTest {
 
         final ManagedRegistrableBuilder builder = new ManagedRegistrableBuilder(mock(Id.class), Object.class, emptyList());
         final ManagedRegistrableBuilder result = builder.as(newId);
+
+        assertThat(result).isEqualTo(expected);
+    }
+
+    @Test
+    void should_build_the_managed_registrable() {
+        final Id id = mock(Id.class);
+        final ManagedRegistrableBuilder builder = new ManagedRegistrableBuilder(id, Object.class, emptyList());
+        final ManagedRegistrable expected = ManagedRegistrable.of(id, Object.class, emptyList());
+
+        final Registrable result = builder.build();
 
         assertThat(result).isEqualTo(expected);
     }

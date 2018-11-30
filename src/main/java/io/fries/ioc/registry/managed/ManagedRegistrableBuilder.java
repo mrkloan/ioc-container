@@ -56,7 +56,7 @@ public class ManagedRegistrableBuilder implements RegistrableBuilder {
 
     @Override
     public Registrable build() {
-        throw new UnsupportedOperationException();
+        return ManagedRegistrable.of(id, type, dependencies);
     }
 
     @Override
