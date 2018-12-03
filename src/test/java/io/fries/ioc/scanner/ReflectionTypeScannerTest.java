@@ -17,7 +17,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-@DisplayName("Dependency scanner should")
+@DisplayName("Reflection type scanner should")
 class ReflectionTypeScannerTest {
 
     @Mock

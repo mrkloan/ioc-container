@@ -1,10 +1,14 @@
 package testable.stories.protagonists;
 
+import io.fries.ioc.annotations.Identified;
+import io.fries.ioc.annotations.Proxy;
+
+@Proxy("knights.perceval")
 public class FriendlyProtagonist implements Protagonist {
 
     private final Protagonist friend;
 
-    public FriendlyProtagonist(final Protagonist friend) {
+    public FriendlyProtagonist(@Identified("knights.karadoc") final Protagonist friend) {
         this.friend = friend;
     }
 

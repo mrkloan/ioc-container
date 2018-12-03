@@ -6,6 +6,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import testable.Book;
 import testable.NovelBook;
+import testable.TestableApplication;
 import testable.stories.FantasyStory;
 import testable.stories.plots.IncrediblePlot;
 import testable.stories.plots.Plot;
@@ -80,5 +81,14 @@ class ContainerAcceptanceTest {
         final Book book = container.provide(NovelBook.class);
 
         assertThat(book.toString()).isEqualTo("NovelBook(FantasyStory(PredictablePlot('Outcome'), FriendlyProtagonist(FriendlyProtagonist)))");
+    }
+
+    @Test
+    void should_scan_annotated_components() {
+        final Container container = Container.scan(TestableApplication.class);
+
+        final Book book = container.provide("novelBook");
+
+        assertThat(book.toString()).isEqualTo("NovelBook(FantasyStory(PredictablePlot('Outcome'), FriendlyProtagonist(HeroicProtagonist)))");
     }
 }

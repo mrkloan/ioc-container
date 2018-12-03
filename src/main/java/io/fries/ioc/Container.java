@@ -32,6 +32,11 @@ public class Container {
     }
 
     @SuppressWarnings("WeakerAccess")
+    public static Container scan(final Class<?> entryPoint) {
+        throw new UnsupportedOperationException();
+    }
+
+    @SuppressWarnings("WeakerAccess")
     public <T, ID> T provide(final ID id) {
         final Id componentId = Id.of(id);
         return components.getInstance(componentId);
