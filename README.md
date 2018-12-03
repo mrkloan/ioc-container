@@ -69,7 +69,7 @@ If you do not want the container to manage your object instances, or if you want
 values, use a `SuppliedRegistrableBuilder` in order to register a supplied instance:
 
 ```java
-registrationContainer.register(supplied(HeroicProtagonist.class).as("hero"));
+registrationContainer.register(supplied(HeroicProtagonist::new).as("hero"));
 registrationContainer.register(supplied(() -> "Outcome").as("plot.outcome"));
 ```
 
