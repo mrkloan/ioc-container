@@ -19,6 +19,8 @@ import static java.util.stream.Collectors.toList;
 
 public class SuppliedRegistrableScanner implements RegistrableScanner {
 
+    private static final int NO_PARAMETERS = 0;
+
     private final TypeScanner typeScanner;
     private final Instantiator instantiator;
 
@@ -53,6 +55,9 @@ public class SuppliedRegistrableScanner implements RegistrableScanner {
     }
 
     Supplier<?> createSupplier(final Object configuration, final Method method) {
+        if (method.getParameters().length != NO_PARAMETERS)
+            throw new IllegalStateException("No parameters allowed on a supplied method");
+
         method.setAccessible(true);
 
         return () -> {

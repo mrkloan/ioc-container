@@ -20,6 +20,7 @@ import java.util.Set;
 import java.util.function.Supplier;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -48,6 +49,7 @@ class SuppliedRegistrableScannerTest {
         when(typeScanner.findAnnotatedBy(Configuration.class)).thenReturn(scannedTypes);
         final List<Registrable> result = suppliedRegistrableScanner.findAll();
 
+        assertThat(result).hasSize(2);
         assertThat(result).first().hasFieldOrPropertyWithValue("id", Id.of("otherOutcome"));
         assertThat(result).last().hasFieldOrPropertyWithValue("id", Id.of("plot.outcome"));
     }
@@ -63,6 +65,17 @@ class SuppliedRegistrableScannerTest {
         final Supplier<?> supplier = suppliedRegistrableScanner.createSupplier(configuration, method);
 
         assertThat(supplier.get()).isEqualTo(expected);
+    }
+
+    @Test
+    @DisplayName("throw when creating a supplier for a method with parameters")
+    void should_throw_when_creating_a_supplier_for_a_method_with_parameters() throws NoSuchMethodException {
+        final Object configuration = mock(Object.class);
+        final Method method = configuration.getClass().getDeclaredMethod("equals", Object.class);
+
+        assertThatExceptionOfType(IllegalStateException.class)
+                .isThrownBy(() -> suppliedRegistrableScanner.createSupplier(configuration, method))
+                .withMessage("No parameters allowed on a supplied method");
     }
 
     @Test
