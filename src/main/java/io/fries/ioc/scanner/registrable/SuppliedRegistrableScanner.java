@@ -1,4 +1,4 @@
-package io.fries.ioc.scanner;
+package io.fries.ioc.scanner.registrable;
 
 import io.fries.ioc.annotations.Configuration;
 import io.fries.ioc.annotations.Register;
@@ -7,6 +7,7 @@ import io.fries.ioc.instantiator.ComponentInstantiationException;
 import io.fries.ioc.instantiator.Instantiator;
 import io.fries.ioc.registry.Registrable;
 import io.fries.ioc.registry.supplied.SuppliedRegistrable;
+import io.fries.ioc.scanner.type.TypeScanner;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;

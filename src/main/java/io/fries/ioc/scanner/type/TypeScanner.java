@@ -1,4 +1,4 @@
-package io.fries.ioc.scanner;
+package io.fries.ioc.scanner.type;
 
 import java.lang.annotation.Annotation;
 import java.util.Set;

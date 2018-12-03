@@ -1,4 +1,4 @@
-package io.fries.ioc.scanner;
+package io.fries.ioc.scanner.registrable;
 
 import io.fries.ioc.registry.Registrable;
 

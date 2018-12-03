@@ -1,4 +1,4 @@
-package io.fries.ioc.scanner;
+package io.fries.ioc.scanner.type;
 
 import io.fries.reflection.Reflection;
 import org.junit.jupiter.api.BeforeEach;

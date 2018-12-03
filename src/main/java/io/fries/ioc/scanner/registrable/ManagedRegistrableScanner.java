@@ -1,10 +1,11 @@
-package io.fries.ioc.scanner;
+package io.fries.ioc.scanner.registrable;
 
 import io.fries.ioc.annotations.Identified;
 import io.fries.ioc.annotations.Register;
 import io.fries.ioc.components.Id;
 import io.fries.ioc.registry.Registrable;
 import io.fries.ioc.registry.managed.ManagedRegistrable;
+import io.fries.ioc.scanner.type.TypeScanner;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Parameter;
