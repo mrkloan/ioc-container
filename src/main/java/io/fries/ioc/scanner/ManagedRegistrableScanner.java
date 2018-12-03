@@ -1,6 +1,7 @@
 package io.fries.ioc.scanner;
 
 import io.fries.ioc.annotations.Identified;
+import io.fries.ioc.annotations.Register;
 import io.fries.ioc.components.Id;
 import io.fries.ioc.registry.Registrable;
 import io.fries.ioc.registry.managed.ManagedRegistrable;
@@ -14,16 +15,25 @@ import static java.util.stream.Collectors.toList;
 
 public class ManagedRegistrableScanner implements RegistrableScanner {
 
+    static final String INFERRED_IDENTIFIER = "";
+
     @Override
     public List<Registrable> findAll() {
         return null;
     }
 
-    Registrable createRegistrable(final Class<?> type) {
-        final Id id = Id.of(type.getSimpleName());
+    Registrable createRegistrable(final Class<?> type, final Register register) {
+        final Id id = extractComponentId(type, register);
         final List<Id> dependencies = extractDependencies(type);
 
         return ManagedRegistrable.of(id, type, dependencies);
+    }
+
+    private Id extractComponentId(final Class<?> type, final Register register) {
+        if (register.value().equals(INFERRED_IDENTIFIER))
+            return Id.of(type.getSimpleName());
+
+        return Id.of(register.value());
     }
 
     private List<Id> extractDependencies(final Class<?> type) {
