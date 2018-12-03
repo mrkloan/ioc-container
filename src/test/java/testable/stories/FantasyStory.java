@@ -12,7 +12,7 @@ public class FantasyStory implements Story {
     private final Protagonist protagonist;
 
     FantasyStory(
-            @Identified("predictablePlot") final Plot plot,
+            @Identified("PredictablePlot") final Plot plot,
             @Identified("knights.perceval") final Protagonist protagonist
     ) {
         this.plot = plot;

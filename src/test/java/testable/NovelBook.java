@@ -9,7 +9,7 @@ public class NovelBook implements Book {
 
     private final Story story;
 
-    private NovelBook(@Identified("fantasyStory") final Story story) {
+    private NovelBook(@Identified("FantasyStory") final Story story) {
         this.story = story;
     }
 
