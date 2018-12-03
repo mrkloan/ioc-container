@@ -17,9 +17,19 @@ public class ManagedRegistrableScanner implements RegistrableScanner {
 
     static final String INFERRED_IDENTIFIER = "";
 
+    private final TypeScanner typeScanner;
+
+    ManagedRegistrableScanner(final TypeScanner typeScanner) {
+        this.typeScanner = typeScanner;
+    }
+
     @Override
     public List<Registrable> findAll() {
-        return null;
+        return typeScanner
+                .findAnnotatedBy(Register.class)
+                .stream()
+                .map(type -> createRegistrable(type, type.getAnnotation(Register.class)))
+                .collect(toList());
     }
 
     Registrable createRegistrable(final Class<?> type, final Register register) {

@@ -7,8 +7,15 @@ import io.fries.ioc.registry.managed.ManagedRegistrable;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import testable.NovelBook;
 import testable.stories.ScienceFictionStory;
+
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import static io.fries.ioc.scanner.ManagedRegistrableScanner.INFERRED_IDENTIFIER;
 import static java.util.Collections.singletonList;
@@ -16,14 +23,32 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+@ExtendWith(MockitoExtension.class)
 @DisplayName("Managed registrable scanner should")
 class ManagedRegistrableScannerTest {
+
+    @Mock
+    private TypeScanner typeScanner;
 
     private ManagedRegistrableScanner managedRegistrableScanner;
 
     @BeforeEach
     void setUp() {
-        this.managedRegistrableScanner = new ManagedRegistrableScanner();
+        this.managedRegistrableScanner = new ManagedRegistrableScanner(typeScanner);
+    }
+
+    @Test
+    void should_find_all_managed_registrables() {
+        final Set<Class<?>> scannedTypes = new HashSet<>();
+        scannedTypes.add(NovelBook.class);
+
+        when(typeScanner.findAnnotatedBy(Register.class)).thenReturn(scannedTypes);
+        final List<Registrable> result = managedRegistrableScanner.findAll();
+
+        final List<Registrable> expected = singletonList(
+                ManagedRegistrable.of(Id.of("NovelBook"), NovelBook.class, singletonList(Id.of("FantasyStory")))
+        );
+        assertThat(result).isEqualTo(expected);
     }
 
     @Test
