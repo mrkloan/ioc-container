@@ -1,25 +1,24 @@
 package io.fries.ioc.scanner.registrable;
 
-import io.fries.ioc.annotations.Identified;
 import io.fries.ioc.annotations.Register;
 import io.fries.ioc.components.Id;
 import io.fries.ioc.registry.Registrable;
 import io.fries.ioc.registry.managed.ManagedRegistrable;
+import io.fries.ioc.scanner.dependencies.DependenciesScanner;
 import io.fries.ioc.scanner.type.TypeScanner;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Parameter;
 import java.util.List;
 
-import static java.util.Arrays.stream;
 import static java.util.stream.Collectors.toList;
 
 public class ManagedRegistrableScanner implements RegistrableScanner {
 
     private final TypeScanner typeScanner;
+    private final DependenciesScanner dependenciesScanner;
 
-    ManagedRegistrableScanner(final TypeScanner typeScanner) {
+    ManagedRegistrableScanner(final TypeScanner typeScanner, final DependenciesScanner dependenciesScanner) {
         this.typeScanner = typeScanner;
+        this.dependenciesScanner = dependenciesScanner;
     }
 
     @Override
@@ -33,7 +32,7 @@ public class ManagedRegistrableScanner implements RegistrableScanner {
 
     Registrable createRegistrable(final Class<?> type, final Register register) {
         final Id id = extractComponentId(type, register);
-        final List<Id> dependencies = extractDependencies(type);
+        final List<Id> dependencies = dependenciesScanner.findByConstructor(type);
 
         return ManagedRegistrable.of(id, type, dependencies);
     }
@@ -43,30 +42,5 @@ public class ManagedRegistrableScanner implements RegistrableScanner {
             return Id.of(type.getSimpleName());
 
         return Id.of(register.value());
-    }
-
-    private List<Id> extractDependencies(final Class<?> type) {
-        final Constructor<?> constructor = type.getDeclaredConstructors()[0];
-        final Parameter[] parameters = constructor.getParameters();
-        return stream(parameters)
-                .map(this::extractParameterId)
-                .collect(toList());
-    }
-
-    private Id extractParameterId(final Parameter parameter) {
-        if (parameter.isAnnotationPresent(Identified.class))
-            return parameterAnnotationToId(parameter);
-
-        return parameterTypeToId(parameter);
-    }
-
-    private Id parameterAnnotationToId(final Parameter parameter) {
-        final Identified identified = parameter.getAnnotation(Identified.class);
-        return Id.of(identified.value());
-    }
-
-    private Id parameterTypeToId(final Parameter parameter) {
-        final String parameterType = parameter.getType().getSimpleName();
-        return Id.of(parameterType);
     }
 }
