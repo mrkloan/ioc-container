@@ -17,7 +17,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import static io.fries.ioc.scanner.ManagedRegistrableScanner.INFERRED_IDENTIFIER;
 import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
@@ -26,6 +25,8 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 @DisplayName("Managed registrable scanner should")
 class ManagedRegistrableScannerTest {
+
+    private static final String INFERRED_IDENTIFIER = "";
 
     @Mock
     private TypeScanner typeScanner;
@@ -38,6 +39,7 @@ class ManagedRegistrableScannerTest {
     }
 
     @Test
+    @DisplayName("find all managed registrables")
     void should_find_all_managed_registrables() {
         final Set<Class<?>> scannedTypes = new HashSet<>();
         scannedTypes.add(NovelBook.class);

@@ -15,8 +15,6 @@ import static java.util.stream.Collectors.toList;
 
 public class ManagedRegistrableScanner implements RegistrableScanner {
 
-    static final String INFERRED_IDENTIFIER = "";
-
     private final TypeScanner typeScanner;
 
     ManagedRegistrableScanner(final TypeScanner typeScanner) {
@@ -40,7 +38,7 @@ public class ManagedRegistrableScanner implements RegistrableScanner {
     }
 
     private Id extractComponentId(final Class<?> type, final Register register) {
-        if (register.value().equals(INFERRED_IDENTIFIER))
+        if (register.value().isEmpty())
             return Id.of(type.getSimpleName());
 
         return Id.of(register.value());
