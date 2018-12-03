@@ -2,7 +2,9 @@ package io.fries.ioc.registry.managed;
 
 import io.fries.ioc.components.Id;
 import io.fries.ioc.registry.Registrable;
-import io.fries.ioc.registry.RegistrableWithDependenciesBuilder;
+import io.fries.ioc.registry.RegistrableBuilder;
+import io.fries.ioc.scanner.dependencies.DependenciesScanner;
+import io.fries.ioc.scanner.dependencies.DependenciesTypeScanner;
 
 import java.util.List;
 import java.util.Objects;
@@ -11,26 +13,30 @@ import static java.util.Arrays.stream;
 import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toList;
 
-public class ManagedRegistrableBuilder extends RegistrableWithDependenciesBuilder {
+public class ManagedRegistrableBuilder implements RegistrableBuilder {
+
+    private final DependenciesScanner dependenciesScanner;
 
     private final Class<?> type;
     private Id id;
     private List<Id> dependencies;
 
-    private ManagedRegistrableBuilder(final Id id, final Class<?> type) {
-        this(id, type, emptyList());
+    private ManagedRegistrableBuilder(final DependenciesScanner dependenciesScanner, final Id id, final Class<?> type) {
+        this(dependenciesScanner, id, type, emptyList());
     }
 
-    ManagedRegistrableBuilder(final Id id, final Class<?> type, final List<Id> dependencies) {
+    ManagedRegistrableBuilder(final DependenciesScanner dependenciesScanner, final Id id, final Class<?> type, final List<Id> dependencies) {
+        this.dependenciesScanner = dependenciesScanner;
         this.id = id;
         this.type = type;
         this.dependencies = dependencies;
     }
 
     public static ManagedRegistrableBuilder managed(final Class<?> type) {
+        final DependenciesScanner dependenciesScanner = new DependenciesTypeScanner();
         final Id id = Id.of(type);
 
-        return new ManagedRegistrableBuilder(id, type);
+        return new ManagedRegistrableBuilder(dependenciesScanner, id, type);
     }
 
     public ManagedRegistrableBuilder with(final Object... dependencies) {
@@ -49,7 +55,7 @@ public class ManagedRegistrableBuilder extends RegistrableWithDependenciesBuilde
     @Override
     public Registrable build() {
         if (dependencies.isEmpty())
-            dependencies = inferDependenciesFrom(type);
+            dependencies = dependenciesScanner.findByConstructor(type);
 
         return ManagedRegistrable.of(id, type, dependencies);
     }

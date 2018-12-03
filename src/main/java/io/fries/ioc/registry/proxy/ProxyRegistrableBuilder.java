@@ -2,7 +2,9 @@ package io.fries.ioc.registry.proxy;
 
 import io.fries.ioc.components.Id;
 import io.fries.ioc.registry.Registrable;
-import io.fries.ioc.registry.RegistrableWithDependenciesBuilder;
+import io.fries.ioc.registry.RegistrableBuilder;
+import io.fries.ioc.scanner.dependencies.DependenciesScanner;
+import io.fries.ioc.scanner.dependencies.DependenciesTypeScanner;
 
 import java.util.List;
 import java.util.Objects;
@@ -11,18 +13,21 @@ import static java.util.Arrays.stream;
 import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toList;
 
-public class ProxyRegistrableBuilder extends RegistrableWithDependenciesBuilder {
+public class ProxyRegistrableBuilder implements RegistrableBuilder {
+
+    private final DependenciesScanner dependenciesScanner;
 
     private Id id;
     private Class<?> interfaceType;
     private Class<?> type;
     private List<Id> dependencies;
 
-    private ProxyRegistrableBuilder(final Id id, final Class<?> interfaceType, final Class<?> type) {
-        this(id, interfaceType, type, emptyList());
+    private ProxyRegistrableBuilder(final DependenciesScanner dependenciesScanner, final Id id, final Class<?> interfaceType, final Class<?> type) {
+        this(dependenciesScanner, id, interfaceType, type, emptyList());
     }
 
-    ProxyRegistrableBuilder(final Id id, final Class<?> interfaceType, final Class<?> type, final List<Id> dependencies) {
+    ProxyRegistrableBuilder(final DependenciesScanner dependenciesScanner, final Id id, final Class<?> interfaceType, final Class<?> type, final List<Id> dependencies) {
+        this.dependenciesScanner = dependenciesScanner;
         this.id = id;
         this.interfaceType = interfaceType;
         this.type = type;
@@ -30,10 +35,11 @@ public class ProxyRegistrableBuilder extends RegistrableWithDependenciesBuilder 
     }
 
     public static ProxyRegistrableBuilder proxy(final Class<?> type) {
+        final DependenciesScanner dependenciesScanner = new DependenciesTypeScanner();
         final Id id = Id.of(type);
         final Class<?> interfaceType = findFirstImplementedInterface(type);
 
-        return new ProxyRegistrableBuilder(id, interfaceType, type);
+        return new ProxyRegistrableBuilder(dependenciesScanner, id, interfaceType, type);
     }
 
     private static Class<?> findFirstImplementedInterface(final Class<?> type) {
@@ -67,7 +73,7 @@ public class ProxyRegistrableBuilder extends RegistrableWithDependenciesBuilder 
     @Override
     public Registrable build() {
         if (dependencies.isEmpty())
-            dependencies = inferDependenciesFrom(type);
+            dependencies = dependenciesScanner.findByConstructor(type);
 
         return ProxyRegistrable.of(id, interfaceType, type, dependencies);
     }

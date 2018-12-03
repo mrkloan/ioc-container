@@ -1,8 +1,9 @@
-package io.fries.ioc.registry;
+package io.fries.ioc.scanner.dependencies;
 
 import io.fries.ioc.RegistrationContainer;
 import io.fries.ioc.components.Id;
 import io.fries.ioc.instantiator.Instantiator;
+import io.fries.ioc.registry.Registry;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -15,19 +16,19 @@ import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @ExtendWith(MockitoExtension.class)
-@DisplayName("Registrable with dependencies should")
-class RegistrableWithDependenciesBuilderTest {
+@DisplayName("Dependencies type scanner should")
+class DependenciesTypeScannerTest {
 
     @Spy
-    private RegistrableWithDependenciesBuilder registrableWithDependenciesBuilder;
+    private DependenciesTypeScanner dependenciesTypeScanner;
 
     @Test
-    @DisplayName("infer its dependencies type from its constructor parameters")
-    void should_infer_dependencies_from_constructor_parameters() {
+    @DisplayName("find types dependencies from the first declared constructor")
+    void should_find_typed_dependencies_from_the_first_declared_constructor() {
         final Class<?> type = RegistrationContainer.class;
         final List<Id> dependencies = asList(Id.of(Instantiator.class), Id.of(Registry.class));
 
-        final List<Id> inferredDependencies = registrableWithDependenciesBuilder.inferDependenciesFrom(type);
+        final List<Id> inferredDependencies = dependenciesTypeScanner.findByConstructor(type);
 
         assertThat(inferredDependencies).isEqualTo(dependencies);
     }

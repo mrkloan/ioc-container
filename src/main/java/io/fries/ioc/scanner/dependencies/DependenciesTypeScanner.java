@@ -1,4 +1,4 @@
-package io.fries.ioc.registry;
+package io.fries.ioc.scanner.dependencies;
 
 import io.fries.ioc.components.Id;
 
@@ -9,9 +9,10 @@ import java.util.stream.Collectors;
 
 import static java.util.Arrays.stream;
 
-public abstract class RegistrableWithDependenciesBuilder implements RegistrableBuilder {
+public class DependenciesTypeScanner implements DependenciesScanner {
 
-    protected List<Id> inferDependenciesFrom(final Class<?> type) {
+    @Override
+    public List<Id> findByConstructor(final Class<?> type) {
         final Constructor<?> constructor = type.getDeclaredConstructors()[0];
         final Parameter[] constructorParameters = constructor.getParameters();
 
