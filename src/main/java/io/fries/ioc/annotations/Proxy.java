@@ -12,4 +12,6 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Target(TYPE)
 public @interface Proxy {
     String value() default "";
+
+    Class<?> type() default Proxy.class;
 }
