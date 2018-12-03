@@ -42,7 +42,7 @@ public class ProxyRegistrableBuilder implements RegistrableBuilder {
         return new ProxyRegistrableBuilder(dependenciesScanner, id, interfaceType, type);
     }
 
-    private static Class<?> findFirstImplementedInterface(final Class<?> type) {
+    public static Class<?> findFirstImplementedInterface(final Class<?> type) {
         if (type.getInterfaces().length > 0)
             return type.getInterfaces()[0];
 
