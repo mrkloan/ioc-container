@@ -89,12 +89,12 @@ class SuppliedRegistrableScannerTest {
     }
 
     @Test
-    @DisplayName("extract the method name when the register value is empty")
+    @DisplayName("extract the method name when the register id is empty")
     void should_extract_the_method_name_when_the_register_value_is_empty() throws NoSuchMethodException {
         final Method method = Object.class.getDeclaredMethod("toString");
         final Register register = mock(Register.class);
 
-        when(register.value()).thenReturn("");
+        when(register.id()).thenReturn("");
         final Id result = suppliedRegistrableScanner.extractSupplierId(method, register);
 
         final Id expected = Id.of("toString");
@@ -107,10 +107,10 @@ class SuppliedRegistrableScannerTest {
         final Method method = Object.class.getDeclaredMethod("toString");
         final Register register = mock(Register.class);
 
-        when(register.value()).thenReturn("string.value");
+        when(register.id()).thenReturn("string.id");
         final Id result = suppliedRegistrableScanner.extractSupplierId(method, register);
 
-        final Id expected = Id.of("string.value");
+        final Id expected = Id.of("string.id");
         assertThat(result).isEqualTo(expected);
     }
 }

@@ -1,7 +1,7 @@
 # ioc-container [![Build Status](https://travis-ci.org/MrKloan/ioc-container.svg?branch=master)](https://travis-ci.org/MrKloan/ioc-container) [![](https://jitpack.io/v/MrKloan/ioc-container.svg)](https://jitpack.io/#MrKloan/ioc-container)
-> Lightweight IoC Container for the Java programming language.
+> Lightweight IoC Container for the Java programming language, featuring [manual](#manual-usage) and [annotations-based](#annotations-usage) registration.
 
-## Usage
+## Manual usage
 
 These examples use the following object hierarchy, which you can found under the `testable` package in `src/test/java`:
 
@@ -26,13 +26,13 @@ the Knight Perceval, depending on his best friend, the Knight Karadoc.
 
 ```java
 final Container container = Container.empty()
-        .register(managed(FantasyStory.class).with(PredictablePlot.class, "knights.perceval").as(FantasyStory.class))
-        .register(managed(NovelBook.class).with(FantasyStory.class).as(NovelBook.class))
-        .register(managed(PredictablePlot.class).with("plot.outcome").as(PredictablePlot.class))
-        .register(supplied(() -> "Outcome").as("plot.outcome"))
-        .register(proxy(FriendlyProtagonist.class).of(Protagonist.class).with("knights.karadoc").as("knights.perceval"))
-        .register(managed(FriendlyProtagonist.class).with("knights.perceval").as("knights.karadoc"))
-        .instantiate();
+    .register(managed(FantasyStory.class).with(PredictablePlot.class, "knights.perceval").as(FantasyStory.class))
+    .register(managed(NovelBook.class).with(FantasyStory.class).as(NovelBook.class))
+    .register(managed(PredictablePlot.class).with("plot.outcome").as(PredictablePlot.class))
+    .register(supplied(() -> "Outcome").as("plot.outcome"))
+    .register(proxy(FriendlyProtagonist.class).of(Protagonist.class).with("knights.karadoc").as("knights.perceval"))
+    .register(managed(FriendlyProtagonist.class).with("knights.perceval").as("knights.karadoc"))
+    .instantiate();
 
 final Book book = container.provide(NovelBook.class);
 ```
@@ -105,7 +105,7 @@ final Book novelBook = container.provide(NovelBook.class);
 final Protagonist karadoc = container.provide("knights.karadoc");
 ```
 
-### Custom instantiators
+### Custom `Instantiator`
 
 The `RegistrationContainer` uses an `Instantiator` in order to create instances of the registered classes.
 The default implementation uses reflection to find a constructor and tries to call it with the provided dependencies to 
@@ -125,6 +125,137 @@ class CustomInstantiator implements Instantiator {
 final Instantiator instantiator = new CustomInstantiator();
 final RegistrationContainer registrationContainer = Container.using(instantiator);
 ```
+
+### Custom `Registrable`
+
+The examples provided above use the three default `Registrable` implementations in order  to create a `Component`. 
+If you encounter a use case that is not fulfilled by one of these three solutions, feel free to create your own implementation
+of the `Registrable` interface:
+
+```java
+class CustomRegistrable implements Registrable { /* Implement the required methods */ }
+
+// ...
+final Registrable customRegistrable = new CustomRegistrable(...);
+final Container container = Container.empty()
+    .register(customRegistrable)
+    .instantiate();
+```  
+
+## Annotations usage
+
+### Complete usage example
+
+Instead of dealing with your components registration manually, you can use a simple set of four annotations to manage 
+their interactions with the IoC container. The following code snippets (one per class) highlight this usage.
+
+```java
+// Registers an instance using its class name as the default identifier: "NovelBook".
+@Register
+class NovelBook implements Book {
+    private final Story story;
+    
+    // Depends on a Story instance, identified by "story.fantasy".
+    NovelBook(@Identified("story.fantasy") final Story story) {
+        this.story = story;
+    }
+}
+```
+
+```java
+// Registers an instance using a custom identifier: "story.fantasy".
+@Register(id = "story.fantasy")
+class FantasyStory implements Story {
+    private final Plot plot;
+    private final Protagonist protagonist;
+    
+    // As these constructor parameters are not annotated with @Identified,
+    // their class name will be used as identifiers: "Plot" and "Protagonist".
+    FantasyStory(final Plot plot, final Protagonist protagonist) {
+        this.plot = plot;
+        this.protagonist = protagonist;
+    }
+}
+```
+
+```java
+@Register(id = "Plot")
+class ComplicatedPlot implements Plot {
+    private final String complication;
+    
+    // This component depends on a primitive type, which can only be registered 
+    // using a supplied registrable.
+    ComplicatedPlot(@Identified("plotComplication") final String complication) {
+        this.complication = complication;
+    }
+}
+```
+
+```java
+// A configuration class will not be registered as a component itself.
+// Rather, it exposes its methods annotated with @Register as supplied
+// components inside the container.
+@Configuration
+class Library {
+    
+    // As no identifier is specified with the annotation, 
+    // the method name will be used instead: "plotComplication".
+    @Register
+    String plotComplication() {
+        return "Some cliffhanger";
+    }
+}
+```
+
+```java
+// You may notice that this Protagonist depends on the same Story instance that depends on itself...
+// This is a nasty case of circular dependency. 
+//
+// Hence, you can use a @Proxy annotation in order not to register the instance of the component
+// itself, but a proxy to the implemented interface holding the actual instance, safely injectable.
+// 
+// In this example, the "type" parameter can be omitted: the proxied type would automatically be 
+// inferred as the first implemented interface of the registered type.
+@Proxy(id = "Protagonist", type = Protagonist.class)
+class StoryDependentProtagonist implements Protagonist {
+    private final Story story;
+    
+    StoryDependentProtagonist(@Identified("story.fantasy") final Story story) {
+        this.story = story;
+    }
+}
+```
+
+Once your components are properly annotated, you simply need to provide an entry point to the container.
+This entry point is a class whose package will be used as the root for reflection scanning, and do not require to be
+annotated/registered inside the container whatsoever. The package content and any of its subpackages will be included.
+
+```java
+final Container container = Container.scan(Library.class);
+final Book book = container.provide("NovelBook");
+```
+
+### Custom `RegistrableScanner`
+
+A `RegistrableScanner` is responsible for identifying and creating `Registrable` instances. Note that a custom scanner 
+is only necessary if you created a custom `Registrable` and want the container to be able to manage them automatically
+(using your own annotation, for example).
+
+The `Container.scan` method takes a vararg of `RegistrableScanner` as its final parameter, allowing you to pass along as
+many custom scanners as you want:
+
+```java
+class CustomRegistrableScanner implements RegistrableScanner {
+    @Override
+    public List<Registrable> findAll() {
+        // ...
+    }
+}
+
+// ...
+final RegistrableScanner customScanner = new CustomRegistrableScanner();
+final Container container = Container.scan(Library.class, customScanner);
+```  
 
 ## Installation
 

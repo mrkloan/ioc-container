@@ -6,7 +6,7 @@ import io.fries.ioc.annotations.Register;
 @Configuration
 public class TestableApplication {
 
-    @Register("plot.outcome")
+    @Register(id = "plot.outcome")
     String plotOutcome() {
         return "Outcome";
     }

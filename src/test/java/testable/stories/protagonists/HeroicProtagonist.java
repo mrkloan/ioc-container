@@ -2,7 +2,7 @@ package testable.stories.protagonists;
 
 import io.fries.ioc.annotations.Register;
 
-@Register("knights.karadoc")
+@Register(id = "knights.karadoc")
 public class HeroicProtagonist implements Protagonist {
 
     @Override

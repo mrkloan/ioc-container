@@ -12,5 +12,5 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Retention(RUNTIME)
 @Target({TYPE, METHOD})
 public @interface Register {
-    String value() default "";
+    String id() default "";
 }

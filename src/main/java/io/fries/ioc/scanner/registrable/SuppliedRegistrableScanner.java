@@ -74,9 +74,9 @@ public class SuppliedRegistrableScanner implements RegistrableScanner {
     }
 
     Id extractSupplierId(final Method method, final Register register) {
-        if (register.value().isEmpty())
+        if (register.id().isEmpty())
             return Id.of(method.getName());
 
-        return Id.of(register.value());
+        return Id.of(register.id());
     }
 }

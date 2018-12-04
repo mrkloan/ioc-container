@@ -47,9 +47,9 @@ public class ProxyRegistrableScanner implements RegistrableScanner {
     }
 
     private Id extractComponentId(final Class<?> type, final Proxy proxy) {
-        if (proxy.value().isEmpty())
+        if (proxy.id().isEmpty())
             return Id.of(type.getSimpleName());
 
-        return Id.of(proxy.value());
+        return Id.of(proxy.id());
     }
 }

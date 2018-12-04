@@ -38,9 +38,9 @@ public class ManagedRegistrableScanner implements RegistrableScanner {
     }
 
     private Id extractComponentId(final Class<?> type, final Register register) {
-        if (register.value().isEmpty())
+        if (register.id().isEmpty())
             return Id.of(type.getSimpleName());
 
-        return Id.of(register.value());
+        return Id.of(register.id());
     }
 }

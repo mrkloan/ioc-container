@@ -68,7 +68,7 @@ class ManagedRegistrableScannerTest {
         final Class<?> type = NovelBook.class;
         final Register register = mock(Register.class);
 
-        when(register.value()).thenReturn(INFERRED_IDENTIFIER);
+        when(register.id()).thenReturn(INFERRED_IDENTIFIER);
         final Registrable registrable = managedRegistrableScanner.createRegistrable(type, register);
 
         final ManagedRegistrable expected = ManagedRegistrable.of(Id.of("NovelBook"), NovelBook.class, NO_DEPENDENCIES);
@@ -81,7 +81,7 @@ class ManagedRegistrableScannerTest {
         final Class<?> type = ScienceFictionStory.class;
         final Register register = mock(Register.class);
 
-        when(register.value()).thenReturn(INFERRED_IDENTIFIER);
+        when(register.id()).thenReturn(INFERRED_IDENTIFIER);
         final Registrable registrable = managedRegistrableScanner.createRegistrable(type, register);
 
         final ManagedRegistrable expected = ManagedRegistrable.of(Id.of("ScienceFictionStory"), ScienceFictionStory.class, NO_DEPENDENCIES);
@@ -94,7 +94,7 @@ class ManagedRegistrableScannerTest {
         final Class<?> type = ScienceFictionStory.class;
         final Register register = mock(Register.class);
 
-        when(register.value()).thenReturn("story.sci-fi");
+        when(register.id()).thenReturn("story.sci-fi");
         final Registrable registrable = managedRegistrableScanner.createRegistrable(type, register);
 
         final ManagedRegistrable expected = ManagedRegistrable.of(Id.of("story.sci-fi"), ScienceFictionStory.class, NO_DEPENDENCIES);
