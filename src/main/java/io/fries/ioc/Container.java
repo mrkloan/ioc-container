@@ -6,15 +6,11 @@ import io.fries.ioc.instantiator.DefaultInstantiator;
 import io.fries.ioc.instantiator.Instantiator;
 import io.fries.ioc.registry.Registry;
 import io.fries.ioc.scanner.ComponentsScanner;
-import io.fries.ioc.scanner.dependencies.DependenciesScanner;
-import io.fries.ioc.scanner.dependencies.IdentifiedDependenciesScanner;
-import io.fries.ioc.scanner.registrable.ManagedRegistrableScanner;
-import io.fries.ioc.scanner.registrable.ProxyRegistrableScanner;
-import io.fries.ioc.scanner.registrable.SuppliedRegistrableScanner;
-import io.fries.ioc.scanner.type.ReflectionTypeScanner;
-import io.fries.ioc.scanner.type.TypeScanner;
+import io.fries.ioc.scanner.registrable.RegistrableScanner;
 
 import java.util.Objects;
+
+import static java.util.Arrays.stream;
 
 public class Container {
 
@@ -40,18 +36,16 @@ public class Container {
     }
 
     @SuppressWarnings("WeakerAccess")
-    public static Container scan(final Class<?> entryPoint) {
-        final Instantiator instantiator = new DefaultInstantiator();
-        final RegistrationContainer registrationContainer = using(instantiator);
+    public static Container scan(final Class<?> entryPoint, final RegistrableScanner... scanners) {
+        return scan(entryPoint, empty(), scanners);
+    }
 
-        final TypeScanner typeScanner = new ReflectionTypeScanner(entryPoint);
-        final DependenciesScanner dependenciesScanner = new IdentifiedDependenciesScanner();
+    @SuppressWarnings("WeakerAccess")
+    public static Container scan(final Class<?> entryPoint, final RegistrationContainer registrationContainer, final RegistrableScanner... scanners) {
+        final ComponentsScanner componentsScanner = ComponentsScanner.withDefault(entryPoint, registrationContainer);
+        stream(scanners).forEach(componentsScanner::use);
 
-        return ComponentsScanner.of(registrationContainer)
-                .use(new ManagedRegistrableScanner(typeScanner, dependenciesScanner))
-                .use(new SuppliedRegistrableScanner(typeScanner, instantiator))
-                .use(new ProxyRegistrableScanner(typeScanner, dependenciesScanner))
-                .scan();
+        return componentsScanner.scan();
     }
 
     @SuppressWarnings("WeakerAccess")
