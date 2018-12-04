@@ -87,7 +87,7 @@ class ContainerAcceptanceTest {
     void should_scan_annotated_components() {
         final Container container = Container.scan(TestableApplication.class);
 
-        final Book book = container.provide("novelBook");
+        final Book book = container.provide("NovelBook");
 
         assertThat(book.toString()).isEqualTo("NovelBook(FantasyStory(PredictablePlot('Outcome'), FriendlyProtagonist(HeroicProtagonist)))");
     }

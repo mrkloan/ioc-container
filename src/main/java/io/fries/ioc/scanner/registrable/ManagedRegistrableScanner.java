@@ -16,7 +16,7 @@ public class ManagedRegistrableScanner implements RegistrableScanner {
     private final TypeScanner typeScanner;
     private final DependenciesScanner dependenciesScanner;
 
-    ManagedRegistrableScanner(final TypeScanner typeScanner, final DependenciesScanner dependenciesScanner) {
+    public ManagedRegistrableScanner(final TypeScanner typeScanner, final DependenciesScanner dependenciesScanner) {
         this.typeScanner = typeScanner;
         this.dependenciesScanner = dependenciesScanner;
     }

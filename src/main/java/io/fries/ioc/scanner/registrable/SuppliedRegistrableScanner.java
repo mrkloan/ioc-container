@@ -25,7 +25,7 @@ public class SuppliedRegistrableScanner implements RegistrableScanner {
     private final TypeScanner typeScanner;
     private final Instantiator instantiator;
 
-    SuppliedRegistrableScanner(final TypeScanner typeScanner, final Instantiator instantiator) {
+    public SuppliedRegistrableScanner(final TypeScanner typeScanner, final Instantiator instantiator) {
         this.typeScanner = typeScanner;
         this.instantiator = instantiator;
     }

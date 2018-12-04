@@ -17,7 +17,7 @@ public class ProxyRegistrableScanner implements RegistrableScanner {
     private final TypeScanner typeScanner;
     private final DependenciesScanner dependenciesScanner;
 
-    ProxyRegistrableScanner(final TypeScanner typeScanner, final DependenciesScanner dependenciesScanner) {
+    public ProxyRegistrableScanner(final TypeScanner typeScanner, final DependenciesScanner dependenciesScanner) {
         this.typeScanner = typeScanner;
         this.dependenciesScanner = dependenciesScanner;
     }

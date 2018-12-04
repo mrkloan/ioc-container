@@ -5,6 +5,14 @@ import io.fries.ioc.components.Id;
 import io.fries.ioc.instantiator.DefaultInstantiator;
 import io.fries.ioc.instantiator.Instantiator;
 import io.fries.ioc.registry.Registry;
+import io.fries.ioc.scanner.ComponentsScanner;
+import io.fries.ioc.scanner.dependencies.DependenciesScanner;
+import io.fries.ioc.scanner.dependencies.IdentifiedDependenciesScanner;
+import io.fries.ioc.scanner.registrable.ManagedRegistrableScanner;
+import io.fries.ioc.scanner.registrable.ProxyRegistrableScanner;
+import io.fries.ioc.scanner.registrable.SuppliedRegistrableScanner;
+import io.fries.ioc.scanner.type.ReflectionTypeScanner;
+import io.fries.ioc.scanner.type.TypeScanner;
 
 import java.util.Objects;
 
@@ -33,7 +41,17 @@ public class Container {
 
     @SuppressWarnings("WeakerAccess")
     public static Container scan(final Class<?> entryPoint) {
-        throw new UnsupportedOperationException();
+        final Instantiator instantiator = new DefaultInstantiator();
+        final RegistrationContainer registrationContainer = using(instantiator);
+
+        final TypeScanner typeScanner = new ReflectionTypeScanner(entryPoint);
+        final DependenciesScanner dependenciesScanner = new IdentifiedDependenciesScanner();
+
+        return ComponentsScanner.of(registrationContainer)
+                .use(new ManagedRegistrableScanner(typeScanner, dependenciesScanner))
+                .use(new SuppliedRegistrableScanner(typeScanner, instantiator))
+                .use(new ProxyRegistrableScanner(typeScanner, dependenciesScanner))
+                .scan();
     }
 
     @SuppressWarnings("WeakerAccess")

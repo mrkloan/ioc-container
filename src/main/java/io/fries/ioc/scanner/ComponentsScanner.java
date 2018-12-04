@@ -7,7 +7,7 @@ import io.fries.ioc.scanner.registrable.RegistrableScanner;
 import java.util.ArrayList;
 import java.util.List;
 
-class ComponentsScanner {
+public class ComponentsScanner {
 
     private final RegistrationContainer registrationContainer;
     private final List<RegistrableScanner> scanners;
