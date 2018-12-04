@@ -56,6 +56,16 @@ class SuppliedRegistrableScannerTest {
     }
 
     @Test
+    @DisplayName("throw when the configuration type does not declare an empty constructor")
+    void should_throw_when_the_configuration_type_does_not_declare_an_empty_constructor() {
+        final Class<?> type = SuppliedRegistrableScanner.class;
+
+        assertThatExceptionOfType(IllegalStateException.class)
+                .isThrownBy(() -> suppliedRegistrableScanner.fromConfigurationInstance(type))
+                .withMessage("Invalid configuration class: " + type.getName() + ". An empty constructor is required");
+    }
+
+    @Test
     @DisplayName("create a supplier for the registered method call")
     void should_create_a_supplier_for_the_registered_method_call() throws NoSuchMethodException {
         final String expected = "Expected";

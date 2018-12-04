@@ -39,7 +39,10 @@ public class SuppliedRegistrableScanner implements RegistrableScanner {
                 .collect(toList());
     }
 
-    private List<Registrable> fromConfigurationInstance(final Class<?> type) {
+    List<Registrable> fromConfigurationInstance(final Class<?> type) {
+        if (type.getDeclaredConstructors()[0].getParameters().length != NO_PARAMETERS)
+            throw new IllegalStateException("Invalid configuration class: " + type.getName() + ". An empty constructor is required");
+
         final Object configuration = instantiator.createInstance(type, emptyList());
 
         return stream(type.getDeclaredMethods())
