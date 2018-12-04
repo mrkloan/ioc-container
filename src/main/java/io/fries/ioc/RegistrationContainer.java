@@ -23,8 +23,12 @@ public class RegistrationContainer {
     @SuppressWarnings("WeakerAccess")
     public RegistrationContainer register(final RegistrableBuilder registrableBuilder) {
         final Registrable registrable = registrableBuilder.build();
-        registry = registry.add(registrable);
+        return register(registrable);
+    }
 
+    @SuppressWarnings("WeakerAccess")
+    public RegistrationContainer register(final Registrable registrable) {
+        registry = registry.add(registrable);
         return this;
     }
 
