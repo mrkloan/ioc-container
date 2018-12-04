@@ -50,9 +50,8 @@ class SuppliedRegistrableScannerTest {
         when(typeScanner.findAnnotatedBy(Configuration.class)).thenReturn(scannedTypes);
         final List<Registrable> result = suppliedRegistrableScanner.findAll();
 
-        assertThat(result).hasSize(2);
-        assertThat(result).first().hasFieldOrPropertyWithValue("id", Id.of("otherOutcome"));
-        assertThat(result).last().hasFieldOrPropertyWithValue("id", Id.of("plot.outcome"));
+        assertThat(result).hasSize(1);
+        assertThat(result).first().hasFieldOrPropertyWithValue("id", Id.of("plot.outcome"));
     }
 
     @Test

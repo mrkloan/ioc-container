@@ -11,11 +11,6 @@ public class TestableApplication {
         return "Outcome";
     }
 
-    @Register
-    String otherOutcome() {
-        return "Other outcome";
-    }
-
     String nonRegisteredOutcome() {
         return "Meh.";
     }
